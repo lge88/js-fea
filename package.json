@@ -1,0 +1,21 @@
+{
+  "name": "js-fea",
+  "version": "0.0.0",
+  "description": "Finite Element Analysis in Javascript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fea",
+    "numeric"
+  ],
+  "author": "Li Ge",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^2.4.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.10"
+  }
+}
