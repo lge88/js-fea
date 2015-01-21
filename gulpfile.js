@@ -12,6 +12,8 @@ var config = {
 var gulp = require('gulp'), $ = require('gulp-load-plugins')();
 var del = require('del');
 
+gulp.task('help', $.taskListing);
+
 gulp.task('default', ['lib']);
 
 gulp.task('clean', del(['build']));
