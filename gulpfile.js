@@ -1,7 +1,11 @@
 var config = {
   paths: {
     src: ['src/**/*.js'],
-    tests: ['tests/**/*.js']
+    unit: ['tests/unit/*.js'],
+    spec: ['tests/spec/*.js']
+  },
+  mocha: {
+    reporter: 'spec'
   }
 };
 
@@ -12,15 +16,18 @@ gulp.task('default', ['lib']);
 
 gulp.task('clean', del(['build']));
 
-gulp.task('test', ['test:unit', 'test:spec']);
+gulp.task('test', ['unit', 'spec']);
 
-gulp.task('test:unit', function() {
-  // TODO: test:unit
+gulp.task('unit', function() {
+  gulp
+    .src(config.paths.unit, {read: false})
+    .pipe($.mocha(config.mocha));
 });
 
-gulp.task('test:spec', function() {
-  // TODO: test:spec
-
+gulp.task('spec', function() {
+  gulp
+    .src(config.paths.spec, {read: false})
+    .pipe($.mocha(config.mocha));
 });
 
 gulp.task('lib', ['lib:dev', 'lib:dist']);
