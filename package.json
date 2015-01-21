@@ -13,7 +13,8 @@
   "author": "Li Ge",
   "license": "MIT",
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "numeric": "^1.2.6"
   },
   "devDependencies": {
     "del": "^1.1.1",

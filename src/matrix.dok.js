@@ -1,3 +1,6 @@
+/*jshint undef: true, unused: true */
+/*global __dirname describe it require*/
+var numeric = require('numeric');
 
 function DokSparseMatrix(ijvLst, m, n) {
   // check dimension m x n is valid
@@ -20,7 +23,7 @@ DokSparseMatrix.prototype.getValue = function(i, j) {
     }
     return 0.0;
   }
-  throw new Error('index ' + [i, j] + ' outof bound ' + [this.m, thisn]);
+  throw new Error('index ' + [i, j] + ' outof bound ' + [this.m, this.n]);
 };
 
 DokSparseMatrix.prototype.setValue = function(i, j, val) {
