@@ -1,6 +1,21 @@
 /*global require*/
 
 var _ = require('highland');
+var numeric = require('numeric');
+
+var numericMethods = [
+  'ccsSparse',
+  'ccsLUP',
+  'ccsLUPSolve'
+];
+
+numericMethods.forEach(function(method) {
+  _[method] = numeric[method];
+});
+
+function solveDok(dokMat, vec) {
+  return dokMat.solve(vec);
+}
 
 function array1d(m, fn) {
   if (typeof fn === 'function') {

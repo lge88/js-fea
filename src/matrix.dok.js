@@ -1,7 +1,9 @@
 /*global require*/
-var numeric = require('numeric');
 var _ = require('./core.utils');
 var array2d = _.array2d;
+var ccsSparse = _.ccsSparse;
+var ccsLUP = _.ccsLUP;
+var ccsLUPSolve = _.ccsLUPSolve;
 
 function DokSparseMatrix(ijvLst, m, n) {
   // check dimension m x n is valid
@@ -52,7 +54,7 @@ DokSparseMatrix.prototype.toFull = function() {
 
 DokSparseMatrix.prototype.toCcs = function() {
   // TODO: better implementation
-  return numeric.ccsSparse(this.toFull());
+  return ccsSparse(this.toFull());
 };
 
 DokSparseMatrix.prototype.solve = function(b) {
@@ -65,8 +67,8 @@ DokSparseMatrix.prototype.solve = function(b) {
   }
 
   var ccs = this.toCcs();
-  var lup = numeric.ccsLUP(ccs);
-  var x = numeric.ccsLUPSolve(lup, b);
+  var lup = ccsLUP(ccs);
+  var x = ccsLUPSolve(lup, b);
   return x;
 };
 

@@ -124,4 +124,10 @@ describe('dok sparse matrix', function() {
 
   });
 
+  describe('#assembly()', function() {
+
+
+
+  });
+
 });

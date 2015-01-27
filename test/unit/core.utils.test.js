@@ -14,6 +14,7 @@ describe('core.utils', function() {
     ];
     expect(mat).to.eql(expectedMat);
   });
+
   it('#array2d(m, n, val)', function() {
     var mat = _.array2d(3, 2, 1.0);
     var expectedMat = [
@@ -23,4 +24,5 @@ describe('core.utils', function() {
     ];
     expect(mat).to.eql(expectedMat);
   });
+
 });
