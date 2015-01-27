@@ -6,7 +6,7 @@ var merge = require('merge-stream');
 var minimist = require('minimist');
 var options = minimist(process.argv.slice(2));
 var SRC = __dirname + '/../src/';
-var TEST = __dirname + '/../tests/unit/';
+var TEST = __dirname + '/../test/unit/';
 
 gulp.task('new', function() {
   var name = options.name;

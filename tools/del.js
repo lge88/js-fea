@@ -3,7 +3,7 @@ var del = require('del');
 var minimist = require('minimist');
 var options = minimist(process.argv.slice(2));
 var SRC = __dirname + '/../src/';
-var TEST = __dirname + '/../tests/unit/';
+var TEST = __dirname + '/../test/unit/';
 
 gulp.task('del', function(done) {
   var name = options.name;
