@@ -1,8 +1,6 @@
-// lodash with mixins
+/*global require*/
 
-/*jshint undef: true, unused: true */
-/*global __dirname describe it require*/
-var _ = require('lodash');
+var _ = require('highland');
 
 function array1d(m, fn) {
   if (typeof fn === 'function') {
@@ -26,9 +24,7 @@ function array2d(m, n, fn) {
   }
 }
 
-_.mixin({
-  array1d: array1d,
-  array2d: array2d
-});
+_.array1d = array1d;
+_.array2d = array2d;
 
 module.exports = exports = _;

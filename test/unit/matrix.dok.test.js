@@ -1,7 +1,7 @@
 /*jshint undef: true, unused: true */
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
-var expect = require('expect.js'), _ = require(SRC + '/lodash');
+var expect = require('expect.js'), _ = require(SRC + '/core.utils.js');
 var DokSparseMatrix = require(SRC + '/matrix.dok').DokSparseMatrix;
 
 describe('dok sparse matrix', function() {
@@ -67,6 +67,10 @@ describe('dok sparse matrix', function() {
     expect(dsm.toFull()).to.eql(newMat);
   });
 
-
+  describe('#solve', function() {
+    it('should throw error if the matrix is not square.', function() {
+      // TODO:
+    });
+  });
 
 });

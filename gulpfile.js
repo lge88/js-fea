@@ -1,8 +1,8 @@
 var config = {
   paths: {
     src: ['src/**/*.js'],
-    unit: ['tests/unit/*.js'],
-    spec: ['tests/spec/*.js']
+    unit: ['test/unit/*.js'],
+    spec: ['test/spec/*.js']
   },
   mocha: {
     reporter: 'spec'
@@ -11,6 +11,8 @@ var config = {
 
 var gulp = require('gulp'), $ = require('gulp-load-plugins')();
 var del = require('del');
+
+require('./tools');
 
 gulp.task('help', $.taskListing);
 

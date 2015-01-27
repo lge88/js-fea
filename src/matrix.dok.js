@@ -1,6 +1,7 @@
-/*jshint undef: true, unused: true */
-/*global __dirname describe it require*/
+/*global require*/
 var numeric = require('numeric');
+var _ = require('./core.utils');
+var array2d = _.array2d;
 
 function DokSparseMatrix(ijvLst, m, n) {
   // check dimension m x n is valid
@@ -38,9 +39,7 @@ DokSparseMatrix.prototype.setValue = function(i, j, val) {
 DokSparseMatrix.prototype.toFull = function() {
   var m = this.m,
       n = this.n,
-      out = Array.apply(null, Array(m)).map(function() {
-        return Array.apply(null, Array(n)).map(function() { return 0.0; });
-      });
+      out = array2d(m, n, 0.0);
 
   Object.keys(this._dict).forEach(function(i) {
     Object.keys(this._dict[i]).forEach(function(j) {
@@ -55,5 +54,14 @@ DokSparseMatrix.prototype.toCcs = function() {
   // TODO: better implementation
   return numeric.ccsSparse(this.toFull());
 };
+
+DokSparseMatrix.prototype.solve = function(b) {
+  // TODO: check dimensions;
+  if (this.m !== this.n) {
+  }
+
+};
+
+
 
 exports.DokSparseMatrix = DokSparseMatrix;

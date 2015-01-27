@@ -1,9 +1,10 @@
 /*jshint undef: true, unused: true */
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
-var expect = require('expect.js'), _ = require(SRC + '/lodash');
+var expect = require('expect.js');
+var _ = require(SRC + '/core.utils.js');
 
-describe('lodash mixins', function() {
+describe('core.utils', function() {
   it('#array2d(m, n, fn)', function() {
     var mat = _.array2d(3, 2, function(i, j) { return i + j; });
     var expectedMat = [
