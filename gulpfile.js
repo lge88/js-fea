@@ -5,7 +5,7 @@ var config = {
     spec: ['test/spec/*.js']
   },
   mocha: {
-    reporter: 'spec'
+    reporter: 'progress'
   }
 };
 
