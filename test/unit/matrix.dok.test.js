@@ -2,6 +2,7 @@
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js'), _ = require(SRC + '/core.utils.js');
+var numeric = require('numeric');
 var DokSparseMatrix = require(SRC + '/matrix.dok').DokSparseMatrix;
 
 describe('dok sparse matrix', function() {
@@ -69,8 +70,58 @@ describe('dok sparse matrix', function() {
 
   describe('#solve', function() {
     it('should throw error if the matrix is not square.', function() {
-      // TODO:
+      var m = new DokSparseMatrix([], 3, 2);
+      expect(m.solve.bind(m, [1, 2])).to.throwException();
     });
+
+    it('should throw error if the vector dimension does not match matrix dimension.', function() {
+      var m = new DokSparseMatrix([], 3, 3);
+      expect(m.solve.bind(m, [1, 2])).to.throwException();
+    });
+
+    it('should return correct result for eye(3)', function() {
+      var A = new DokSparseMatrix([
+        [0, 0, 1.0],
+        [1, 1, 1.0],
+        [2, 2, 1.0]
+      ], 3, 3), b = [1.0, 2.0, 3.0];
+
+      var x = A.solve(b);
+      expect(x).to.eql(b);
+    });
+
+    // TODO:
+    // it('should throw expection when A is singular', function() {
+    //   var A = new DokSparseMatrix([], 3, 3), b = [1.0, 2.0, 3.0];
+
+    //   expect(A.solve.bind(A, b)).to.throwException();
+    // });
+
+    it('should return correct result for conceived A, x', function() {
+      var A = new DokSparseMatrix([
+
+        [0, 0, 1.0],
+        [0, 1, 2.0],
+        [0, 2, 3.0],
+
+        [1, 0, 6.0],
+        [1, 1, 5.0],
+        [1, 2, 4.0],
+
+        [2, 0, 7.0],
+        [2, 1, 10.0],
+        [2, 2, 4.0]
+
+      ], 3, 3), b = [5.0, 9.0, 5.0];
+
+      var xExpected = [1.0, -1.0, 2.0];
+      var x = A.solve(b);
+      var relDiff = numeric.norm2(numeric.sub(x, xExpected)) / numeric.norm2(xExpected);
+      var tol = 1e-10;
+
+      expect(relDiff).to.lessThan(tol);
+    });
+
   });
 
 });
