@@ -18,7 +18,7 @@ gulp.task('help', $.taskListing);
 
 gulp.task('default', ['lib']);
 
-gulp.task('clean', del(['build', '**/*tmp*', '**/*.log'], {dot: true}));
+gulp.task('clean', del.bind(null, ['build', '**/*tmp*', '**/*.log', 'coverage'], {dot: true}));
 
 gulp.task('test', ['unit', 'spec']);
 
