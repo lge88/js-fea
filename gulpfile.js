@@ -22,10 +22,17 @@ gulp.task('clean', del(['build', '**/*tmp*', '**/*.log'], {dot: true}));
 
 gulp.task('test', ['unit', 'spec']);
 
-gulp.task('unit', function() {
-  gulp
-    .src(config.paths.unit, {read: false})
-    .pipe($.mocha(config.mocha));
+gulp.task('unit', function(cb) {
+  gulp.src(config.paths.src)
+    .pipe($.istanbul())
+    .pipe($.istanbul.hookRequire())
+    .on('finish', function() {
+      gulp
+        .src(config.paths.unit, {read: false})
+        .pipe($.mocha(config.mocha))
+        .pipe($.istanbul.writeReports())
+        .on('end', cb);
+    });
 });
 
 gulp.task('spec', function() {

@@ -24,6 +24,7 @@
     "gulp-bump": "^0.1.11",
     "gulp-concat": "^2.4.3",
     "gulp-file": "^0.2.0",
+    "gulp-istanbul": "^0.6.0",
     "gulp-load-plugins": "^0.8.0",
     "gulp-mocha": "^2.0.0",
     "gulp-rename": "^1.2.0",
