@@ -52,21 +52,14 @@ describe('femodel', function() {
     expect(labels).to.eql(['e1', 'e2', 'e3', 'e4', 'e5']);
   });
 
+  // it('FeModel::createSPC()', function() {
+  //   var spc1 = m.createSPC([0, 1], [0, 0]).setLabel('spc1');
+  //   m.assignSPC([n1, n2], spc1);
+  // });
 
-  // TODO: spc related.
-  it('FeModel::createSPC()', function() {
-    // var spc1 = m.createSPC([0, 1], [0, 0]).setLabel('spc1');
-    // m.assignSPC([n1, n2], spc1);
-
-
-    // FeModel::toJSON()/FeModel.fromJSON()
-    // var str = JSON.stringify(m.toJSON(), null, 2);
-    // console.log(str);
-
-    // var m2 = FeModel.createFromJSON(JSON.parse(str));
-    // var str2 = JSON.stringify(m2.toJSON(), null, 2);
-    // console.log(str2);
-  });
+  // it('FeSPC::getNodes()', function() {
+  //   var spc1 = m.findByLabel('spc1');
+  // });
 
   it('FeNode::getElements()', function() {
     expect(n1.getElements().sort(byLabel)).to.eql([e1, e3, e5]);
@@ -157,4 +150,13 @@ describe('femodel', function() {
     expect(m.getDimension()).to.be(2);
   });
 
+  it('FeModel::toJSON())', function() {
+    // FeModel::toJSON()/FeModel.fromJSON()
+    // var str = JSON.stringify(m.toJSON(), null, 2);
+    // console.log(str);
+
+    // var m2 = FeModel.createFromJSON(JSON.parse(str));
+    // var str2 = JSON.stringify(m2.toJSON(), null, 2);
+    // console.log(str2);
+  });
 });
