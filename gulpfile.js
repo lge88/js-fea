@@ -1,5 +1,6 @@
 var config = {
   paths: {
+    entry: 'src/index.js',
     src: ['src/**/*.js'],
     unit: ['test/unit/*.js'],
     spec: ['test/spec/*.js']
@@ -44,11 +45,14 @@ gulp.task('spec', function() {
 gulp.task('lib', ['lib:dev', 'lib:dist']);
 
 gulp.task('lib:dev', function() {
-  return gulp
-    .src(config.paths.src)
-    .pipe($.sourcemaps.init())
-    .pipe($.concat('fea.js'))
-    .pipe($.sourcemaps.write())
+  return gulp.src(config.paths.entry)
+    .pipe($.webpack({
+      output: {
+        filename: 'fea.js',
+        libraryTarget: 'var',
+        library: 'fea'
+      }
+    }))
     .pipe(gulp.dest('build'));
 });
 
