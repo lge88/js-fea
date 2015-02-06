@@ -96,21 +96,14 @@ PointSet.prototype.toList = function () {
   return _.cloneDeep(this._points);
 };
 
-PointSet.fromJSON = function (json) {
-  var json = typeof json === "string" ? JSON.parse(json) : json;
-  var rn = json.rn;
-  var pointset = new PointSet(json.points.length/rn, rn);
-
-  pointset.points = new Float32Array(json.points);
-
-  return pointset;
-};
-
 PointSet.prototype.equals = function (other) {
   if (this.rn !== other.rn || this.size !== other.size) return false;
-  for (var i = 0, l = this.points.length; i < l; i += 1) {
-    if (this.points[i] !== other.points[i]) {
-      return false;
+
+  var i, j, size = this.size, rn = this.rn;
+  for (i = 0; i < size; i += 1) {
+    var point = this.get(i), otherPoint = other.get(i);
+    for (j = 0; j < rn; ++j) {
+      if (point[j] !== otherPoint[j]) return false;
     }
   }
   return true;
