@@ -1,6 +1,7 @@
 /*global require*/
 
-var _ = require('highland');
+// var _ = require('highland');
+var _ = require('lodash');
 var numeric = require('numeric');
 
 var numericMethods = [
