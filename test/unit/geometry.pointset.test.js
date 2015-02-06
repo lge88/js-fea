@@ -98,4 +98,28 @@ describe('geometry.pointset.js', function() {
     });
   });
 
+  describe('PointSet::equals(other)', function() {
+    it('should equal', function() {
+      var ps1 = new PointSet([1, 2], [3, 4, 5]);
+      var ps2 = new PointSet([1, 2, 0], [3, 4, 5]);
+      expect(ps1.equals(ps2)).to.be(true);
+
+      var ps3 = new PointSet([]);
+      var ps4 = new PointSet([]);
+      expect(ps3.equals(ps4)).to.be(true);
+    });
+
+    it('should not equal', function() {
+      var ps1 = new PointSet([1, 2], [3, 4, 5]);
+      var ps2 = new PointSet([1, 2, 4], [3, 4, 5]);
+      expect(ps1.equals(ps2)).to.be(false);
+
+      var ps3 = new PointSet([1, 2]);
+      var ps4 = new PointSet([1, 2, 0]);
+      expect(ps3.equals(ps4)).to.be(false);
+    });
+  });
+
+
+
 });
