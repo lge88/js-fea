@@ -124,10 +124,19 @@ PointSet.prototype.get = function(index) {
   throw new Error('PointSet::get() index outof bounds.');
 };
 
-PointSet.prototype.set = function (point, index) {
-  point = point || 0;
-  this.points.set(point, index * this.rn);
-  return this;
+PointSet.prototype.set = function(index, point) {
+  if (index >= 0 && index < this._points.length) {
+    if (point.length !== this.rn) {
+      throw new Error('PointSet::set() point dimension is not matched.');
+    }
+
+    var _points = this._points;
+    _points[index].forEach(function(x, i) {
+      _points[index][i] = point[i];
+    });
+    return;
+  }
+  throw new Error('PointSet::set() index outof bounds.');
 };
 
 PointSet.prototype.forEach = function (iterator) {
