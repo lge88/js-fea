@@ -53,4 +53,26 @@ describe('geometry.pointset.js', function() {
     });
 
   });
+
+  describe('PointSet::get(index)', function() {
+    var ps = new PointSet([[1,2], [2,4,0]]);
+    it('should throw error if the index outof bounds', function() {
+      expect(ps.get.bind(ps, -1)).to.throwException();
+      expect(ps.get.bind(ps, 2)).to.throwException();
+    });
+
+    it('should return an array of rn numbers', function() {
+      var point0 = ps.get(0);
+      expect(point0.length).to.be(ps.rn);
+      expect(point0).to.eql([1, 2, 0]);
+    });
+
+    it('should return a copy of coords instead of reference.', function() {
+      var point1 = ps.get(1);
+      point1[0] = 100; point1[1] = 100; point1[2] = 100;
+
+      var point1Again = ps.get(1);
+      expect(point1Again).to.eql([2, 4, 0]);
+    });
+  });
 });

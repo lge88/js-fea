@@ -118,7 +118,10 @@ PointSet.prototype.equals = function (other) {
 PointSet.prototype.isEqualTo = PointSet.prototype.equals;
 
 PointSet.prototype.get = function(index) {
-
+  if (index >= 0 && index < this._points.length) {
+    return this._points[index].slice();
+  }
+  throw new Error('PointSet::get() index outof bounds.');
 };
 
 PointSet.prototype.set = function (point, index) {
