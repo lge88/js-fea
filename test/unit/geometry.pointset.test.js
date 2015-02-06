@@ -56,7 +56,7 @@ describe('geometry.pointset.js', function() {
 
   describe('PointSet::get(index)', function() {
     var ps = new PointSet([[1,2], [2,4,0]]);
-    it('should throw error if the index outof bounds', function() {
+    it('should throw error if the index out of bounds', function() {
       expect(ps.get.bind(ps, -1)).to.throwException();
       expect(ps.get.bind(ps, 2)).to.throwException();
     });
@@ -75,4 +75,27 @@ describe('geometry.pointset.js', function() {
       expect(point1Again).to.eql([2, 4, 0]);
     });
   });
+
+
+  describe('PointSet::set(index, point)', function() {
+    var ps = new PointSet([[1,2], [2,4,0]]);
+    it('should throw error if the index out of bounds', function() {
+      expect(ps.set.bind(ps, -1, [3,3,4])).to.throwException();
+      expect(ps.set.bind(ps, 2, [3,3,3])).to.throwException();
+    });
+
+    it('should throw error if the point dimension is not matched', function() {
+      expect(ps.set.bind(ps, 0, [3,3])).to.throwException();
+      expect(ps.set.bind(ps, 0, [])).to.throwException();
+    });
+
+    it('should set the coords', function() {
+      ps.set(0, [5, 5, 5]);
+
+      var point0 = ps.get(0);
+      expect(point0.length).to.be(ps.rn);
+      expect(point0).to.eql([5, 5, 5]);
+    });
+  });
+
 });
