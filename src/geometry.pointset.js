@@ -42,32 +42,45 @@ var _ = require( './core.utils' );
 // var vectorMul = utils.vector.mul;
 // var vectorAvg = utils.vector.avg;
 
+// Importance to understand the dimension of the pointset (rn) and
+// the size of the point set is different concept.
+//
+
 function PointSet() {
   var argv = Array.prototype.slice.call(arguments), argc = argv.length;
 
   var _points;
   if (argc === 1 && _.isArray(argv[0])) {
-    _points = _.cloneDeep(argv[0]);
+    if (argv[0].length === 0) {
+      throw new Error('PointSet() Can not determin pointset dimension from []');
+    }
+    _points = argv[0];
+    this._rn = maxNumOfComponents(_points);
   } else if (argc === 2 && typeof argv[0] === 'number' && typeof argv[1] === 'number') {
     _points = _.array2d(argv[0], argv[1], 0.0);
+    this._rn = maxNumOfComponents(_points);
   } else if (argc === 2 && typeof argv[0] === 'number' && typeof argv[1] === 'function') {
     _points = _.array1d(argv[0], argv[1]);
+    this._rn = maxNumOfComponents(_points);
+  } else if (argc === 2 && _.isArray(argv[0]) && typeof argv[1] === 'number') {
+    _points = argv[0];
+    this._rn = argv[1];
+  } else {
+    throw new Error('PointSet() can not initialize with args: ' + argv);
   }
 
-  var _rn = _points.reduce(function(sofar, p) {
-    if (p.length > sofar) sofar = p.length;
-    return sofar;
-  }, 0);
-  this._rn = _rn;
+  this._points = new Array(_points.length);
+  _.each(_points, function(p, i) {
+    var coords = _.array1d(this._rn, 0.0);
+    _.each(p, function(val, j) { coords[j] = val; });
+    this._points[i] = coords;
+  }, this);
 
-  if (this._rn === 0) {
-    this._points = [];
-  } else {
-    this._points = _points.map(function(p) {
-      var coords = _.array1d(_rn, 0.0);
-      p.forEach(function(val, i) { coords[i] = val; });
-      return coords;
-    });
+  function maxNumOfComponents(pts) {
+    return _.reduce(pts, function(sofar, p) {
+      if (p.length > sofar) sofar = p.length;
+      return sofar;
+    }, 0);
   }
 };
 
@@ -125,7 +138,7 @@ PointSet.prototype.set = function(index, point) {
     }
 
     var _points = this._points;
-    _points[index].forEach(function(x, i) {
+    _.each(_points[index], function(x, i) {
       _points[index][i] = point[i];
     });
     return;
@@ -152,7 +165,7 @@ PointSet.prototype.filter = function (predicate) {
   this.forEach(function(p, i) {
     if (predicate(p, i)) { lst.push(p); }
   });
-  return new PointSet(lst);
+  return new PointSet(lst, this._rn);
 };
 
 // return a list indices that satisfy the predicate

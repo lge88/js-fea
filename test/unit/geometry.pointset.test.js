@@ -5,12 +5,20 @@ var PointSet = require(SRC + '/geometry.pointset.js').PointSet;
 
 describe('geometry.pointset.js', function() {
   describe('PointSet::constructor()', function() {
-    it('([]) & ([[]])', function() {
-      var ps1 = new PointSet([]);
-      expect(ps1.size).to.be(0); expect(ps1.rn).to.be(0);
+    it('([]) should throw because can not determin rn', function() {
+      var fn = function(x) { return new PointSet(x); }.bind(null, []);
+      expect(fn).to.throwException();
+    });
 
-      var ps2 = new PointSet([[]]);
-      expect(ps2.size).to.be(0); expect(ps2.rn).to.be(0);
+    it('([], rn) should return empty pointset of dimension rn', function() {
+      var ps = new PointSet([], 3);
+      expect(ps.size).to.be(0);
+      expect(ps.rn).to.be(3);
+    });
+
+    it('([[]]) should return a pointset contains one 0-d point', function() {
+      var ps = new PointSet([[]]);
+      expect(ps.size).to.be(1); expect(ps.rn).to.be(0);
     });
 
     it('([coords1, coords2, ...])', function() {
@@ -122,8 +130,8 @@ describe('geometry.pointset.js', function() {
       var ps2 = new PointSet([[1, 2, 0], [3, 4, 5]]);
       expect(ps1.equals(ps2)).to.be(true);
 
-      var ps3 = new PointSet([]);
-      var ps4 = new PointSet([]);
+      var ps3 = new PointSet([[]]);
+      var ps4 = new PointSet([[]]);
       expect(ps3.equals(ps4)).to.be(true);
     });
 
@@ -140,7 +148,7 @@ describe('geometry.pointset.js', function() {
 
   describe('PointSet::forEach(iterator)', function() {
     it('should do nothing if point set is empty', function() {
-      var ps = new PointSet([[]]), called = false;
+      var ps = new PointSet([], 1), called = false;
       ps.forEach(function(p, i) { called = true; });
       expect(called).to.be(false);
     });
@@ -193,9 +201,10 @@ describe('geometry.pointset.js', function() {
     var ps1 = new PointSet([[0, 0, 0]]);
     var ps2 = new PointSet([[1, 1, 1]]);
 
-    it('should return empty pointset', function() {
+    it('should return empty pointset of same rn', function() {
       var emptyPs = ps.filter(function() { return false; });
       expect(emptyPs.getSize()).to.be(0);
+      expect(emptyPs.getRn()).to.be(3);
     });
 
     it('should return correct pointset', function() {
@@ -214,6 +223,38 @@ describe('geometry.pointset.js', function() {
         [2, 2, 2]
       ]);
     });
+  });
+
+  xdescribe('PointSet::extrude(hlist)', function() {
+    var p = new PointSet([[]]), lineSeg, rect, cube;
+    it('should extrude point to line segment', function() {
+      lineSeg = p.extrude([1]);
+      expect(lineSeg.toList()).to.eql([
+        [0],
+        [1]
+      ]);
+    });
+
+    it('should extrude line segment to rect', function() {
+      rect = lineSeg.extrude([1]);
+      expect(rect.toList()).to.eql([
+        [0, 0],
+        [0, 1]
+      ]);
+    });
+
+    it('should extrude rect to cube', function() {
+      cube = rect.extrude([1, 1]);
+      expect(cube.toList()).to.eql([
+        [0, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+        [0, 1, 1],
+        [0, 0, 2],
+        [0, 1, 2]
+      ]);
+    });
+
 
   });
 
