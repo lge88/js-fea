@@ -164,5 +164,26 @@ describe('geometry.pointset.js', function() {
     });
   });
 
+  describe('PointSet::map(transform)', function() {
+    var ps1 = new PointSet([[1], [2, 3], [4, 5, 6]]);
+    var ps2 = ps1.map(function(p, i) {
+      return p.map(function(x) { return x*2; });
+    });
+
+    it('should return a correct pointset', function() {
+      expect(ps2.toList()).to.eql([
+        [2, 0, 0],
+        [4, 6, 0],
+        [8, 10, 12]
+      ]);
+    });
+
+    it('should return copy not reference', function() {
+      ps2.set(0, [7, 7, 8]);
+      expect(ps1.get(0)).to.eql([1, 0, 0]);
+    });
+
+  });
+
 
 });

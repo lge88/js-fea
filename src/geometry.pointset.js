@@ -141,24 +141,10 @@ PointSet.prototype.forEach = function(iterator) {
   }
 };
 
-PointSet.prototype.map = function (mapping) {
-  var points = this.points;
-  var oldRn = this.rn;
-  var size = this.size;
-  var mappedPoints0 = mapping(_toArray(points.subarray(0,oldRn)), 0);
-  var newRn = mappedPoints0.length;
-  var newPoints = new Float32Array(size * newRn);
-  var i, j;
-
-  newPoints.set(mappedPoints0);
-
-  for (i = oldRn, j = 1; j < size; i += oldRn, j += 1) {
-    newPoints.set(mapping(_toArray(points.subarray(i, i + oldRn)), j), j * newRn);
-  }
-
-  this.points = newPoints;
-  this.rn = newRn;
-  return this;
+PointSet.prototype.map = function (transform) {
+  var lst = new Array(this.getSize());
+  this.forEach(function(p, i) { lst[i] = transform(p, i); });
+  return new PointSet(lst);
 };
 
 PointSet.prototype.filter = function (iterator) {
