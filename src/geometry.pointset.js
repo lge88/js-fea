@@ -3,9 +3,9 @@
 
 // FUNCTIONS:
 //   PointSet()
-//   notZero( x )
-//   sign( x )
-//   makeForEach( size )
+//   notZero(x)
+//   sign(x)
+//   makeForEach(size)
 // //
 // [PointSet] constructor:
 //   PointSet()
@@ -20,7 +20,7 @@
 //   PointSet::forEach(iterator)
 //   PointSet::map(mapping)
 //   PointSet::filter(iterator)
-//   PointSet::selectIndices( predicate )
+//   PointSet::selectIndices(predicate)
 //   PointSet::merge(precision)
 //   PointSet::fuse(other)
 //   PointSet::rotate(dims, angle)
@@ -28,10 +28,10 @@
 //   PointSet::translate(dims, values)
 //   PointSet::transform(matrix)
 //   PointSet::embed(dim)
-//   PointSet::extrude( hlist )
+//   PointSet::extrude(hlist)
 //   PointSet::prod(pointset)
 
-var _ = require( './core.utils' );
+var _ = require('./core.utils');
 // var _swap = utils._utils._swap;
 // var _quickSort = utils._utils._quickSort;
 // var _flat = utils._utils._flat;
@@ -169,7 +169,7 @@ PointSet.prototype.filter = function (predicate) {
 };
 
 // return a list indices that satisfy the predicate
-PointSet.prototype.selectIndices = function( predicate ) {
+PointSet.prototype.selectIndices = function(predicate) {
   var points = this.points;
   var length = points.length;
   var out = [];
@@ -182,7 +182,7 @@ PointSet.prototype.selectIndices = function( predicate ) {
   for (i = j = k = 0; i < length; i += rn, j += 1) {
     point = points.subarray(i, i + rn);
     if (predicate(point, j)) {
-      out.push( j );
+      out.push(j);
       k += rn;
     }
   }
@@ -230,23 +230,23 @@ PointSet.prototype.merge = function (precision) {
 };
 
 PointSet.prototype.fuse = function(other) {
-  if ( !(this.rn === other.rn) ) {
-    throw new Error( 'Only supprt this operation for same rn now' );
+  if (!(this.rn === other.rn)) {
+    throw new Error('Only supprt this operation for same rn now');
   }
 
   var thisLength = this.size * this.rn;
   var otherLength = other.size * other.rn;
   var length = thisLength + otherLength;
-  var combined = new Float32Array( length );
+  var combined = new Float32Array(length);
 
   var i, thisPoints = this.points, otherPoints = other.points;
 
-  for ( i = 0; i < thisLength; ++i ) {
-    combined[ i ] = thisPoints[ i ];
+  for (i = 0; i < thisLength; ++i) {
+    combined[i] = thisPoints[i];
   }
 
-  for ( i = 0; i < otherLength; ++i ) {
-    combined[ i + thisLength ] = otherPoints[ i ];
+  for (i = 0; i < otherLength; ++i) {
+    combined[i + thisLength] = otherPoints[i];
   }
 
   this.points = combined;
@@ -353,53 +353,50 @@ PointSet.prototype.embed = function (dim) {
   return this;
 };
 
-function notZero( x ) { return x !== 0; }
+function notZero(x) { return x !== 0; }
 
-function sign( x ) {
-  if ( x > 0 ) {
+function sign(x) {
+  if (x > 0) {
     return 1;
-  } else if ( x < 0 ) {
+  } else if (x < 0) {
     return -1;
   } else {
     return 0;
   }
 };
 
-function makeForEach( size ) {
-  return function( arr, fn ) {
+function makeForEach(size) {
+  return function(arr, fn) {
     var i = 0, len = arr.length, ind = 0;
-    while ( i < len ) {
-      fn( arr.subarray( i, i + size ), ind, arr );
+    while (i < len) {
+      fn(arr.subarray(i, i + size), ind, arr);
       i = i + size;
       ind = ind + 1;
     }
-  }
+  };
 }
 
-PointSet.prototype.extrude = function( hlist ) {
+PointSet.prototype.extrude = function(hlist) {
   var quotes = hlist
-    .reduce( function( quotes, incr ) {
-      var sofar = quotes[ quotes.length - 1 ];
-      quotes.push( sofar + incr );
+    .reduce(function(quotes, incr) {
+      var sofar = quotes[quotes.length - 1];
+      quotes.push(sofar + incr);
       return quotes;
-    }, [ 0 ] );
-  var rn = this.rn;
-  var newRn = rn + 1;
-  var oldPoints = this.points;
-  var newPoints = [];
-  var forEachRn = makeForEach( rn );
-  quotes.forEach( function( q ) {
-    forEachRn( oldPoints, function( point, ind ) {
-      Array.prototype.forEach.call( point, function( val ) {
-        newPoints.push( val );
-      } );
-      newPoints.push( q );
-    } );
-  } );
+    }, [0]);
 
-  this.rn = newRn;
-  this.points = new Float32Array( newPoints );
-  return this;
+  var rn = this.rn;
+  var oldPoints = this._points;
+
+  var newPoints = _.reduce(quotes, function(sofar, q) {
+    _.each(oldPoints, function(p) {
+      var newPoint = _.clone(p);
+      newPoint.push(q);
+      sofar.push(newPoint);
+    });
+    return sofar;
+  }, []);
+
+  return new PointSet(newPoints, rn + 1);
 };
 
 PointSet.prototype.prod = function(pointset) {

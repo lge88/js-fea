@@ -225,9 +225,9 @@ describe('geometry.pointset.js', function() {
     });
   });
 
-  xdescribe('PointSet::extrude(hlist)', function() {
+  describe('PointSet::extrude(hlist)', function() {
     var p = new PointSet([[]]), lineSeg, rect, cube;
-    it('should extrude point to line segment', function() {
+    it('should extrude 0-d point to a line segment', function() {
       lineSeg = p.extrude([1]);
       expect(lineSeg.toList()).to.eql([
         [0],
@@ -239,7 +239,9 @@ describe('geometry.pointset.js', function() {
       rect = lineSeg.extrude([1]);
       expect(rect.toList()).to.eql([
         [0, 0],
-        [0, 1]
+        [1, 0],
+        [0, 1],
+        [1, 1]
       ]);
     });
 
@@ -247,15 +249,21 @@ describe('geometry.pointset.js', function() {
       cube = rect.extrude([1, 1]);
       expect(cube.toList()).to.eql([
         [0, 0, 0],
+        [1, 0, 0],
         [0, 1, 0],
+        [1, 1, 0],
+
         [0, 0, 1],
+        [1, 0, 1],
         [0, 1, 1],
+        [1, 1, 1],
+
         [0, 0, 2],
-        [0, 1, 2]
+        [1, 0, 2],
+        [0, 1, 2],
+        [1, 1, 2]
       ]);
     });
-
-
   });
 
 
