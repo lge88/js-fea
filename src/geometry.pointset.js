@@ -146,6 +146,7 @@ PointSet.prototype.map = function (transform) {
   this.forEach(function(p, i) { lst[i] = transform(p, i); });
   return new PointSet(lst);
 };
+PointSet.prototype.transform = PointSet.prototype.map;
 
 PointSet.prototype.filter = function (iterator) {
   var points = this.points;
