@@ -82,18 +82,18 @@ PointSet.prototype.__defineGetter__('rn', function () {
 });
 PointSet.prototype.getRn = function() { return this.rn; };
 
-PointSet.prototype.clone = function () {
+PointSet.prototype.clone = function() {
   return new PointSet(this.toList());
 };
 
-PointSet.prototype.toJSON = function () {
+PointSet.prototype.toJSON = function() {
   var json = {};
   json.points = this.toList();
   json.rn = this.rn;
   return json;
 };
 
-PointSet.prototype.toList = function () {
+PointSet.prototype.toList = function() {
   return _.cloneDeep(this._points);
 };
 
@@ -133,17 +133,12 @@ PointSet.prototype.set = function(index, point) {
   throw new Error('PointSet::set() index outof bounds.');
 };
 
-PointSet.prototype.forEach = function (iterator) {
-  var points = this.points;
-  var length = points.length;
-  var rn = this.rn;
-  var i, j;
-
-  for (i = j = 0; i < length; i += rn, j += 1) {
-    iterator(points.subarray(i, i + rn), j);
+PointSet.prototype.forEach = function(iterator) {
+  var i, size, p;
+  for (i = 0, size = this.getSize(); i < size; ++i) {
+    p = this.get(i);
+    iterator(p, i);
   }
-
-  return this;
 };
 
 PointSet.prototype.map = function (mapping) {

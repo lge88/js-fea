@@ -138,6 +138,31 @@ describe('geometry.pointset.js', function() {
     });
   });
 
+  describe('PointSet::forEach(iterator)', function() {
+    it('should do nothing if point set is empty', function() {
+      var ps = new PointSet([[]]), called = false;
+      ps.forEach(function(p, i) { called = true; });
+      expect(called).to.be(false);
+    });
+
+    var lst, ps;
+    it('should iterate over all points', function() {
+      lst = [], ps = new PointSet([[0, 1], [1], [3, 3, 5]]);
+      ps.forEach(function(p, i) {
+        lst.push({ index: i, point: p });
+      });
+      expect(lst).to.eql([
+        {index: 0, point: [0, 1, 0]},
+        {index: 1, point: [1, 0, 0]},
+        {index: 2, point: [3, 3, 5]}
+      ]);
+    });
+
+    it('should point be copy not reference', function() {
+      lst[0].point[0] = 5, lst[0].point[1] = 5, lst[0].point[2] = 5;
+      expect(ps.get(0)).to.eql([0, 1, 0]);
+    });
+  });
 
 
 });
