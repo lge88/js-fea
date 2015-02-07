@@ -146,36 +146,14 @@ PointSet.prototype.map = function (transform) {
   this.forEach(function(p, i) { lst[i] = transform(p, i); });
   return new PointSet(lst);
 };
-PointSet.prototype.transform = PointSet.prototype.map;
 
-PointSet.prototype.filter = function (iterator) {
-  var points = this.points;
-  var length = points.length;
-  var filtered = new Float32Array(length);
-  var rn = this.rn;
-  var i, j, k;
-  var point;
-  var pointset;
-
-  for (i = j = k = 0; i < length; i += rn, j += 1) {
-    point = points.subarray(i, i + rn);
-    if (iterator(point, j)) {
-      filtered.set(point, k);
-      k += rn;
-    }
-  }
-
-  filtered = filtered.subarray(0, k);
-  this.points = filtered;
-  return this;
-  // pointset = new PointSet();
-  // pointset.points = filtered;
-  // pointset.rn = rn;
-  // pointset.size = k / rn;
-
-  // return pointset;
+PointSet.prototype.filter = function (predicate) {
+  var lst = [];
+  this.forEach(function(p, i) {
+    if (predicate(p, i)) { lst.push(p); }
+  });
+  return new PointSet(lst);
 };
-
 
 // return a list indices that satisfy the predicate
 PointSet.prototype.selectIndices = function( predicate ) {

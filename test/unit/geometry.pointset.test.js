@@ -182,6 +182,38 @@ describe('geometry.pointset.js', function() {
       ps2.set(0, [7, 7, 8]);
       expect(ps1.get(0)).to.eql([1, 0, 0]);
     });
+  });
+
+  describe('PointSet::filter(predicate)', function() {
+    var ps = new PointSet([
+      [0, 0, 0],
+      [1, 1, 1],
+      [2, 2, 2]
+    ]);
+    var ps1 = new PointSet([[0, 0, 0]]);
+    var ps2 = new PointSet([[1, 1, 1]]);
+
+    it('should return empty pointset', function() {
+      var emptyPs = ps.filter(function() { return false; });
+      expect(emptyPs.getSize()).to.be(0);
+    });
+
+    it('should return correct pointset', function() {
+      var p1 = function(p) {
+        return p[0] < 0.5 && p[1] < 0.5 && p[2] < 0.5;
+      };
+      var p2 = function(p, i) { return i === 1; };
+      expect(ps.filter(p1).equals(ps1)).to.be(true);
+      expect(ps.filter(p2).equals(ps2)).to.be(true);
+    });
+
+    it('should not mutate original pointset', function() {
+      expect(ps.toList()).to.eql([
+        [0, 0, 0],
+        [1, 1, 1],
+        [2, 2, 2]
+      ]);
+    });
 
   });
 
