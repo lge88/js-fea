@@ -98,6 +98,24 @@ describe('geometry.pointset.js', function() {
     });
   });
 
+  describe('PointSet::clone()', function() {
+    var ps1, ps2;
+    it('should clone', function() {
+      ps1 = new PointSet([[1, 2], [3, 4, 5]]);
+      ps2 = ps1.clone();
+    });
+
+    it('should clone be the same', function() {
+      expect(ps1.equals(ps2)).to.be(true);
+    });
+
+    it('should not reference same object', function() {
+      ps1.set(0, [5, 5, 5]);
+      expect(ps1.get(0)).to.eql([5, 5, 5]);
+      expect(ps2.get(0)).to.eql([1, 2, 0]);
+    });
+  });
+
   describe('PointSet::equals(other)', function() {
     it('should equal', function() {
       var ps1 = new PointSet([[1, 2], [3, 4, 5]]);

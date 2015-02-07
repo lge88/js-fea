@@ -2,23 +2,21 @@
 // geometry.pointset
 
 // FUNCTIONS:
-//   PointSet(points, rn)
+//   PointSet()
 //   notZero( x )
 //   sign( x )
 //   makeForEach( size )
 // //
 // [PointSet] constructor:
-//   PointSet(points, rn)
-// //
-// [PointSet] class methods:
-//   PointSet.fromJSON(json)
+//   PointSet()
 // //
 // [PointSet] instance methods:
 //   PointSet::clone()
 //   PointSet::toJSON()
+//   PointSet::toList()
 //   PointSet::equals(other)
 //   PointSet::get(index)
-//   PointSet::set(point, index)
+//   PointSet::set(index, point)
 //   PointSet::forEach(iterator)
 //   PointSet::map(mapping)
 //   PointSet::filter(iterator)
@@ -73,13 +71,16 @@ function PointSet() {
   }
 };
 
+
 PointSet.prototype.__defineGetter__('size', function () {
   return this._points.length;
 });
+PointSet.prototype.getSize = function() { return this.size; };
 
 PointSet.prototype.__defineGetter__('rn', function () {
   return this._rn;
 });
+PointSet.prototype.getRn = function() { return this.rn; };
 
 PointSet.prototype.clone = function () {
   return new PointSet(this.toList());
