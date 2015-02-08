@@ -3,49 +3,38 @@
 
 // FUNCTIONS:
 //   PointSet()
-//   notZero(x)
-//   sign(x)
-//   makeForEach(size)
 // //
 // [PointSet] constructor:
 //   PointSet()
 // //
 // [PointSet] instance methods:
+//   PointSet::getSize()
+//   PointSet::getRn()
 //   PointSet::clone()
 //   PointSet::toJSON()
 //   PointSet::toList()
 //   PointSet::equals(other)
 //   PointSet::get(index)
-//   PointSet::set(index, point)
+//   PointSet::set_(index, point)
 //   PointSet::forEach(iterator)
-//   PointSet::map(mapping)
-//   PointSet::filter(iterator)
-//   PointSet::selectIndices(predicate)
-//   PointSet::merge(precision)
-//   PointSet::fuse(other)
+//   PointSet::map(transform)
+//   PointSet::filter(predicate)
+//   PointSet::embed(dim)
+//   PointSet::extrude(hlist)
+//   PointSet::findOne(predicate)
+//   PointSet::contains(point, aPrecision)
+//   PointSet::merged(aPrecision)
+//   PointSet::combineWith(other)
 //   PointSet::rotate(dims, angle)
 //   PointSet::scale(dims, values)
 //   PointSet::translate(dims, values)
 //   PointSet::transform(matrix)
-//   PointSet::embed(dim)
-//   PointSet::extrude(hlist)
-//   PointSet::prod(pointset)
+//   PointSet::prod(other)
 
 var _ = require('./core.utils');
-// var _swap = utils._utils._swap;
-// var _quickSort = utils._utils._quickSort;
-// var _flat = utils._utils._flat;
-// var _areEqual = utils._utils._areEqual;
-// var _toArray = utils._utils._toArray;
-// var vectorAdd = utils.vector.add;
-// var vectorSub = utils.vector.sub;
-// var vectorMul = utils.vector.mul;
-// var vectorAvg = utils.vector.avg;
 
 // Importance to understand the dimension of the pointset (rn) and
 // the size of the point set is different concept.
-//
-
 function PointSet() {
   var argv = Array.prototype.slice.call(arguments), argc = argv.length;
 
@@ -84,18 +73,14 @@ function PointSet() {
   }
 };
 
-PointSet.prototype.__defineGetter__('size', function () {
-  return this._points.length;
-});
-PointSet.prototype.getSize = function() { return this.size; };
+PointSet.prototype.getSize = function() { return this._points.length; };
+PointSet.prototype.__defineGetter__('size', PointSet.prototype.getSize);
 
-PointSet.prototype.__defineGetter__('rn', function () {
-  return this._rn;
-});
-PointSet.prototype.getRn = function() { return this.rn; };
+PointSet.prototype.getRn = function() { return this._rn; };
+PointSet.prototype.__defineGetter__('rn', PointSet.prototype.getRn);
 
 PointSet.prototype.clone = function() {
-  return new PointSet(this.toList());
+  return new PointSet(this.toList(), this.rn);
 };
 
 PointSet.prototype.toJSON = function() {
@@ -228,35 +213,17 @@ PointSet.prototype.merged = function(aPrecision) {
 PointSet.DEFAULT_PRECISION = 1e-6;
 
 PointSet.prototype.combineWith = function(other) {
-  // if (!(this.rn === other.rn)) {
-  //   throw new Error('Only supprt this operation for same rn now');
-  // }
+  if (this.rn !== other.rn) {
+    throw new Error('Pointset::combineWith(other): pointset rn dismatch.');
+  }
 
-  // var thisLength = this.size * this.rn;
-  // var otherLength = other.size * other.rn;
-  // var length = thisLength + otherLength;
-  // var combined = new Float32Array(length);
-
-  // var i, thisPoints = this.points, otherPoints = other.points;
-
-  // for (i = 0; i < thisLength; ++i) {
-  //   combined[i] = thisPoints[i];
-  // }
-
-  // for (i = 0; i < otherLength; ++i) {
-  //   combined[i + thisLength] = otherPoints[i];
-  // }
-
-  // this.points = combined;
-  // return this;
-  throw new Error('PointSet::combineWith(other) is not implemented');
+  var lst = this.toList();
+  other.forEach(function(p) { lst.push(p); });
+  return new PointSet(lst, this.rn);
 };
 
 PointSet.prototype.rotate = function (dims, angle) {
-  // var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
-  // this.embed(maxDim + 1);
   // var rn = this.rn;
-
   // var dims = dims[0] > dims[1] ? [dims[1], dims[0]] : dims;
   // var points = this.points;
   // var length = points.length;

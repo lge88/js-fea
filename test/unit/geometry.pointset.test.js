@@ -114,6 +114,11 @@ describe('geometry.pointset.js', function() {
       ps2 = ps1.clone();
     });
 
+    it('should work with empty pointset', function() {
+      var emptySet = new PointSet([], 2);
+      expect(emptySet.clone().equals(emptySet)).to.be(true);
+    });
+
     it('should clone be the same', function() {
       expect(ps1.equals(ps2)).to.be(true);
     });
@@ -352,6 +357,42 @@ describe('geometry.pointset.js', function() {
       ]);
       expect(ps.merged(1e-6).getSize()).to.be(3);
       expect(ps.getSize()).to.be(5);
+    });
+  });
+
+  describe('PointSet::combineWith(other)', function() {
+    it('should throw if two pointset dimension dismatch', function() {
+      var ps1 = new PointSet([[1]]);
+      var ps2 = new PointSet([[1], [2, 3]]);
+      expect(ps1.combineWith.bind(ps1, ps2)).to.throwException();
+    });
+
+    it('should work with empty pointset', function() {
+      var ps1 = new PointSet([], 2);
+      var ps2 = new PointSet([[1, 2]]);
+      expect(ps1.combineWith(ps1.clone()).equals(ps1)).to.be(true);
+      expect(ps1.combineWith(ps2).toList()).to.eql(ps2.toList());
+      expect(ps1.getSize()).to.be(0);
+    });
+
+    it('should work with non-empty pointset', function() {
+      var ps1 = new PointSet([
+        [1, 1],
+        [2, 2],
+        [3, 3]
+      ]);
+      var ps2 = new PointSet([
+        [4, 4],
+        [5, 5]
+      ]);
+      expect(ps1.combineWith(ps2).toList()).to.eql([
+        [1, 1],
+        [2, 2],
+        [3, 3],
+        [4, 4],
+        [5, 5]
+      ]);
+      expect(ps1.getSize()).to.be(3);
     });
   });
 
