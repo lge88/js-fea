@@ -194,89 +194,62 @@ PointSet.prototype.extrude = function(hlist) {
   return new PointSet(newPoints, rn + 1);
 };
 
-// return a list indices that satisfy the predicate
-PointSet.prototype.selectIndices = function(predicate) {
-  var points = this.points;
-  var length = points.length;
-  var out = [];
-  var filtered = new Float32Array(length);
-  var rn = this.rn;
-  var i, j, k;
-  var point;
-  var pointset;
-
-  for (i = j = k = 0; i < length; i += rn, j += 1) {
-    point = points.subarray(i, i + rn);
-    if (predicate(point, j)) {
-      out.push(j);
-      k += rn;
-    }
+// Oh yeah, brute-force
+PointSet.prototype.findOne = function(predicate) {
+  var i, size = this.getSize(), p;
+  for (i = 0; i < size; ++i) {
+    p = this.get(i);
+    if (predicate(p, i) === true) return p;
   }
-
-  return out;
+  return null;
 };
 
-PointSet.prototype.merge = function (precision) {
-  var precision = precision || 1e-4;
-  var points = this.points;
-  var length = points.length;
-  var rn = this.rn;
-  var size = this.size;
-  var indices = new Uint32Array(size);
-  var merged = new Float32Array(length);
-  var usedIndices = 0;
-  var usedCoords = 0;
-  var vertexAdded;
-  var equals;
-  var i, j, k;
-
-  for (i = 0; i < length; i += rn) {
-    vertexAdded = false;
-    for (j = 0; j < usedCoords && !vertexAdded; j += rn) {
-      equals = true;
-      for (k = 0; k < rn; k += 1) {
-        points[i+k] = Math.round(points[i+k] / precision) * precision;
-        equals &= points[i+k] === merged[j+k];
-      }
-      vertexAdded |= equals;
-    }
-    indices[i/rn] = !vertexAdded ? usedIndices : j/rn-1;
-    if (!vertexAdded) {
-      for (k = 0; k < rn; k += 1) {
-        merged[usedCoords+k] = points[i+k];
-      }
-      usedIndices += 1;
-      usedCoords = usedIndices*rn;
-    }
+// Oh yeah, brute-force
+PointSet.prototype.contains = function(point, aPrecision) {
+  var precision = aPrecision || PointSet.DEFAULT_PRECISION;
+  if (_.isArray(point) && point.length === this.rn) {
+    return null !== this.findOne(function(p) {
+      return _.norm2(_.sub(p, point)) < precision;
+    });
   }
-
-  this.points = merged.subarray(0, usedCoords);
-
-  return indices;
+  return false;
 };
 
-PointSet.prototype.fuse = function(other) {
-  if (!(this.rn === other.rn)) {
-    throw new Error('Only supprt this operation for same rn now');
-  }
+// Oh yeah, brute-force
+PointSet.prototype.merged = function(aPrecision) {
+  var precision = aPrecision || PointSet.DEFAULT_PRECISION;
+  var lst = [];
+  this.forEach(function(p0) {
+    var tooClose = _.any(lst, function(p1) { return _.norm2(p0, p1) < precision; });
+    if (!tooClose) lst.push(p0);
+  });
+  return new PointSet(lst, this.rn);
+};
+PointSet.DEFAULT_PRECISION = 1e-6;
 
-  var thisLength = this.size * this.rn;
-  var otherLength = other.size * other.rn;
-  var length = thisLength + otherLength;
-  var combined = new Float32Array(length);
+PointSet.prototype.combined = function(other) {
+  // if (!(this.rn === other.rn)) {
+  //   throw new Error('Only supprt this operation for same rn now');
+  // }
 
-  var i, thisPoints = this.points, otherPoints = other.points;
+  // var thisLength = this.size * this.rn;
+  // var otherLength = other.size * other.rn;
+  // var length = thisLength + otherLength;
+  // var combined = new Float32Array(length);
 
-  for (i = 0; i < thisLength; ++i) {
-    combined[i] = thisPoints[i];
-  }
+  // var i, thisPoints = this.points, otherPoints = other.points;
 
-  for (i = 0; i < otherLength; ++i) {
-    combined[i + thisLength] = otherPoints[i];
-  }
+  // for (i = 0; i < thisLength; ++i) {
+  //   combined[i] = thisPoints[i];
+  // }
 
-  this.points = combined;
-  return this;
+  // for (i = 0; i < otherLength; ++i) {
+  //   combined[i + thisLength] = otherPoints[i];
+  // }
+
+  // this.points = combined;
+  // return this;
+  throw new Error('PointSet::combined(other) is not implemented');
 };
 
 PointSet.prototype.rotate = function (dims, angle) {

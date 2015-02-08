@@ -7,7 +7,9 @@ var numeric = require('numeric');
 var numericMethods = [
   'ccsSparse',
   'ccsLUP',
-  'ccsLUPSolve'
+  'ccsLUPSolve',
+  'norm2',
+  'sub'
 ];
 
 numericMethods.forEach(function(method) {

@@ -1,6 +1,7 @@
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
+var _ = require(SRC + '/core.utils.js');
 var PointSet = require(SRC + '/geometry.pointset.js').PointSet;
 
 describe('geometry.pointset.js', function() {
@@ -295,8 +296,44 @@ describe('geometry.pointset.js', function() {
     });
   });
 
-  xdescribe('PointSet::contains(point, precision)', function() {
+  describe('PointSet::findOne(predicate)', function() {
+    it('should work with empty set', function() {
+      var ps = new PointSet([], 2);
+      var p = function() { return true; };
+      expect(ps.findOne(p)).to.be(null);
+    });
 
+    it('should work with non-empty set', function() {
+      var ps = new PointSet([[1, 0], [2, 3]], 2);
+      var p1 = function(p, i) {
+        var d = _.norm2(_.sub(p, [2, 2.9]));
+        return d < 0.5;
+      };
+      var p2 = function(p, i) { return _.norm2(p, [12, 2.9]) < 0.5; };
+      expect(ps.findOne(p1)).to.eql([2, 3]);
+      expect(ps.findOne(p2)).to.be(null);
+    });
+  });
+
+  describe('PointSet::contains(point, precision)', function() {
+    it('should work with empty set', function() {
+      var ps = new PointSet([], 2);
+      expect(ps.contains([0, 0], 1e-6)).to.be(false);
+    });
+
+    it('should work with point of different dimension', function() {
+      var ps = new PointSet([[1, 0], [2, 3]], 2);
+      expect(ps.contains([1], 1e-6)).to.be(false);
+      expect(ps.contains([2, 3, 0], 1e-6)).to.be(false);
+    });
+
+    it('should work with point of same dimension', function() {
+      var ps = new PointSet([[1, 0], [2, 3]], 2);
+      expect(ps.contains([1, 0], 1e-6)).to.be(true);
+      expect(ps.contains([2, 3], 1e-6)).to.be(true);
+      expect(ps.contains([2.1, 3.1], 1e-6)).to.be(false);
+      expect(ps.contains([2.1, 3.1], 0.2)).to.be(true);
+    });
   });
 
   describe('PointSet::merged(precision)', function() {
