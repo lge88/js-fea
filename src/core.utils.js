@@ -25,6 +25,7 @@ function array1d(m, fn) {
     return Array.apply(null, Array(m)).map(function() { return fn; });
   }
 }
+_.array1d = array1d;
 
 function array2d(m, n, fn) {
   if (typeof fn === 'function') {
@@ -39,8 +40,17 @@ function array2d(m, n, fn) {
     });
   }
 }
-
-_.array1d = array1d;
 _.array2d = array2d;
+
+function embed(vec, dim) {
+  var i, len, out;
+  if (_.isArray(vec) && typeof dim === 'number') {
+    out = array1d(dim, 0.0);
+    for (i = 0, len = vec.length < dim ? vec.length : dim; i < len; ++i) out[i] = vec[i];
+    return out;
+  }
+  throw new Error('embed(vec, dim): vec must be a Javascript array.');
+}
+_.embed = embed;
 
 module.exports = exports = _;
