@@ -225,6 +225,35 @@ describe('geometry.pointset.js', function() {
     });
   });
 
+  describe('PointSet::embed(dim)', function() {
+    it('should work for higher dimension', function() {
+      var ps1 = new PointSet([[1], [2, 3]]);
+      var ps2 = ps1.embed(3);
+      expect(ps1.toList()).to.eql([
+        [1, 0],
+        [2, 3]
+      ]);
+      expect(ps2.toList()).to.eql([
+        [1, 0, 0],
+        [2, 3, 0]
+      ]);
+
+    });
+
+    it('should work for lower dimension', function() {
+      var ps1 = new PointSet([[1], [2, 3]]);
+      var ps2 = ps1.embed(1);
+      expect(ps1.toList()).to.eql([
+        [1, 0],
+        [2, 3]
+      ]);
+      expect(ps2.toList()).to.eql([
+        [1],
+        [2]
+      ]);
+    });
+  });
+
   describe('PointSet::extrude(hlist)', function() {
     var p = new PointSet([[]]), lineSeg, rect, cube;
     it('should extrude 0-d point to a line segment', function() {

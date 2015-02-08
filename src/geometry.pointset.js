@@ -331,26 +331,13 @@ PointSet.prototype.transform = function (matrix) {
   return this;
 };
 
-PointSet.prototype.embed = function (dim) {
-  var dim = dim || this.rn + 1;
-  var rn = this.rn;
-  var minDim = Math.min(rn, dim);
-  var oldPoints = this.points;
-  var oldLength = oldPoints.length;
-  var length = oldLength / rn * dim;
-  var points = new Float32Array(length);
-  var i, j, k;
+PointSet.prototype.embed = function(dim) {
+  var newPointSet = new PointSet(this.size, this.dim);
+  var self = this;
+  // TODO:
+  newPointSet.forEach(function(p, i) {
 
-  for (i = 0, j = 0; i < oldLength; i += rn, j += dim) {
-    for (k = 0; k < minDim; k += 1) {
-      points[j + k] = oldPoints[i + k];
-    }
-  }
-
-  this.points = points;
-  this.rn = dim;
-
-  return this;
+  });
 };
 
 function notZero(x) { return x !== 0; }
