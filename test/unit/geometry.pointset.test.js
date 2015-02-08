@@ -375,9 +375,27 @@ describe('geometry.pointset.js', function() {
         [4, -1]
       ]);
     });
+  });
 
+  describe('PointSet::scale(dims, values)', function() {
+    it('should throw if dims and values not valid', function() {
+      var ps = new PointSet([[1, 2], [3]]);
+      expect(ps.scale.bind(ps, 0, 5)).to.throwException();
+      expect(ps.scale.bind(ps, [0, 1], 5)).to.throwException();
+      expect(ps.scale.bind(ps, [0, 1], [5])).to.throwException();
+      expect(ps.scale.bind(ps, [0, 1, 2], [5, 5, 5])).to.throwException();
+    });
 
-
-
+    it('should scale points', function() {
+      var ps = new PointSet([[1, 2], [3]]);
+      expect(ps.scale([0], [0.5]).toList()).to.eql([
+        [0.5, 2],
+        [1.5, 0]
+      ]);
+      expect(ps.scale([0, 1], [2, -1]).toList()).to.eql([
+        [2, -2],
+        [6, 0]
+      ]);
+    });
   });
 });

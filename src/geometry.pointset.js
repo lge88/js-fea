@@ -289,23 +289,16 @@ PointSet.prototype.rotate = function (dims, angle) {
 };
 
 PointSet.prototype.scale = function (dims, values) {
-  // var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
-  // this.embed(maxDim + 1);
-  // var rn = this.rn;
-
-  // var points = this.points;
-  // var length = points.length;
-  // var dimsLength = dims.length;
-  // var i, j;
-
-  // for (i = 0; i < length; i += rn) {
-  //   for (j = 0; j < dimsLength; j += 1) {
-  //     points[i+dims[j]] *= values[j];
-  //   }
-  // }
-
-  // return this;
-  throw new Error('PointSet::scale(dims, values) is not implemented');
+  if (_.isArray(dims) && _.isArray(values) && dims.length === values.length) {
+    if (_.max(dims) + 1 > this.rn) {
+      throw new Error('PointSet::scale(dims, values): dim must be no greater than rn.');
+    }
+    return this.map(function(p) {
+      dims.forEach(function(d, i) { p[d] = p[d] * values[i]; });
+      return p;
+    });
+  }
+  throw new Error('PointSet::scale(dims, values): dims and values must be array of same length.');
 };
 
 PointSet.prototype.translate = function (dims, values) {
@@ -318,7 +311,6 @@ PointSet.prototype.translate = function (dims, values) {
       return p;
     });
   }
-
   throw new Error('PointSet::translate(dims, values): dims and values must be array of same length.');
 };
 
