@@ -332,12 +332,7 @@ PointSet.prototype.transform = function (matrix) {
 };
 
 PointSet.prototype.embed = function(dim) {
-  var newPointSet = new PointSet(this.size, this.dim);
-  var self = this;
-  // TODO:
-  newPointSet.forEach(function(p, i) {
-
-  });
+  return this.map(function(p, i) { return _.embed(p, dim); });
 };
 
 function notZero(x) { return x !== 0; }
