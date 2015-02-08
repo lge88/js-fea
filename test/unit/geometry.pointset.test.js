@@ -295,5 +295,28 @@ describe('geometry.pointset.js', function() {
     });
   });
 
+  xdescribe('PointSet::contains(point, precision)', function() {
+
+  });
+
+  describe('PointSet::merged(precision)', function() {
+    it('should work with empty pointset', function() {
+      var ps = new PointSet([], 2);
+      expect(ps.merged(1e-5).equals(ps)).to.be(true);
+    });
+
+    it('should work with non-empty pointset', function() {
+      var ps = new PointSet([
+        [1e-8, 1e-8],
+        [2e-8, 2e-8],
+        [3e-8, 3e-8],
+        [2, 2],
+        [3, 3, 4]
+      ]);
+      expect(ps.merged(1e-6).getSize()).to.be(3);
+      expect(ps.getSize()).to.be(5);
+    });
+  });
+
 
 });

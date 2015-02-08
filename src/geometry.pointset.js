@@ -84,7 +84,6 @@ function PointSet() {
   }
 };
 
-
 PointSet.prototype.__defineGetter__('size', function () {
   return this._points.length;
 });
@@ -154,18 +153,45 @@ PointSet.prototype.forEach = function(iterator) {
   }
 };
 
-PointSet.prototype.map = function (transform) {
+PointSet.prototype.map = function(transform) {
   var lst = new Array(this.getSize());
   this.forEach(function(p, i) { lst[i] = transform(p, i); });
   return new PointSet(lst);
 };
 
-PointSet.prototype.filter = function (predicate) {
+PointSet.prototype.filter = function(predicate) {
   var lst = [];
   this.forEach(function(p, i) {
     if (predicate(p, i)) { lst.push(p); }
   });
   return new PointSet(lst, this._rn);
+};
+
+PointSet.prototype.embed = function(dim) {
+  return this.map(function(p, i) { return _.embed(p, dim); });
+};
+
+PointSet.prototype.extrude = function(hlist) {
+  var quotes = hlist
+    .reduce(function(quotes, incr) {
+      var sofar = quotes[quotes.length - 1];
+      quotes.push(sofar + incr);
+      return quotes;
+    }, [0]);
+
+  var rn = this.rn;
+  var oldPoints = this._points;
+
+  var newPoints = _.reduce(quotes, function(sofar, q) {
+    _.each(oldPoints, function(p) {
+      var newPoint = _.clone(p);
+      newPoint.push(q);
+      sofar.push(newPoint);
+    });
+    return sofar;
+  }, []);
+
+  return new PointSet(newPoints, rn + 1);
 };
 
 // return a list indices that satisfy the predicate
@@ -254,161 +280,86 @@ PointSet.prototype.fuse = function(other) {
 };
 
 PointSet.prototype.rotate = function (dims, angle) {
-  var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
-  this.embed(maxDim + 1);
-  var rn = this.rn;
+  // var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
+  // this.embed(maxDim + 1);
+  // var rn = this.rn;
 
-  var dims = dims[0] > dims[1] ? [dims[1], dims[0]] : dims;
-  var points = this.points;
-  var length = points.length;
-  var cos_a = Math.cos(angle);
-  var sin_a = Math.sin(angle);
-  var r_ii = cos_a;
-  var r_ij = -sin_a;
-  var r_ji = sin_a;
-  var r_jj = cos_a;
-  var d_i = dims[0];
-  var d_j = dims[1];
-  var v_i;
-  var v_j;
-  var i, j, k;
+  // var dims = dims[0] > dims[1] ? [dims[1], dims[0]] : dims;
+  // var points = this.points;
+  // var length = points.length;
+  // var cos_a = Math.cos(angle);
+  // var sin_a = Math.sin(angle);
+  // var r_ii = cos_a;
+  // var r_ij = -sin_a;
+  // var r_ji = sin_a;
+  // var r_jj = cos_a;
+  // var d_i = dims[0];
+  // var d_j = dims[1];
+  // var v_i;
+  // var v_j;
+  // var i, j, k;
 
-  if ((dims[0] + dims[1]) % 2 == 0) {
-    r_ij *= -1;
-    r_ji *= -1;
-  }
+  // if ((dims[0] + dims[1]) % 2 == 0) {
+  //   r_ij *= -1;
+  //   r_ji *= -1;
+  // }
 
-  for (k = 0, i = d_i, j = d_j; k < length; k += rn, i = k + d_i, j = k + d_j) {
-    v_i = points[i];
-    v_j = points[j];
-    points[i] = v_i * r_ii + v_j * r_ij;
-    points[j] = v_i * r_ji + v_j * r_jj;
-  }
+  // for (k = 0, i = d_i, j = d_j; k < length; k += rn, i = k + d_i, j = k + d_j) {
+  //   v_i = points[i];
+  //   v_j = points[j];
+  //   points[i] = v_i * r_ii + v_j * r_ij;
+  //   points[j] = v_i * r_ji + v_j * r_jj;
+  // }
 
-  return this;
+  // return this;
+  throw new Error('PointSet::rotate(dims, values) is not implemented');
 };
 
 PointSet.prototype.scale = function (dims, values) {
-  var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
-  this.embed(maxDim + 1);
-  var rn = this.rn;
+  // var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
+  // this.embed(maxDim + 1);
+  // var rn = this.rn;
 
-  var points = this.points;
-  var length = points.length;
-  var dimsLength = dims.length;
-  var i, j;
+  // var points = this.points;
+  // var length = points.length;
+  // var dimsLength = dims.length;
+  // var i, j;
 
-  for (i = 0; i < length; i += rn) {
-    for (j = 0; j < dimsLength; j += 1) {
-      points[i+dims[j]] *= values[j];
-    }
-  }
+  // for (i = 0; i < length; i += rn) {
+  //   for (j = 0; j < dimsLength; j += 1) {
+  //     points[i+dims[j]] *= values[j];
+  //   }
+  // }
 
-  return this;
+  // return this;
+  throw new Error('PointSet::scale(dims, values) is not implemented');
 };
 
 PointSet.prototype.translate = function (dims, values) {
-  var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
-  this.embed(maxDim + 1);
-  var rn = this.rn;
+  // var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
+  // this.embed(maxDim + 1);
+  // var rn = this.rn;
 
-  var points = this.points;
-  var length = points.length;
-  var dimsLength = dims.length;
-  var i, j;
+  // var points = this.points;
+  // var length = points.length;
+  // var dimsLength = dims.length;
+  // var i, j;
 
-  for (i = 0; i < length; i += rn) {
-    for (j = 0; j < dimsLength; j += 1) {
-      points[i+dims[j]] += values[j];
-    }
-  }
-  return this;
+  // for (i = 0; i < length; i += rn) {
+  //   for (j = 0; j < dimsLength; j += 1) {
+  //     points[i+dims[j]] += values[j];
+  //   }
+  // }
+  // return this;
+  throw new Error('PointSet::translate(dims, values) is not implemented');
 };
 
 PointSet.prototype.transform = function (matrix) {
-  // body...
-
-  return this;
+  throw new Error('PointSet::transform(matrix) is not implemented');
 };
 
-PointSet.prototype.embed = function(dim) {
-  return this.map(function(p, i) { return _.embed(p, dim); });
-};
-
-function notZero(x) { return x !== 0; }
-
-function sign(x) {
-  if (x > 0) {
-    return 1;
-  } else if (x < 0) {
-    return -1;
-  } else {
-    return 0;
-  }
-};
-
-function makeForEach(size) {
-  return function(arr, fn) {
-    var i = 0, len = arr.length, ind = 0;
-    while (i < len) {
-      fn(arr.subarray(i, i + size), ind, arr);
-      i = i + size;
-      ind = ind + 1;
-    }
-  };
-}
-
-PointSet.prototype.extrude = function(hlist) {
-  var quotes = hlist
-    .reduce(function(quotes, incr) {
-      var sofar = quotes[quotes.length - 1];
-      quotes.push(sofar + incr);
-      return quotes;
-    }, [0]);
-
-  var rn = this.rn;
-  var oldPoints = this._points;
-
-  var newPoints = _.reduce(quotes, function(sofar, q) {
-    _.each(oldPoints, function(p) {
-      var newPoint = _.clone(p);
-      newPoint.push(q);
-      sofar.push(newPoint);
-    });
-    return sofar;
-  }, []);
-
-  return new PointSet(newPoints, rn + 1);
-};
-
-PointSet.prototype.prod = function(pointset) {
-  var size = this.size;
-  var rn = this.rn;
-  var pointsetSize = pointset.size;
-  var pointsetRn = pointset.rn;
-  var newSize = size * pointsetSize;
-  var newRn = rn + pointsetRn;
-  var newLength = newSize * newRn;
-  var newPoints = new Float32Array(newLength);
-  var newPoint, point1, point2;
-  var i, j;
-  var n = 0;
-
-  for (j = 0; j < pointsetSize; j += 1) {
-    point2 = pointset.get(j);
-    for (i = 0; i < size; i += 1) {
-      newPoint = new Float32Array(newRn);
-      point1 = this.get(i);
-      newPoint.set(point1);
-      newPoint.set(point2, rn);
-      newPoints.set(newPoint, newRn*n++);
-    }
-  }
-
-  this.points = newPoints;
-  this.rn = newRn;
-
-  return this;
+PointSet.prototype.prod = function(other) {
+  throw new Error('PointSet::prod(other) is not implemented.');
 };
 
 exports.PointSet = PointSet;
