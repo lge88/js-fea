@@ -130,7 +130,7 @@ PointSet.prototype.get = function(index) {
   throw new Error('PointSet::get() index outof bounds.');
 };
 
-PointSet.prototype.set = function(index, point) {
+PointSet.prototype.set_ = function(index, point) {
   if (index >= 0 && index < this._points.length) {
     if (point.length !== this.rn) {
       throw new Error('PointSet::set() point dimension is not matched.');
@@ -227,7 +227,7 @@ PointSet.prototype.merged = function(aPrecision) {
 };
 PointSet.DEFAULT_PRECISION = 1e-6;
 
-PointSet.prototype.combined = function(other) {
+PointSet.prototype.combineWith = function(other) {
   // if (!(this.rn === other.rn)) {
   //   throw new Error('Only supprt this operation for same rn now');
   // }
@@ -249,7 +249,7 @@ PointSet.prototype.combined = function(other) {
 
   // this.points = combined;
   // return this;
-  throw new Error('PointSet::combined(other) is not implemented');
+  throw new Error('PointSet::combineWith(other) is not implemented');
 };
 
 PointSet.prototype.rotate = function (dims, angle) {
@@ -309,22 +309,17 @@ PointSet.prototype.scale = function (dims, values) {
 };
 
 PointSet.prototype.translate = function (dims, values) {
-  // var maxDim = Math.max.apply(null, dims.concat(this.rn - 1));
-  // this.embed(maxDim + 1);
-  // var rn = this.rn;
+  if (_.isArray(dims) && _.isArray(values) && dims.length === values.length) {
+    if (_.max(dims) + 1 > this.rn) {
+      throw new Error('PointSet::translate(dims, values): dim must be no greater than rn.');
+    }
+    return this.map(function(p) {
+      dims.forEach(function(d, i) { p[d] = p[d] + values[i]; });
+      return p;
+    });
+  }
 
-  // var points = this.points;
-  // var length = points.length;
-  // var dimsLength = dims.length;
-  // var i, j;
-
-  // for (i = 0; i < length; i += rn) {
-  //   for (j = 0; j < dimsLength; j += 1) {
-  //     points[i+dims[j]] += values[j];
-  //   }
-  // }
-  // return this;
-  throw new Error('PointSet::translate(dims, values) is not implemented');
+  throw new Error('PointSet::translate(dims, values): dims and values must be array of same length.');
 };
 
 PointSet.prototype.transform = function (matrix) {

@@ -86,20 +86,20 @@ describe('geometry.pointset.js', function() {
   });
 
 
-  describe('PointSet::set(index, point)', function() {
+  describe('PointSet::set_(index, point)', function() {
     var ps = new PointSet([[1,2], [2,4,0]]);
     it('should throw error if the index out of bounds', function() {
-      expect(ps.set.bind(ps, -1, [3,3,4])).to.throwException();
-      expect(ps.set.bind(ps, 2, [3,3,3])).to.throwException();
+      expect(ps.set_.bind(ps, -1, [3,3,4])).to.throwException();
+      expect(ps.set_.bind(ps, 2, [3,3,3])).to.throwException();
     });
 
     it('should throw error if the point dimension is not matched', function() {
-      expect(ps.set.bind(ps, 0, [3,3])).to.throwException();
-      expect(ps.set.bind(ps, 0, [])).to.throwException();
+      expect(ps.set_.bind(ps, 0, [3,3])).to.throwException();
+      expect(ps.set_.bind(ps, 0, [])).to.throwException();
     });
 
     it('should set the coords', function() {
-      ps.set(0, [5, 5, 5]);
+      ps.set_(0, [5, 5, 5]);
 
       var point0 = ps.get(0);
       expect(point0.length).to.be(ps.rn);
@@ -119,7 +119,7 @@ describe('geometry.pointset.js', function() {
     });
 
     it('should not reference same object', function() {
-      ps1.set(0, [5, 5, 5]);
+      ps1.set_(0, [5, 5, 5]);
       expect(ps1.get(0)).to.eql([5, 5, 5]);
       expect(ps2.get(0)).to.eql([1, 2, 0]);
     });
@@ -188,7 +188,7 @@ describe('geometry.pointset.js', function() {
     });
 
     it('should return copy not reference', function() {
-      ps2.set(0, [7, 7, 8]);
+      ps2.set_(0, [7, 7, 8]);
       expect(ps1.get(0)).to.eql([1, 0, 0]);
     });
   });
@@ -355,5 +355,29 @@ describe('geometry.pointset.js', function() {
     });
   });
 
+  describe('PointSet::translate(dims, values)', function() {
+    it('should throw if dims and values not valid', function() {
+      var ps = new PointSet([[1, 2], [3]]);
+      expect(ps.translate.bind(ps, 0, 5)).to.throwException();
+      expect(ps.translate.bind(ps, [0, 1], 5)).to.throwException();
+      expect(ps.translate.bind(ps, [0, 1], [5])).to.throwException();
+      expect(ps.translate.bind(ps, [0, 1, 2], [5, 5, 5])).to.throwException();
+    });
 
+    it('should translate points', function() {
+      var ps = new PointSet([[1, 2], [3]]);
+      expect(ps.translate([0], [0.5]).toList()).to.eql([
+        [1.5, 2],
+        [3.5, 0]
+      ]);
+      expect(ps.translate([0, 1], [1, -1]).toList()).to.eql([
+        [2, 1],
+        [4, -1]
+      ]);
+    });
+
+
+
+
+  });
 });

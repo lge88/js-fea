@@ -4,21 +4,24 @@
 var _ = require('lodash');
 var numeric = require('numeric');
 
-var numericMethods = [
-  'ccsSparse',
-  'ccsLUP',
-  'ccsLUPSolve',
-  'norm2',
-  'sub'
+var conflicts = [
+  'all',
+  'any',
+  'clone',
+  'identity',
+  'isFinite',
+  'isNaN',
+  'max',
+  'min',
+  'random'
 ];
 
-numericMethods.forEach(function(method) {
-  _[method] = numeric[method];
-});
-
-function solveDok(dokMat, vec) {
-  return dokMat.solve(vec);
-}
+_(numeric)
+  .keys()
+  .difference(conflicts)
+  .forEach(function(method) {
+    _[method] = numeric[method];
+  });
 
 function array1d(m, fn) {
   if (typeof fn === 'function') {
