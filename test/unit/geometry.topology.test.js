@@ -19,6 +19,9 @@ describe('geometry.topology', function() {
       expect(f.bind(null, [
         [ [0], [1], [2.3] ]
       ])).to.throwException();
+      expect(f.bind(null, [
+        []
+      ])).to.throwException();
     });
 
     it('should create isolated points', function() {
@@ -143,7 +146,7 @@ describe('geometry.topology', function() {
 
   describe('Topology::equals(other)', function() {
     it('should work for empty sets', function() {
-      var t1 = new Topology([[]]), t2 = new Topology([[]]);
+      var t1 = new Topology([[]], [1]), t2 = new Topology([[]], [1]);
       expect(t1.equals(t2)).to.be(true);
     });
 

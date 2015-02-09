@@ -40,7 +40,7 @@ var Bimap = _.Bimap;
 // complexes[n]: ConnectivityList for dimension n
 // ConnectivityList: [ CellIndexList ]
 // CellIndexList: [ i_1, i_2, ..., i_CellSize ]
-function Topology(complexes) {
+function Topology(complexes, cellSizes) {
   // check complexes
   if (!_.isArray(complexes))
     throw new Error('Topology(): complexes must be a list of connectiviy list.');
@@ -85,10 +85,21 @@ function Topology(complexes) {
     _complexes[i].sort(_.byLexical);
   });
   this._complexes = _complexes;
-  this._cellSizes = this._complexes.map(function(connList, i) {
-    return (_.isArray(connList) && connList[0] && _.isArray(connList[0])) ?
-      connList[0].length : (i + 1);
-  });
+
+  var errs = [];
+  if (_.isArray(cellSizes) && cellSizes.length === this._complexes.length) {
+    this._cellSizes = _.clone(cellSizes);
+  } else {
+    this._cellSizes = this._complexes.map(function(connList, i) {
+      if (connList.length === 0) {
+        errs.push('Topology(): Can not determine the dim of cells in dim ' + i);
+        return -1;
+      }
+
+      return connList[0].length;
+    });
+    if (errs.length > 0) throw new Error(errs.join('\n'));
+  }
 };
 
 Topology.prototype.getDim = function() {
@@ -107,12 +118,6 @@ Topology.prototype.getCellSizeInDim = function(dim) {
   if (dim < 0 || dim > this.getDim())
     throw new Error('Topology::getCellSizeInDim(): dim out of bound.');
 
-  // if (!this._cellSizes)
-  //   this._cellSizes = this._complexes.map(function(connList, i) {
-  //     return (_.isArray(connList) && connList[0] && _.isArray(connList[0])) ?
-  //       connList[0].length : (i + 1);
-  //   });
-
   return this._cellSizes[dim];
 };
 
@@ -129,7 +134,7 @@ Topology.prototype.toJSON = function() {
 Topology.prototype.clone = function() {
   var copy = new Topology([]);
   copy._complexes = this.toList();
-  copy._cellSizes = _.cloneDeep(this._.cellSizes);
+  copy._cellSizes = _.cloneDeep(this._cellSizes);
   return copy;
 };
 
@@ -165,6 +170,10 @@ Topology.prototype.getCellsInDim = function(dim) {
 
 Topology.prototype.getMaxCells = function() {
   return this.getCellsInDim(this.getDim());
+};
+
+Topology.prototype.getTriangles = function() {
+
 };
 
 Topology.prototype.remap = function(mapping) {
