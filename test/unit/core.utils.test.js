@@ -92,4 +92,42 @@ describe('core.utils', function() {
       ]);
     });
   });
+
+  describe('rotateRight(arr, offset)', function() {
+
+    var arr = [1, 2, 3, 4, 5];
+    it('should work with 0', function() {
+      expect(_.rotateRight(arr, 0)).to.eql(arr);
+    });
+
+    it('should work with positive integer', function() {
+      expect(_.rotateLeft(arr, 1)).to.eql([2, 3, 4, 5, 1]);
+      expect(_.rotateLeft(arr, 2)).to.eql([3, 4, 5, 1, 2]);
+      expect(_.rotateLeft(arr, 5)).to.eql([1, 2, 3, 4, 5]);
+      expect(_.rotateLeft(arr, 6)).to.eql([2, 3, 4, 5, 1]);
+      expect(_.rotateLeft(arr, 8)).to.eql([4, 5, 1, 2, 3]);
+
+      expect(_.rotateRight(arr, 1)).to.eql([5, 1, 2, 3, 4]);
+      expect(_.rotateRight(arr, 2)).to.eql([4, 5, 1, 2, 3]);
+      expect(_.rotateRight(arr, 5)).to.eql([1, 2, 3, 4, 5]);
+      expect(_.rotateRight(arr, 6)).to.eql([5, 1, 2, 3, 4]);
+      expect(_.rotateRight(arr, 8)).to.eql([3, 4, 5, 1, 2]);
+    });
+
+    it('should work with negative integer', function() {
+      expect(_.rotateLeft(arr, -1)).to.eql([5, 1, 2, 3, 4]);
+      expect(_.rotateLeft(arr, -2)).to.eql([4, 5, 1, 2, 3]);
+      expect(_.rotateLeft(arr, -5)).to.eql([1, 2, 3, 4, 5]);
+      expect(_.rotateLeft(arr, -6)).to.eql([5, 1, 2, 3, 4]);
+      expect(_.rotateLeft(arr, -8)).to.eql([3, 4, 5, 1, 2]);
+
+      expect(_.rotateRight(arr, -1)).to.eql([2, 3, 4, 5, 1]);
+      expect(_.rotateRight(arr, -2)).to.eql([3, 4, 5, 1, 2]);
+      expect(_.rotateRight(arr, -5)).to.eql([1, 2, 3, 4, 5]);
+      expect(_.rotateRight(arr, -6)).to.eql([2, 3, 4, 5, 1]);
+      expect(_.rotateRight(arr, -8)).to.eql([4, 5, 1, 2, 3]);
+    });
+
+  });
+
 });

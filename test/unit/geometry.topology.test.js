@@ -16,6 +16,9 @@ describe('geometry.topology', function() {
       expect(f.bind(null, [
         [ [0], [1], [2, 3] ]
       ])).to.throwException();
+      expect(f.bind(null, [
+        [ [0], [1], [2.3] ]
+      ])).to.throwException();
     });
 
     it('should create isolated points', function() {
@@ -57,8 +60,8 @@ describe('geometry.topology', function() {
       ]);
       expect(t.getDim()).to.be(3);
       expect(t.getNumOfCellsInDim(0)).to.be(4);
-      expect(t.getNumOfCellsInDim(1)).to.be(5);
-      expect(t.getNumOfCellsInDim(2)).to.be(2);
+      expect(t.getNumOfCellsInDim(1)).to.be(6);
+      expect(t.getNumOfCellsInDim(2)).to.be(4);
       expect(t.getNumOfCellsInDim(3)).to.be(1);
     });
 
@@ -76,16 +79,29 @@ describe('geometry.topology', function() {
 
     it('should create 1 hexahedron', function() {
       var t = f([
-        [ [0], [1], [2], [3], [4], [5], [6], [7], [8] ],
-        [ [0, 1], [1, 2], [2, 3], [3, 0],
+        [ [0], [1], [2], [3], [4], [5], [6], [7] ],
+        [
+          [0, 1], [1, 2], [2, 3], [3, 0],
           [0, 4], [1, 5], [2, 6], [3, 7],
-          [4, 5], [5, 6], [6, 7], [7, 4] ]
-        [ [0, 2, 3, 1], [2, 4, 5, 3] ]
+          [4, 5], [5, 6], [6, 7], [7, 4]
+        ],
+        [
+          [0, 1, 2, 3],
+          [4, 5, 6, 7],
+          [0, 1, 5, 4],
+          [1, 2, 6, 5],
+          [2, 3, 7, 6],
+          [3, 0, 4, 7]
+        ],
+        [
+          [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        ]
       ]);
-      expect(t.getDim()).to.be(2);
-      expect(t.getNumOfCellsInDim(0)).to.be(6);
-      expect(t.getNumOfCellsInDim(1)).to.be(7);
-      expect(t.getNumOfCellsInDim(2)).to.be(2);
+      expect(t.getDim()).to.be(3);
+      expect(t.getNumOfCellsInDim(0)).to.be(8);
+      expect(t.getNumOfCellsInDim(1)).to.be(12);
+      expect(t.getNumOfCellsInDim(2)).to.be(6);
+      expect(t.getNumOfCellsInDim(3)).to.be(1);
     });
   });
 

@@ -41,15 +41,59 @@ var Bimap = _.Bimap;
 // ConnectivityList: [ CellIndexList ]
 // CellIndexList: [ i_1, i_2, ..., i_CellSize ]
 function Topology(complexes) {
-  if (_.isArray(complexes)) {
+  // check complexes
+  if (!_.isArray(complexes))
+    throw new Error('Topology(): complexes must be a list of connectiviy list.');
 
+  var i, j, k, n, connList, ncells, cellSize, cell, cidx;
+  n = complexes.length;
+  for (i = 0; i < n; ++i) {
+    connList = complexes[i];
+    if (!_.isArray(connList))
+      throw new Error('Topology(): connectivity list must be an array.');
+
+    ncells = connList.length;
+    if (ncells > 0) {
+      cell = connList[0];
+      if (!_.isArray(cell))
+        throw new Error('Topology(): cell index list must be an array.');
+
+      cellSize = cell.length;
+      for (j = 0; j < ncells; ++j) {
+        cell = connList[j];
+        if (!_.isArray(cell))
+          throw new Error('Topology(): cell index list must be an array.');
+
+        if (cell.length !== cellSize)
+          throw new Error('Topology(): inconsist cell size.');
+
+        for (k = 0; k < cellSize; ++k) {
+          cidx = cell[k];
+          if ((cidx | 0) !== cidx)
+            throw new Error('Topology: cell index must be an integer.');
+        }
+      }
+    }
   }
+
+  var _complexes = _.cloneDeep(complexes);
+  _(_complexes).each(function(x, i) {
+    _complexes[i].sort(_.byLexical);
+  });
+  this._complexes = _complexes;
 };
 
 Topology.prototype.getDim = function() {
   return this._complexes.length - 1;
 };
 Topology.prototype.__defineGetter__('dim', Topology.prototype.getDim);
+
+Topology.prototype.getNumOfCellsInDim = function(dim) {
+  if (dim < 0 || dim > this.getDim())
+    throw new Error('Topology::getNumOfCellsInDim(): dim out of bound.');
+
+  return this._complexes[dim].length;
+};
 
 Topology.prototype.toList = function() {
   return _.cloneDeep(this._complexes);
@@ -80,9 +124,6 @@ Topology.prototype.cells0d = function() {
 
 // };
 
-// Topology.prototype.getNumOfCellsInDim = function(dim) {
-
-// };
 
 // Topology.prototype.getDimFromCellSize = function(cellSize) {
 

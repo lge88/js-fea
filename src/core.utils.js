@@ -76,4 +76,18 @@ function byLexical(a, b) {
 }
 _.byLexical = byLexical;
 
+function rotateLeft(arr, offset) {
+  var len = arr.length;
+  var out = new Array(len);
+  var i = (len + (offset % len)) % len, j = 0;
+  while (j < len) {
+    out[j] = arr[(i+j) % len];
+    ++j;
+  }
+  return out;
+}
+function rotateRight(arr, offset) { return rotateLeft(arr, -offset); }
+_.rotateLeft = rotateLeft;
+_.rotateRight = rotateRight;
+
 module.exports = exports = _;
