@@ -85,6 +85,10 @@ function Topology(complexes) {
     _complexes[i].sort(_.byLexical);
   });
   this._complexes = _complexes;
+  this._cellSizes = this._complexes.map(function(connList, i) {
+    return (_.isArray(connList) && connList[0] && _.isArray(connList[0])) ?
+      connList[0].length : (i + 1);
+  });
 };
 
 Topology.prototype.getDim = function() {
@@ -103,11 +107,11 @@ Topology.prototype.getCellSizeInDim = function(dim) {
   if (dim < 0 || dim > this.getDim())
     throw new Error('Topology::getCellSizeInDim(): dim out of bound.');
 
-  if (!this._cellSizes)
-    this._cellSizes = this._complexes.map(function(connList, i) {
-      return (_.isArray(connList) && connList[0] && _.isArray(connList[0])) ?
-        connList[0].length : (i + 1);
-    });
+  // if (!this._cellSizes)
+  //   this._cellSizes = this._complexes.map(function(connList, i) {
+  //     return (_.isArray(connList) && connList[0] && _.isArray(connList[0])) ?
+  //       connList[0].length : (i + 1);
+  //   });
 
   return this._cellSizes[dim];
 };
@@ -125,6 +129,7 @@ Topology.prototype.toJSON = function() {
 Topology.prototype.clone = function() {
   var copy = new Topology([]);
   copy._complexes = this.toList();
+  copy._cellSizes = _.cloneDeep(this._.cellSizes);
   return copy;
 };
 
