@@ -125,7 +125,7 @@ describe('geometry.topology', function() {
           [3, 0, 4, 7]
         ],
         [
-          [0, 1, 2, 3, 4, 5, 6, 7, 8]
+          [0, 1, 2, 3, 4, 5, 6, 7]
         ]
       ]);
       expect(t.getDim()).to.be(3);
