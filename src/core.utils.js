@@ -77,6 +77,9 @@ function byLexical(a, b) {
 _.byLexical = byLexical;
 
 function rotateLeft(arr, offset) {
+  if (typeof offset === 'undefined')
+    throw new Error('rotateLeft(): no offset specified.');
+
   var len = arr.length;
   var out = new Array(len);
   var i = (len + (offset % len)) % len, j = 0;
@@ -89,5 +92,19 @@ function rotateLeft(arr, offset) {
 function rotateRight(arr, offset) { return rotateLeft(arr, -offset); }
 _.rotateLeft = rotateLeft;
 _.rotateRight = rotateRight;
+
+function minIndex(vec) {
+  return _.reduce(vec, function(sofar, x, i) {
+    if (x < sofar.value) {
+      sofar.value = x;
+      sofar.index = i;
+    }
+    return sofar;
+  }, {
+    value: Infinity,
+    index: -1
+  }).index;
+}
+_.minIndex = minIndex;
 
 module.exports = exports = _;

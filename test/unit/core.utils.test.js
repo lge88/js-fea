@@ -127,7 +127,21 @@ describe('core.utils', function() {
       expect(_.rotateRight(arr, -6)).to.eql([2, 3, 4, 5, 1]);
       expect(_.rotateRight(arr, -8)).to.eql([4, 5, 1, 2, 3]);
     });
+  });
 
+
+  describe('minIndex(vec)', function() {
+    it('should work with []', function() {
+      expect(_.minIndex([])).to.be(-1);
+    });
+
+    it('should work with [1]', function() {
+      expect(_.minIndex([1])).to.be(0);
+    });
+
+    it('should work with [3, 1, 2]', function() {
+      expect(_.minIndex([3, 1, 2])).to.be(1);
+    });
   });
 
 });

@@ -63,6 +63,19 @@ describe('geometry.topology', function() {
       expect(t.getNumOfCellsInDim(1)).to.be(6);
       expect(t.getNumOfCellsInDim(2)).to.be(4);
       expect(t.getNumOfCellsInDim(3)).to.be(1);
+
+      expect(t.toList()).to.eql([
+        [ [0], [1], [2], [3] ],
+        [ [0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3] ],
+        [
+          [0, 1, 3],
+          [0, 2, 1],
+          [0, 3, 2],
+          [1, 2, 3]
+        ],
+        [ [0, 1, 2, 3] ]
+      ]);
+
     });
 
     it('should create 2 quads', function() {
@@ -105,7 +118,7 @@ describe('geometry.topology', function() {
     });
   });
 
-  describe('hypercubeTopology()', function() {
+  xdescribe('hypercubeTopology()', function() {
     var f = function(a, b, c) { return new hypercubeTopology(a, b, c); };
     it('hypercubeTopology([[]]) should throw()', function() {
       expect(f.bind(null, [[[0], [1]]])).to.throwException();
