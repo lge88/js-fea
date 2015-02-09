@@ -94,7 +94,7 @@ PointSet.prototype.toList = function() {
   return _.cloneDeep(this._points);
 };
 
-PointSet.prototype.equals = function (other) {
+PointSet.prototype.equals = function(other) {
   if (this.rn !== other.rn || this.size !== other.size) return false;
 
   var i, j, size = this.size, rn = this.rn;

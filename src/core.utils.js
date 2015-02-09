@@ -16,12 +16,17 @@ var conflicts = [
   'random'
 ];
 
+// Not that effecient, maybe precompute this.
 _(numeric)
   .keys()
   .difference(conflicts)
   .forEach(function(method) {
     _[method] = numeric[method];
   });
+
+_.Bimap = require('./core.bimap').Bimap;
+_.Bipartite= require('./core.bipartite').Bipartite;
+_.SetStore = require('./core.setstore').SetStore;
 
 function array1d(m, fn) {
   if (typeof fn === 'function') {
@@ -57,5 +62,18 @@ function embed(vec, dim) {
   throw new Error('embed(vec, dim): vec must be a Javascript array.');
 }
 _.embed = embed;
+
+
+// a and b are array of numbers in same dimension.
+function byLexical(a, b) {
+  var i = 0, l = a.length, res;
+  while (i < l) {
+    res = a[i] - b[i];
+    if (res !== 0) return res;
+    ++i;
+  }
+  return res;
+}
+_.byLexical = byLexical;
 
 module.exports = exports = _;

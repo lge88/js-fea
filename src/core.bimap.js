@@ -129,4 +129,4 @@ Bimap.prototype.toJSON = function() {
   return out;
 };
 
-exports.Bimap =Bimap;
+exports.Bimap = Bimap;

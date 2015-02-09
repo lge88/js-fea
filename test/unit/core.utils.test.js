@@ -52,4 +52,24 @@ describe('core.utils', function() {
       expect(_.embed(vec, 5)).to.eql([1, 2, 3, 0, 0]);
     });
   });
+
+  describe('byLexical()', function() {
+    it('should sort list of vectors by lexical', function() {
+      var arr = [
+        [3, 2, 1],
+        [5, 4, 3],
+        [0, 1, 2],
+        [3, 1, 2],
+        [5, 4, 0]
+      ];
+
+      expect(arr.sort(_.byLexical)).to.eql([
+        [0, 1, 2],
+        [3, 1, 2],
+        [3, 2, 1],
+        [5, 4, 0],
+        [5, 4, 3]
+      ]);
+    });
+  });
 });
