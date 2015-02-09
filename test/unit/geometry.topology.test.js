@@ -27,6 +27,7 @@ describe('geometry.topology', function() {
       ]);
       expect(t.getDim()).to.be(0);
       expect(t.getNumOfCellsInDim(0)).to.be(3);
+      expect(t.getCellSizeInDim(0)).to.be(1);
     });
 
     it('should create 2 line segments', function() {
@@ -37,6 +38,8 @@ describe('geometry.topology', function() {
       expect(t.getDim()).to.be(1);
       expect(t.getNumOfCellsInDim(0)).to.be(3);
       expect(t.getNumOfCellsInDim(1)).to.be(2);
+      expect(t.getCellSizeInDim(0)).to.be(1);
+      expect(t.getCellSizeInDim(1)).to.be(2);
     });
 
     it('should create 2 triangles', function() {
@@ -49,6 +52,12 @@ describe('geometry.topology', function() {
       expect(t.getNumOfCellsInDim(0)).to.be(4);
       expect(t.getNumOfCellsInDim(1)).to.be(5);
       expect(t.getNumOfCellsInDim(2)).to.be(2);
+
+      expect(t.getCellSizeInDim(0)).to.be(1);
+      expect(t.getCellSizeInDim(1)).to.be(2);
+      expect(t.getCellSizeInDim(2)).to.be(3);
+
+
     });
 
     it('should create 1 tetrahedron', function() {
@@ -63,6 +72,11 @@ describe('geometry.topology', function() {
       expect(t.getNumOfCellsInDim(1)).to.be(6);
       expect(t.getNumOfCellsInDim(2)).to.be(4);
       expect(t.getNumOfCellsInDim(3)).to.be(1);
+
+      expect(t.getCellSizeInDim(0)).to.be(1);
+      expect(t.getCellSizeInDim(1)).to.be(2);
+      expect(t.getCellSizeInDim(2)).to.be(3);
+      expect(t.getCellSizeInDim(3)).to.be(4);
 
       expect(t.toList()).to.eql([
         [ [0], [1], [2], [3] ],
@@ -88,6 +102,10 @@ describe('geometry.topology', function() {
       expect(t.getNumOfCellsInDim(0)).to.be(6);
       expect(t.getNumOfCellsInDim(1)).to.be(7);
       expect(t.getNumOfCellsInDim(2)).to.be(2);
+
+      expect(t.getCellSizeInDim(0)).to.be(1);
+      expect(t.getCellSizeInDim(1)).to.be(2);
+      expect(t.getCellSizeInDim(2)).to.be(4);
     });
 
     it('should create 1 hexahedron', function() {
@@ -115,6 +133,11 @@ describe('geometry.topology', function() {
       expect(t.getNumOfCellsInDim(1)).to.be(12);
       expect(t.getNumOfCellsInDim(2)).to.be(6);
       expect(t.getNumOfCellsInDim(3)).to.be(1);
+
+      expect(t.getCellSizeInDim(0)).to.be(1);
+      expect(t.getCellSizeInDim(1)).to.be(2);
+      expect(t.getCellSizeInDim(2)).to.be(4);
+      expect(t.getCellSizeInDim(3)).to.be(8);
     });
   });
 
