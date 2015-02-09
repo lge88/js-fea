@@ -52,12 +52,14 @@ describe('geometry.topology', function() {
       var t = f([
         [ [0], [1], [2], [3] ],
         [ [0, 1], [1, 2], [2, 0], [3, 0], [3, 1], [3, 2] ],
-        [ [0, 2, 1], [3, 0, 1], [3, 1, 2], [3, 2, 0] ]
+        [ [0, 2, 1], [3, 0, 1], [3, 1, 2], [3, 2, 0] ],
+        [ [0, 1, 2, 3] ]
       ]);
-      expect(t.getDim()).to.be(2);
+      expect(t.getDim()).to.be(3);
       expect(t.getNumOfCellsInDim(0)).to.be(4);
       expect(t.getNumOfCellsInDim(1)).to.be(5);
       expect(t.getNumOfCellsInDim(2)).to.be(2);
+      expect(t.getNumOfCellsInDim(3)).to.be(1);
     });
 
     it('should create 2 quads', function() {

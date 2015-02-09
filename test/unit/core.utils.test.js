@@ -53,8 +53,8 @@ describe('core.utils', function() {
     });
   });
 
-  describe('byLexical()', function() {
-    it('should sort list of vectors by lexical', function() {
+  describe('_.byLexical', function() {
+    it('should sort list of arrays by lexical', function() {
       var arr = [
         [3, 2, 1],
         [5, 4, 3],
@@ -64,6 +64,26 @@ describe('core.utils', function() {
       ];
 
       expect(arr.sort(_.byLexical)).to.eql([
+        [0, 1, 2],
+        [3, 1, 2],
+        [3, 2, 1],
+        [5, 4, 0],
+        [5, 4, 3]
+      ]);
+    });
+
+    it('should sort list of typed arrays by lexical', function() {
+      var arr = [
+        new Uint32Array([3, 2, 1]),
+        new Uint32Array([5, 4, 3]),
+        new Uint32Array([0, 1, 2]),
+        new Uint32Array([3, 1, 2]),
+        new Uint32Array([5, 4, 0])
+      ];
+
+      expect(arr.sort(_.byLexical).map(function(a) {
+        return Array.prototype.slice.call(a);
+      })).to.eql([
         [0, 1, 2],
         [3, 1, 2],
         [3, 2, 1],
