@@ -7,8 +7,8 @@ var hypercubeTopology = topology.hypercubeTopology;
 var simplexTopology = topology.simplexTopology;
 
 describe('geometry.topology', function() {
+  var f = function(a, b, c) { return new Topology(a, b, c); };
   describe('Topology::constructor(complexes)', function() {
-    var f = function(a, b, c) { return new Topology(a, b, c); };
 
     it('should throw if complexes is not valid.', function() {
       expect(f.bind(null)).to.throwException();
@@ -115,6 +115,84 @@ describe('geometry.topology', function() {
       expect(t.getNumOfCellsInDim(1)).to.be(12);
       expect(t.getNumOfCellsInDim(2)).to.be(6);
       expect(t.getNumOfCellsInDim(3)).to.be(1);
+    });
+  });
+
+  describe('Topology::equals(other)', function() {
+    it('should work for empty sets', function() {
+      var t1 = new Topology([[]]), t2 = new Topology([[]]);
+      expect(t1.equals(t2)).to.be(true);
+    });
+
+    it('should work for points', function() {
+      var t1 = new Topology([
+        [ [1], [3], [0], [2] ]
+      ]);
+      var t2 = new Topology([
+        [ [1], [3], [0], [2] ]
+      ]);
+      var t3 = new Topology([
+        [ [1], [3], [4], [2] ]
+      ]);
+      expect(t1.equals(t2)).to.be(true);
+      expect(t1.equals(t3)).to.be(false);
+    });
+
+    it('should equals clone', function() {
+      var t1 = f([
+        [ [0], [1], [2], [3], [4], [5], [6], [7] ],
+        [
+          [0, 1], [1, 2], [2, 3], [3, 0],
+          [0, 4], [1, 5], [2, 6], [3, 7],
+          [4, 5], [5, 6], [6, 7], [7, 4]
+        ],
+        [
+          [0, 1, 2, 3],
+          [4, 5, 6, 7],
+          [0, 1, 5, 4],
+          [1, 2, 6, 5],
+          [2, 3, 7, 6],
+          [3, 0, 4, 7]
+        ],
+        [
+          [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        ]
+      ]);
+      expect(t1.equals(t1.clone())).to.be(true);
+    });
+
+    it('should not equal if dim dismatch', function() {
+      var t1 = f([ [ [0], [1] ] ]);
+      var t2 = f([ [ [0], [1] ], [ [0, 1] ] ]);
+      expect(t1.equals(t2)).to.be(false);
+    });
+
+    it('should not equal if cellSizes dismatch', function() {
+      var t1 = f([
+        [ [0], [1], [2], [3] ],
+        [ [0, 1], [1, 2], [2, 0], [1, 3], [3, 0] ],
+        [ [0, 1, 2], [2, 3, 0]]
+      ]);
+      var t2 = f([
+        [ [0], [1], [2], [3] ],
+        [ [0, 1], [1, 2], [2, 3], [3, 0] ],
+        [ [0, 1, 2, 3] ]
+      ]);
+      expect(t1.equals(t2)).to.be(false);
+    });
+
+    it('should not equal if indexes dismatch', function() {
+      var t1 = f([
+        [ [0], [1], [2], [3] ],
+        [ [0, 1], [1, 2], [2, 0], [1, 3], [3, 0] ],
+        [ [0, 1, 2], [2, 3, 0]]
+      ]);
+      var t2 = f([
+        [ [0], [1], [2], [4] ],
+        [ [0, 1], [1, 2], [2, 0], [1, 4], [4, 0] ],
+        [ [0, 1, 2], [2, 4, 0]]
+      ]);
+      expect(t1.equals(t2)).to.be(false);
     });
   });
 

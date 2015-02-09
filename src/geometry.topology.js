@@ -104,7 +104,10 @@ Topology.prototype.getCellSizeInDim = function(dim) {
     throw new Error('Topology::getCellSizeInDim(): dim out of bound.');
 
   if (!this._cellSizes)
-    this._cellSizes = this._complexes.map(function(connList) { return connList[0].length; });
+    this._cellSizes = this._complexes.map(function(connList, i) {
+      return (_.isArray(connList) && connList[0] && _.isArray(connList[0])) ?
+        connList[0].length : (i + 1);
+    });
 
   return this._cellSizes[dim];
 };
@@ -126,51 +129,59 @@ Topology.prototype.clone = function() {
 };
 
 Topology.prototype.equals = function(other) {
+  if (this.getDim() !== other.getDim())
+    return false;
 
+  var i, dim = this.getDim();
+  for (i = 0; i <= dim; ++i) {
+    if (this.getCellSizeInDim(i) !== other.getCellSizeInDim(i))
+      return false;
+  }
 
+  var j, ncells;
+  for (i = 0; i <= dim; ++i) {
+    ncells = this.getNumOfCellsInDim(i);
+    for (j = 0; j < ncells; ++j) {
+      if (!_.isEqual(this._complexes[i][j], other._complexes[i][j]))
+        return false;
+    }
+  }
+
+  return true;
 };
 
 Topology.prototype.cells0d = function() {
 
 };
 
-// Topology.prototype.getCellType = function(dim) {
-
-// };
-
-// Topology.prototype.getDimFromCellSize = function(cellSize) {
-
-// };
-
-Topology.prototype.getPointIndices = function() {
-
+Topology.prototype.getCellsInDim = function(dim) {
+  return _.cloneDeep(this._complexes[dim]);
 };
 
-Topology.prototype.getEdgeIndices = function() {
-
+Topology.prototype.getMaxCells = function() {
+  return this.getCellsInDim(this.getDim());
 };
 
-Topology.prototype.getFaceIndices = function() {
-
-};
-Topology.prototype.getConnectivity = function() {
-
-};
 Topology.prototype.remap = function(mapping) {
 
 };
+
 Topology.prototype.unique = function() {
 
 };
+
 Topology.prototype.fuse = function(other) {
 
 };
+
 Topology.prototype.invert = function() {
 
 };
+
 Topology.prototype.skeleton = function(ord) {
 
 };
+
 Topology.prototype.boundary = function() {
 
 };
