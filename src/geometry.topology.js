@@ -160,10 +160,6 @@ Topology.prototype.equals = function(other) {
   return true;
 };
 
-Topology.prototype.cells0d = function() {
-
-};
-
 Topology.prototype.getCellsInDim = function(dim) {
   return _.cloneDeep(this._complexes[dim]);
 };
@@ -172,25 +168,21 @@ Topology.prototype.getMaxCells = function() {
   return this.getCellsInDim(this.getDim());
 };
 
-Topology.prototype.getTriangles = function() {
+// Topology.prototype.remap = function(mapping) {
 
-};
+// };
 
-Topology.prototype.remap = function(mapping) {
+// Topology.prototype.unique = function() {
 
-};
-
-Topology.prototype.unique = function() {
-
-};
+// };
 
 Topology.prototype.fuse = function(other) {
 
 };
 
-Topology.prototype.invert = function() {
+// Topology.prototype.invert = function() {
 
-};
+// };
 
 Topology.prototype.skeleton = function(ord) {
 

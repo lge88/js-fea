@@ -221,6 +221,7 @@ PointSet.prototype.combineWith = function(other) {
   other.forEach(function(p) { lst.push(p); });
   return new PointSet(lst, this.rn);
 };
+PointSet.prototype.fuse = PointSet.prototype.combineWith;
 
 PointSet.prototype.rotate = function (dims, angle) {
   // var rn = this.rn;

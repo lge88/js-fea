@@ -222,6 +222,53 @@ describe('geometry.topology', function() {
     });
   });
 
+  describe('Topology::fuse()', function() {
+    it('should work with empty set', function() {
+      var t1 = Topology([[[0], [1]]]);
+      var t2 = Topology([[]], [1]);
+      expect(t1.fuse(t2).equals(t1)).to.be(true);
+    });
+
+    it('should work with topology of same dimension', function() {
+      var t1 = Topology([[[0], [1]]]);
+      var t2 = Topology([[[3], [4]]]);
+      var t12 = Topology([[[0], [1], [3], [4]]]);
+      expect(t1.fuse(t2).equals(t12)).to.be(true);
+
+      var t3 = Topology([
+        [[0], [1]],
+        [[0, 1]]
+      ]);
+      var t4 = Topology([
+        [[0], [1]],
+        [[0, 1]]
+      ]);
+      var t34 = Topology([
+        [[0], [0], [1], [1]],
+        [[0, 1], [0, 1]]
+      ]);
+      expect(t3.fuse(t4).equals(t34)).to.be(true);
+    });
+
+    it('should work with topology of different dimension', function() {
+      var t1 = Topology([
+        [ [0], [1] ]
+      ]);
+      var t2 = Topology([
+        [ [2], [3], [4] ],
+        [ [2, 3], [3, 4], [4, 2] ],
+        [ [2, 3, 4] ]
+      ]);
+      var t12 = Topology([
+        [ [0], [1], [2], [3], [4] ],
+        [ [2, 3], [3, 4], [4, 2] ],
+        [ [2, 3, 4] ]
+      ]);
+      expect(t1.fuse(t2).equals(t12)).to.be(true);
+    });
+
+  });
+
   xdescribe('hypercubeTopology()', function() {
     var f = function(a, b, c) { return new hypercubeTopology(a, b, c); };
     it('hypercubeTopology([[]]) should throw()', function() {

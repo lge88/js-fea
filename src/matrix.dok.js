@@ -58,13 +58,13 @@ DokSparseMatrix.prototype.toCcs = function() {
 };
 
 DokSparseMatrix.prototype.solve = function(b) {
-  if (this.m !== this.n) {
-    throw new Error('#solve can only be used by square matrix where this.m === this.n.');
-  }
+  // if (this.m !== this.n) {
+  //   throw new Error('#solve can only be used by square matrix where this.m === this.n.');
+  // }
 
-  if (this.m !== b.length) {
-    throw new Error('#solve can only be applied to vector of same dimension.');
-  }
+  // if (this.m !== b.length) {
+  //   throw new Error('#solve can only be applied to vector of same dimension.');
+  // }
 
   var ccs = this.toCcs();
   var lup = ccsLUP(ccs);
