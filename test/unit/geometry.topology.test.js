@@ -222,7 +222,7 @@ describe('geometry.topology', function() {
     });
   });
 
-  describe('Topology::fuse()', function() {
+  xdescribe('Topology::fuse()', function() {
     it('should work with empty set', function() {
       var t1 = Topology([[[0], [1]]]);
       var t2 = Topology([[]], [1]);

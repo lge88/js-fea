@@ -3,6 +3,8 @@ var fe = require(SRC);
 var _ = fe._;
 var expect = require('expect.js');
 
+function doit() {
+
 var creator = new fe.geometry.HypercubeGeometryCreator();
 var geo = creator.domain([
   [0, 0.5 * Math.PI],
@@ -59,9 +61,23 @@ var ebcXFixed = new fe.ebc.EBC({
   values: 0
 });
 
+var ebcYShifted = new fe.ebc.EBC({
+  components: [1],
+  values: 0.25
+});
+
 u = u.applyEBC(bottomNodes, ebcXYFixed);
 u = u.applyEBC(leftNodes, ebcXFixed);
+u = u.applyEBC(leftNodes, ebcYShifted);
 u = u.numberEquations();
 
-var K = new fe.matrix.DokSparseMatrix();
-K = fe.solve.assemble(K, fe.solve.stiffness(feb, geom, u));
+var m = u.getNumberOfEquations();
+var K = new fe.matrix.DokSparseMatrix([], m, m);
+K = fe.assemble.assemble(K, fe.assemble.stiffness(feb, geom, u));
+
+var F = new fe.sparse.SparseVector([], m);
+F = fe.assemble.assemble(F, fe.assemble.nonezeroEBCLoads(feb, geom, u));
+
+u = u.scatter(fe.solve(K, F));
+
+}
