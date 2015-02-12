@@ -144,4 +144,17 @@ describe('core.utils', function() {
     });
   });
 
+  describe('listFromIterator(iter)/iteratorFromList(lst)', function() {
+    it('empty list', function() {
+      var iter = _.iteratorFromList([]);
+      expect(_.listFromIterator(iter)).to.eql([]);
+    });
+
+    it('non empty', function() {
+      var lst = [3,4,3,3,2,1];
+      var iter = _.iteratorFromList(lst);
+      expect(_.listFromIterator(iter)).to.eql(lst);
+    });
+  });
+
 });

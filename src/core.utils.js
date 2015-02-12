@@ -116,4 +116,17 @@ function listFromIterator(iter) {
 }
 _.listFromIterator = listFromIterator;
 
+function iteratorFromList(lst) {
+  if (!_.isArray(lst)) {
+    throw new Error('iteratorFromList(lst): lst must be an array.');
+  }
+
+  var i = 0, len = lst.length;
+  return {
+    hasNext: function() { return i < len; },
+    next: function() { return lst[i++]; }
+  };
+}
+_.iteratorFromList = iteratorFromList;
+
 module.exports = exports = _;

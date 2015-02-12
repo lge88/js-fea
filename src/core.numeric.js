@@ -80,7 +80,6 @@ DenseMatrix.prototype.toCcs = function() {
 };
 
 function DokSparseMatrix(ijvLst, m, n) {
-  // check dimension m x n is valid
   if ((m | 0) !== m || m <= 0 || (n | 0) !== n || n <= 0)
     throw new Error('DokSparseMatrix(ijvLst, m, n): m, n must be ' +
                    'positive integer.');
