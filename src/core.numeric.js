@@ -12,6 +12,18 @@ var ccsFull = numeric.ccsFull;
 var ccsLUP = numeric.ccsLUP;
 var ccsLUPSolve = numeric.ccsLUPSolve;
 
+function vecEquals(a, b, aTolerance) {
+  if (!_.isArray(a) || !_.isArray(b)) return false;
+  if (a.length !== b.length) return false;
+
+  var tolerance = aTolerance || vecEquals.TOLERANCE;
+  var d = numeric.sub(a, b);
+  var relativeError = numeric.norm2(d) / numeric.norm2(b);
+  return relativeError < tolerance;
+};
+vecEquals.TOLERANCE = 1e-4;
+exports.vecEquals = vecEquals;
+
 // input: ccs representation
 // output: iterator that emits a sequence of (i, j, value) tuple.
 function ccsValueListIterator(ccs) {
@@ -252,7 +264,8 @@ function SparseVector(valueList, dimension) {
     item = iter.next();
     idx = item[0];
     val = item[1];
-    this.set_(idx, val);
+    if (val !== 0)
+      this.set_(idx, val);
   }
 }
 
@@ -274,6 +287,31 @@ SparseVector.prototype.at = function(i) {
   throw new Error('SparseVector::at(i): index outof bound.');
 };
 
+SparseVector.prototype.valueListIterator = function() {
+  var i = 0, indices = Object.keys(this._dict), len = indices.length;
+  var dict = this._dict;
+  indices.sort(function(a, b) {
+    return parseInt(a) - parseInt(b);
+  });
+
+  return {
+    hasNext: function() { return i < len; },
+    next: function() {
+      var idx = indices[i], item = [parseInt(idx), dict[idx]];
+      ++i;
+      return item;
+    }
+  };
+};
+
+SparseVector.prototype.equals = function(other, aTolerance) {
+  // TODO: better implementation
+  var a = this.toList();
+  var b = typeof other.toList === 'function' ? other.toList() : other;
+  var ok = vecEquals(a, b, aTolerance);
+  return ok;
+};
+
 SparseVector.prototype.set_ = function(i, val) {
   if (i < 0 || i >= this._dim)
     throw new Error('SparseVector::set_(i): index outof bound.');
@@ -284,6 +322,7 @@ SparseVector.prototype.set_ = function(i, val) {
   if (val !== 0)
     this._dict[i] = val;
 };
+
 
 SparseVector.prototype.toCcs = function() {
   var dict = this._dict, dim = this._dim, key, i;
@@ -316,6 +355,17 @@ SparseVector.prototype.toList = function() {
     return 0;
   });
 };
+
+function mldivide(A, b) {
+  if (A instanceof DokSparseMatrix && b instanceof SparseVector) {
+    return A.solveSparseVector(b);
+  } else if (A instanceof DokSparseMatrix && _.isArray(b)) {
+    return A.solveVector(b);
+  }
+
+  throw new Error('mldivide(A, b): unsupported type A or b. A, b: ' + A + ', ' + b);
+}
+exports.mldivide = mldivide;
 
 exports.SparseVector = SparseVector;
 _.assign(exports, numeric);

@@ -2,11 +2,14 @@
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
+var dataDriven = require('data-driven');
 var _ = require(SRC + '/core.utils.js');
 var numeric = require(SRC + '/core.numeric');
 var DokSparseMatrix = numeric.DokSparseMatrix;
 var SparseVector = numeric.SparseVector;
 var ccsValueListIterator = numeric.ccsValueListIterator;
+var mldivide = numeric.mldivide;
+var vecEquals = numeric.vecEquals;
 
 describe('core.numeric', function() {
 
@@ -35,6 +38,53 @@ describe('core.numeric', function() {
       expect(valueList).to.eql(expectedValueList);
     });
 
+  });
+
+  describe('vecEquals(a, b, aTolerance)', function() {
+    var fixtures = [
+      {
+        desc: 'a and b are both empty',
+        a: [],
+        b: [],
+        expected: false
+      },
+      {
+        desc: 'a and b are of difference dimension',
+        a: [],
+        b: [1],
+        expected: false
+      },
+      {
+        desc: 'a and b are of difference dimension',
+        a: [1, 2, 0],
+        b: [1, 2],
+        expected: false
+      },
+      {
+        desc: '',
+        a: [1, 2, 0],
+        b: [1, 2, 0],
+        expected: true
+      },
+      {
+        desc: '',
+        a: [1, 2, 0.1],
+        b: [1, 2, 0],
+        expected: false
+      },
+      {
+        desc: 'when tol is large',
+        a: [1, 2, 0.1],
+        b: [1, 2, 0],
+        tol: 0.1,
+        expected: true
+      }
+    ];
+    dataDriven(fixtures, function() {
+      it('should return {expected} when {desc}', function(ctx) {
+        expect(vecEquals(ctx.a, ctx.b, ctx.tol)).to.be(ctx.expected);
+      });
+    });
   });
 
   describe('DokSparseMatrix', function() {
@@ -153,7 +203,6 @@ describe('core.numeric', function() {
 
     });
 
-
   });
 
   describe('SparseVector', function() {
@@ -221,97 +270,125 @@ describe('core.numeric', function() {
       ]);
     });
 
+    it('SparseVector::valueListIterator()', function() {
+      var valLst = [ [3, 3], [ 9, 2] ];
+      var v1 = new SparseVector(valLst, 20);
+      var iter = v1.valueListIterator();
+
+      var valLst2 = [ [0, 0], [3, 3], [ 9, 2] ];
+      var v2 = new SparseVector(valLst2, 20);
+      var iter2 = v2.valueListIterator();
+      expect(_.listFromIterator(iter2)).to.eql([ [3, 3], [9, 2] ]);
+    });
+
   });
 
 
-  describe('solve DokSparseMatrix::solveSparseVector(vec)/solveVector(vec)', function() {
-    it('should throw error if the vec is not a SparseVector.', function() {
-      var m = new DokSparseMatrix([], 3, 2);
-      expect(m.solveSparseVector.bind(m, [1, 2])).to.throwException();
+  describe('Solve linear systerm', function() {
+    var casesThatShouldThrow = [
+      {
+        desc: 'A is not square',
+        A: new DokSparseMatrix([], 3, 2),
+        b: [1, 2]
+      },
+      {
+        desc: 'A b dimension dismatch',
+        A: new DokSparseMatrix([], 3, 3),
+        b: new SparseVector([], 2)
+      }
+    ];
+
+    dataDriven(casesThatShouldThrow, function() {
+      it('should throw when {desc}.', function(ctx) {
+        var A = ctx.A, b = ctx.b;
+        expect(mldivide.bind(null, A, b)).to.throwException();
+      });
     });
 
-    it('should throw error if the sparse vector dimension does not match matrix dimension.', function() {
-      var A = new DokSparseMatrix([], 3, 3);
-      var b = new SparseVector([], 2);
-      expect(A.solveSparseVector.bind(A, b)).to.throwException();
-    });
+    var vecEquals = numeric.vecEquals;
 
-    it('should return correct result for eye(3)', function() {
-      var A = new DokSparseMatrix([
-        [0, 0, 1.0],
-        [1, 1, 1.0],
-        [2, 2, 1.0]
-      ], 3, 3), b1 = [1.0, 2.0, 3.0];
-      var b2 = new SparseVector([
-        [0, 1.0],
-        [1, 2.0],
-        [2, 3.0]
-      ], 3);
+    var sparseEquals = function(a, b, aTolerance) {
+      return a.equals(b, aTolerance);
+    };
 
-      var x1 = A.solveVector(b1);
-      expect(x1).to.eql(b1);
+    var casesThatShouldWork = [
+      {
+        desc: 'A is identity matrix, b is an JS array',
+        A: new DokSparseMatrix([
+          [ 0, 0, 1.0 ],
+          [ 1, 1, 1.0 ],
+          [ 2, 2, 1.0 ]
+        ], 3, 3),
+        b: [ 1.0, 2.0, 3.0 ],
+        expected: [ 1.0, 2.0, 3.0 ],
+        equals: vecEquals
+      },
+      {
+        desc: 'A is 3x3 matrix, b is an JS array',
+        A: new DokSparseMatrix([
+          [0, 0, 1.0],
+          [0, 1, 2.0],
+          [0, 2, 3.0],
 
-      var x2 = A.solveSparseVector(b2);
-      expect(x2.toCcs()).to.eql(b2.toCcs());
-    });
+          [1, 0, 6.0],
+          [1, 1, 5.0],
+          [1, 2, 4.0],
 
-    it('should return correct result for conceived A and b, b is an array', function() {
-      var A = new DokSparseMatrix([
+          [2, 0, 7.0],
+          [2, 1, 10.0],
+          [2, 2, 4.0]
+        ], 3, 3),
+        b: [ 5.0, 9.0, 5.0 ],
+        expected: [ 1.0, -1.0, 2.0 ],
+        equals: vecEquals
+      },
+      {
+        desc: 'A is identity matrix, b is a SparseVector',
+        A: new DokSparseMatrix([
+          [0, 0, 1.0],
+          [1, 1, 1.0],
+          [2, 2, 1.0]
+        ], 3, 3),
+        b: new SparseVector([
+          [0, 1],
+          [1, 2],
+          [2, 3],
+        ], 3),
+        expected: [1.0, 2.0, 3.0],
+        equals: sparseEquals
+      },
+      {
+        desc: 'A is 3x3 matrix, b is a SparseVector',
+        A: new DokSparseMatrix([
+          [0, 0, 1.0],
+          [0, 1, 2.0],
+          [0, 2, 3.0],
 
-        [0, 0, 1.0],
-        [0, 1, 2.0],
-        [0, 2, 3.0],
+          [1, 0, 6.0],
+          [1, 1, 5.0],
+          [1, 2, 4.0],
 
-        [1, 0, 6.0],
-        [1, 1, 5.0],
-        [1, 2, 4.0],
+          [2, 0, 7.0],
+          [2, 1, 10.0],
+          [2, 2, 4.0]
+        ], 3, 3),
+        b: new SparseVector([
+          [ 0, 5.0 ],
+          [ 1, 9.0 ],
+          [ 2, 5.0 ]
+        ], 3),
+        expected: [ 1.0, -1.0, 2.0 ],
+        equals: sparseEquals
+      }
+    ];
 
-        [2, 0, 7.0],
-        [2, 1, 10.0],
-        [2, 2, 4.0]
-
-      ], 3, 3);
-      var b1 = [5.0, 9.0, 5.0];
-      var b2 = [ [5.0], [9.0], [5.0] ];
-
-      var xExpected = [1.0, -1.0, 2.0];
-      var x1 = A.solveVector(b1);
-      // var x2 = A.solveVector(b2);
-      var relDiff1 = numeric.norm2(numeric.sub(x1, xExpected)) / numeric.norm2(xExpected);
-      // var relDiff2 = numeric.norm2(numeric.sub(x2, xExpected)) / numeric.norm2(xExpected);
-      var tol = 1e-10;
-
-      expect(relDiff1).to.lessThan(tol);
-      // expect(relDiff2).to.lessThan(tol);
-    });
-
-    it('should return correct result for conceived A and b, b is a SparseVector', function() {
-      var A = new DokSparseMatrix([
-
-        [0, 0, 1.0],
-        [0, 1, 2.0],
-        [0, 2, 3.0],
-
-        [1, 0, 6.0],
-        [1, 1, 5.0],
-        [1, 2, 4.0],
-
-        [2, 0, 7.0],
-        [2, 1, 10.0],
-        [2, 2, 4.0]
-
-      ], 3, 3);
-      var b = new SparseVector([
-        [0, 5.0], [1, 9.0], [2, 5.0]
-      ], 3);
-
-      var xExpected = [1.0, -1.0, 2.0];
-      var x = A.solveSparseVector(b);
-      x = numeric.transpose(x.toFull())[0];
-
-      var relDiff = numeric.norm2(numeric.sub(x, xExpected)) / numeric.norm2(xExpected);
-      var tol = 1e-10;
-      expect(relDiff).to.lessThan(tol);
+    dataDriven(casesThatShouldWork, function() {
+      it('should work when {desc}.', function(ctx) {
+        var A = ctx.A, b = ctx.b, expected = ctx.expected;
+        var equals = ctx.equals;
+        var actual = mldivide(A, b);
+        expect(equals(actual, expected)).to.be(true);
+      });
     });
 
   });
