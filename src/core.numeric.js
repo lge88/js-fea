@@ -105,7 +105,7 @@ DokSparseMatrix.prototype.n = function() { return this._n; };
 DokSparseMatrix.prototype.at = function(i, j) {
   if (i >= 0 && i < this._m && j >= 0 && j < this._n) {
     if (this._dict[j] && this._dict[j][i]) {
-      return this._dict[i][j];
+      return this._dict[j][i];
     }
     return 0.0;
   }
@@ -128,8 +128,8 @@ DokSparseMatrix.prototype.set_ = function(i, j, val) {
 
 DokSparseMatrix.prototype.toFull = function() {
   var m = this._m, n = this._n, out = array2d(m, n, 0.0);
-  Object.keys(this._dict).forEach(function(i) {
-    Object.keys(this._dict[i]).forEach(function(j) {
+  Object.keys(this._dict).forEach(function(j) {
+    Object.keys(this._dict[j]).forEach(function(i) {
       out[i][j] = this.at(i, j);
     }, this);
   }, this);
@@ -139,6 +139,19 @@ DokSparseMatrix.prototype.toFull = function() {
 
 DokSparseMatrix.prototype.toCcs = function() {
   // TODO: better implementation
+  // var dict = this._dict, m = this._m, n = this._n;
+  // var ccs = [ [0], [], [] ];
+  // var cols = Object.keys(dict).map(function(col) {
+  //   return Object.keys(dict[col]).length;
+  // });
+  // cols.sort(function(a, b) { return a - b; });
+
+  // var len = cols.length, i, sofar = 0;
+  // for (i = 0; i < len; ++i) {
+  //   sofar += cols[i];
+  //   ccs[0].push(sofar);
+  // }
+
   return ccsSparse(this.toFull());
 };
 

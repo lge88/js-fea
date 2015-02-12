@@ -68,14 +68,6 @@ describe('core.numeric', function() {
         expect(dsm.n()).to.be(4);
       });
 
-      it('#toFull()', function() {
-        expect(dsm.toFull()).to.eql(expectedFullMatrix);
-      });
-
-      it('#toCcs()', function() {
-        expect(dsm.toCcs()).to.eql(expectedCcsMatrix);
-      });
-
       it('#at(i, j)', function() {
         var i, j;
         for (i = 0; i < m; ++i)
@@ -101,6 +93,16 @@ describe('core.numeric', function() {
         expect(dsm.set_.bind(dsm, 0, n, 1.0)).to.throwException();
         expect(dsm.toFull()).to.eql(newMat);
       });
+
+      it('#toFull()', function() {
+        dsm = new DokSparseMatrix(valueLst, m, n);
+        expect(dsm.toFull()).to.eql(expectedFullMatrix);
+      });
+
+      it('#toCcs()', function() {
+        expect(dsm.toCcs()).to.eql(expectedCcsMatrix);
+      });
+
 
       it('DokSparseMatrix::toValueList(), should return correct value list consist of tuple (rowIndex, colIndex, value)', function() {
         var m1 = new DokSparseMatrix([
