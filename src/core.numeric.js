@@ -99,18 +99,21 @@ function DokSparseMatrix(ijvLst, m, n) {
 
 DokSparseMatrix.prototype.size = function() { return [this.m, this.n]; };
 
+DokSparseMatrix.prototype.m = function() { return this._m; };
+DokSparseMatrix.prototype.n = function() { return this._n; };
+
 DokSparseMatrix.prototype.at = function(i, j) {
-  if (i >= 0 && i < this.m && j >= 0 && j < this.n) {
+  if (i >= 0 && i < this._m && j >= 0 && j < this._n) {
     if (this._dict[i] && this._dict[i][j]) {
       return this._dict[i][j];
     }
     return 0.0;
   }
-  throw new Error('index ' + [i, j] + ' outof bound ' + [this.m, this.n]);
+  throw new Error('DokSparseMatrix::at(i, j): i,j: ' + [i, j] + ' outof dimension m, n: ' + [this._m, this._n]);
 };
 
 DokSparseMatrix.prototype.set_ = function(i, j, val) {
-  if (i >= 0 && i < this.m && j >= 0 && j < this.n) {
+  if (i >= 0 && i < this._m && j >= 0 && j < this._n) {
     if (typeof val !== 'number')
       throw new Error('DokSparseMatrix::set_(i, j, val): val must be a number. val = ' + val);
 
@@ -118,14 +121,11 @@ DokSparseMatrix.prototype.set_ = function(i, j, val) {
     this._dict[i][j] = val;
     return;
   }
-  throw new Error('DokSparseMatrix::set_(i, j, val): i,j: ' + [i, j] + ' outof dimension m, n: ' + [this.m, this.n]);
+  throw new Error('DokSparseMatrix::set_(i, j, val): i,j: ' + [i, j] + ' outof dimension m, n: ' + [this._m, this._n]);
 };
 
 DokSparseMatrix.prototype.toFull = function() {
-  var m = this.m,
-      n = this.n,
-      out = array2d(m, n, 0.0);
-
+  var m = this._m, n = this._n, out = array2d(m, n, 0.0);
   Object.keys(this._dict).forEach(function(i) {
     Object.keys(this._dict[i]).forEach(function(j) {
       out[i][j] = this.at(i, j);
@@ -155,14 +155,14 @@ DokSparseMatrix.prototype.toValueList = function() {
   return values;
 };
 
-// b is a vector
-// Return a vector
+// b is a [number]
+// Return a [number]
 DokSparseMatrix.prototype.solveVector = function(b) {
-  if (this.m !== this.n) {
+  if (this._m !== this._n) {
     throw new Error('DokSparseMatrix::solve can only be used by square matrix where this.m === this.n.');
   }
 
-  if (this.m !== b.length) {
+  if (this._m !== b.length) {
     throw new Error('DokSparseMatrix::solve can only be applied to vector of same dimension.');
   }
 
@@ -178,7 +178,7 @@ DokSparseMatrix.prototype.solveSparseVector = function(b) {
     throw new Error('DokSparseMatrix::solveSparseVector(b): b must be a SparseVector.');
   }
 
-  if (this.m !== b.length()) {
+  if (this._m !== b.length()) {
     throw new Error('DokSparseMatrix::solve can only be applied to vector of same dimension.');
   }
 
@@ -193,7 +193,7 @@ DokSparseMatrix.prototype.solveSparseVector = function(b) {
   var valueList = listFromIterator(ccsValueListIterator(ccsX)).map(function(tuple) {
     return [tuple[0], tuple[2]];
   });
-  var res = new SparseVector(valueList, this.m);
+  var res = new SparseVector(valueList, this._m);
   return res;
 };
 

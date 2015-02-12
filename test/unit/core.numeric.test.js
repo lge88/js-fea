@@ -64,8 +64,8 @@ describe('core.numeric', function() {
 
       it('#constructor(lst, m, n)', function() {
         dsm = new DokSparseMatrix(valueLst, m, n);
-        expect(dsm.m).to.be(3);
-        expect(dsm.n).to.be(4);
+        expect(dsm.m()).to.be(3);
+        expect(dsm.n()).to.be(4);
       });
 
       it('#toFull()', function() {
