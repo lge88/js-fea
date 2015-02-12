@@ -284,7 +284,7 @@ describe('core.numeric', function() {
   });
 
 
-  describe('Solve linear systerm', function() {
+  describe('mldivide()', function() {
     var casesThatShouldThrow = [
       {
         desc: 'A is not square',
