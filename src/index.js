@@ -1,9 +1,9 @@
 var _ = require('./core.utils');
 
-_.extend(require('./core.bimap.js'), exports);
-_.extend(require('./core.bipartite.js'), exports);
-_.extend(require('./core.setstore.js'), exports);
-_.extend(require('./femodel.js'), exports);
-_.extend(require('./matrix.dok.js'), exports);
+_.assign(exports, require('./core.bimap.js'));
+_.assign(exports, require('./core.bipartite.js'));
+_.assign(exports, require('./core.setstore.js'));
+_.assign(exports, require('./femodel.js'));
 
 exports._ = _;
+exports.numeric = require('./core.numeric.js');
