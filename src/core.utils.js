@@ -16,6 +16,7 @@ var conflicts = [
   'random'
 ];
 
+// TODO: do not mount numeric directly under _ namespace.
 // Not that effecient, maybe precompute this.
 _(numeric)
   .keys()
@@ -106,5 +107,13 @@ function minIndex(vec) {
   }).index;
 }
 _.minIndex = minIndex;
+
+
+function listFromIterator(iter) {
+  var out = [];
+  while (iter.hasNext()) out.push(iter.next());
+  return out;
+}
+_.listFromIterator = listFromIterator;
 
 module.exports = exports = _;

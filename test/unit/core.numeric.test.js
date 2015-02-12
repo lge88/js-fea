@@ -13,11 +13,14 @@ describe('core.numeric', function() {
   describe('ccsValueListIterator()', function() {
 
     it('should emit correct sequence', function() {
-      var ccs = [
-        [0, 1, 4, 5],
-        [1, 0, 1, 2, 2],
-        [1, 1, 2, 1, 1]
+      var full = [
+        [ 0, 1, 0 ],
+        [ 1, 2, 0 ],
+        [ 0, 1, 1 ]
       ];
+
+      var ccs = numeric.ccsSparse(full);
+
       var expectedValueList = [
         [ 1, 0, 1 ],
         [ 0, 1, 1 ],
@@ -26,16 +29,10 @@ describe('core.numeric', function() {
         [ 2, 2, 1 ]
       ];
 
-      var iter = ccsValueListIterator(ccs), tuple;
-      var valueList = [];
-
-      while(iter.hasNext()) {
-        tuple = iter.next();
-        valueList.push(tuple);
-      }
+      var iter = ccsValueListIterator(ccs);
+      var valueList = _.listFromIterator(iter);
 
       expect(valueList).to.eql(expectedValueList);
-
     });
 
   });
@@ -154,13 +151,6 @@ describe('core.numeric', function() {
         expect(x2.toCcs()).to.eql(b2.toCcs());
       });
 
-      // TODO:
-      // it('should throw expection when A is singular', function() {
-      //   var A = new DokSparseMatrix([], 3, 3), b = [1.0, 2.0, 3.0];
-
-      //   expect(A.solve.bind(A, b)).to.throwException();
-      // });
-
       it('should return correct result for conceived A and b, b is an array', function() {
         var A = new DokSparseMatrix([
 
@@ -220,6 +210,74 @@ describe('core.numeric', function() {
         expect(relDiff).to.lessThan(tol);
       });
 
+    });
+
+
+  });
+
+  describe('SparseVector', function() {
+    var f = function(a, b) { return new SparseVector(a, b); };
+    var v0, v1, v2;
+
+    it('SparseVector(valueList, dim)', function() {
+      v0 = new SparseVector([], 10);
+      v1 = new SparseVector([
+        [5, 2],
+        [2, 2],
+        [60, 8]
+      ], 1000);
+      v2 = new SparseVector([ [0, 1], [1, 2], [2, 3] ], 3);
+
+      expect(f.bind(null, [ [0, 1], [2, 3] ])).to.throwException();
+    });
+
+    it('SparseVector::at(i)/length()/nzCount()', function() {
+      expect(v0.length()).to.be(10);
+      expect(v0.nzCount()).to.be(0);
+      expect(v0.at(0)).to.be(0);
+      expect(v0.at(2)).to.be(0);
+      expect(v0.at.bind(v0, -1)).to.throwException();
+      expect(v0.at.bind(v0, 10)).to.throwException();
+
+      expect(v1.length()).to.be(1000);
+      expect(v1.nzCount()).to.be(3);
+      expect(v1.at(0)).to.be(0);
+      expect(v1.at(5)).to.be(2);
+      expect(v1.at(60)).to.be(8);
+      expect(v1.at.bind(v1, 1000)).to.throwException();
+
+      expect(v2.length()).to.be(3);
+      expect(v2.nzCount()).to.be(3);
+      expect(v2.at(0)).to.be(1);
+      expect(v2.at(1)).to.be(2);
+      expect(v2.at(2)).to.be(3);
+      expect(v2.at.bind(null, 3)).to.throwException();
+    });
+
+    it('SparseVector::set_(i, val)', function() {
+      var v = new SparseVector([ [0, 0], [3, 3] ], 5);
+      expect(v.set_.bind(v, -1)).to.throwException();
+      expect(v.set_.bind(v, 10)).to.throwException();
+
+      v.set_(0, 2);
+      expect(v.at(0)).to.be(2);
+
+      expect(v.at(1)).to.be(0);
+      v.set_(1, 5);
+      expect(v.at(1)).to.be(5);
+
+      expect(v.set_.bind(v, 1, 'sdf')).to.throwException();
+    });
+
+    it('SparseVector::toFull()/toList()/toCcs()', function() {
+      var v1 = new SparseVector([ [0, 0], [3, 3] ], 5);
+      expect(v1.toFull()).to.eql([ [0], [0], [0], [3], [0] ]);
+      expect(v1.toList()).to.eql([ 0, 0, 0, 3, 0 ]);
+      expect(v1.toCcs()).to.eql([
+        [0, 1],
+        [3],
+        [3]
+      ]);
     });
 
 
