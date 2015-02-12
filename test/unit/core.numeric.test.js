@@ -95,12 +95,36 @@ describe('core.numeric', function() {
       });
 
       it('#toFull()', function() {
-        dsm = new DokSparseMatrix(valueLst, m, n);
-        expect(dsm.toFull()).to.eql(expectedFullMatrix);
+        var m1 = new DokSparseMatrix(valueLst, m, n);
+        expect(m1.toFull()).to.eql(expectedFullMatrix);
+
+        var m2 = new DokSparseMatrix([
+          [0, 1, 1],
+          [2, 1, 1],
+          [2, 2, 1]
+        ], 3, 3);
+        expect(m2.toFull()).to.eql([
+          [0, 1, 0],
+          [0, 0, 0],
+          [0, 1, 1]
+        ]);
+
       });
 
       it('#toCcs()', function() {
-        expect(dsm.toCcs()).to.eql(expectedCcsMatrix);
+        var m1 = new DokSparseMatrix(valueLst, m, n);
+        expect(m1.toCcs()).to.eql(expectedCcsMatrix);
+
+        var m2 = new DokSparseMatrix([
+          [0, 1, 1],
+          [2, 1, 1],
+          [2, 2, 1]
+        ], 3, 3);
+        expect(m2.toCcs()).to.eql([
+          [0, 0, 2, 3],
+          [0, 2, 2],
+          [1, 1, 1]
+        ]);
       });
 
 

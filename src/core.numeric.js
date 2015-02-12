@@ -138,21 +138,32 @@ DokSparseMatrix.prototype.toFull = function() {
 };
 
 DokSparseMatrix.prototype.toCcs = function() {
-  // TODO: better implementation
-  // var dict = this._dict, m = this._m, n = this._n;
-  // var ccs = [ [0], [], [] ];
-  // var cols = Object.keys(dict).map(function(col) {
-  //   return Object.keys(dict[col]).length;
-  // });
-  // cols.sort(function(a, b) { return a - b; });
+  var dict = this._dict, m = this._m, n = this._n;
+  var ccs = [ [0], [], [] ];
+  var nzCountInColumns = array1d(n, function(i) {
+    if (typeof dict[i] !== 'undefined')
+      return Object.keys(dict[i]).length;
+    return 0;
+  });
 
-  // var len = cols.length, i, sofar = 0;
-  // for (i = 0; i < len; ++i) {
-  //   sofar += cols[i];
-  //   ccs[0].push(sofar);
-  // }
+  nzCountInColumns.forEach(function(count) {
+    var indices = ccs[0], sofar = indices[indices.length - 1];
+    indices.push(sofar + count);
+  });
 
-  return ccsSparse(this.toFull());
+  var cols = Object.keys(dict).sort(function(a, b) {
+    return parseInt(a) - parseInt(b);
+  });
+
+  cols.forEach(function(col) {
+    Object.keys(dict[col]).forEach(function(row) {
+      var val = dict[col][row];
+      ccs[1].push(row);
+      ccs[2].push(val);
+    });
+  });
+
+  return ccs;
 };
 
 DokSparseMatrix.prototype.toJSON = function() {
