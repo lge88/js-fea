@@ -81,11 +81,15 @@ DenseMatrix.prototype.toCcs = function() {
 
 function DokSparseMatrix(ijvLst, m, n) {
   // check dimension m x n is valid
-  this.m = m;
-  this.n = n;
+  if ((m | 0) !== m || m <= 0 || (n | 0) !== n || n <= 0)
+    throw new Error('DokSparseMatrix(ijvLst, m, n): m, n must be ' +
+                   'positive integer.');
+
+  this._m = m;
+  this._n = n;
   this._dict = {};
 
-  if (Array.isArray(ijvLst)) {
+  if (_.isArray(ijvLst)) {
     ijvLst.forEach(function(ijv) {
       var i = ijv[0], j = ijv[1], val = ijv[2];
       this.set_(i, j, val);
@@ -107,11 +111,14 @@ DokSparseMatrix.prototype.at = function(i, j) {
 
 DokSparseMatrix.prototype.set_ = function(i, j, val) {
   if (i >= 0 && i < this.m && j >= 0 && j < this.n) {
+    if (typeof val !== 'number')
+      throw new Error('DokSparseMatrix::set_(i, j, val): val must be a number. val = ' + val);
+
     if (!this._dict[i]) this._dict[i] = {};
     this._dict[i][j] = val;
     return;
   }
-  throw new Error('index ' + [i, j] + ' outof bound ' + [this.m, this.n]);
+  throw new Error('DokSparseMatrix::set_(i, j, val): i,j: ' + [i, j] + ' outof dimension m, n: ' + [this.m, this.n]);
 };
 
 DokSparseMatrix.prototype.toFull = function() {
