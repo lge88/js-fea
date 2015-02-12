@@ -79,7 +79,7 @@ DenseMatrix.prototype.toCcs = function() {
   return ccsSparse(this.toFull());
 };
 
-function DokSparseMatrix(ijvLst, m, n) {
+function DokSparseMatrix(valueList, m, n) {
   if ((m | 0) !== m || m <= 0 || (n | 0) !== n || n <= 0)
     throw new Error('DokSparseMatrix(ijvLst, m, n): m, n must be ' +
                    'positive integer.');
@@ -88,11 +88,20 @@ function DokSparseMatrix(ijvLst, m, n) {
   this._n = n;
   this._dict = {};
 
-  if (_.isArray(ijvLst)) {
-    ijvLst.forEach(function(ijv) {
-      var i = ijv[0], j = ijv[1], val = ijv[2];
-      this.set_(i, j, val);
-    }, this);
+  var iter = _.noopIterator;
+  if (_.isArray(valueList)) {
+    iter = _.iteratorFromList(valueList);
+  } else if (_.isIterator(valueList)) {
+    iter = valueList;
+  }
+
+  var ijv, i, j, val;
+  while (iter.hasNext()) {
+    ijv = iter.next();
+    i = ijv[0];
+    j = ijv[1];
+    val = ijv[2];
+    this.set_(i, j, val);
   }
 }
 
@@ -230,11 +239,20 @@ function SparseVector(valueList, dimension) {
 
   this._dim = dimension;
   this._dict = {};
+
+  var iter = _.noopIterator;
   if (_.isArray(valueList)) {
-    valueList.forEach(function(tuple) {
-      var idx = tuple[0], val = tuple[1];
-      this.set_(idx, val);
-    }, this);
+    iter = _.iteratorFromList(valueList);
+  } else if (_.isIterator(valueList)) {
+    iter = valueList;
+  }
+
+  var item, idx, val;
+  while (iter.hasNext()) {
+    item = iter.next();
+    idx = item[0];
+    val = item[1];
+    this.set_(idx, val);
   }
 }
 

@@ -38,203 +38,118 @@ describe('core.numeric', function() {
   });
 
   describe('DokSparseMatrix', function() {
-    describe('DokSparseMatrix basic operations', function() {
+    var fixtures = [
+      {
+        m: 3,
+        n: 4,
+        valueLst: [
+          [0, 0, 1.0],
+          [0, 1, 2.0],
+          [1, 1, 1.0],
+          [1, 2, 2.0],
+          [2, 1, 1.0],
+          [2, 2, 1.0],
+          [2, 3, 1.0]
+        ],
+        expectedFullMatrix: [
+          [1.0, 2.0, 0.0, 0.0],
+          [0.0, 1.0, 2.0, 0.0],
+          [0.0, 1.0, 1.0, 1.0]
+        ],
+        expectedCcsMatrix: [
+          [0, 1, 4, 6, 7],
+          [0, 0, 1, 2, 1, 2, 2],
+          [1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0]
+        ]
+      }
+    ];
 
-      var dsm, m = 3, n = 4;
-      var valueLst = [
-        [0, 0, 1.0],
-        [0, 1, 2.0],
-        [1, 1, 1.0],
-        [1, 2, 2.0],
-        [2, 1, 1.0],
-        [2, 2, 1.0],
-        [2, 3, 1.0]
-      ];
-      var expectedFullMatrix = [
-        [1.0, 2.0, 0.0, 0.0],
-        [0.0, 1.0, 2.0, 0.0],
-        [0.0, 1.0, 1.0, 1.0]
-      ];
+    it('#constructor(lst/iter, m, n)', function() {
+      var mat1 = new DokSparseMatrix(fixtures[0].valueLst, fixtures[0].m, fixtures[0].n);
+      expect(mat1.m()).to.be(3);
+      expect(mat1.n()).to.be(4);
 
-      var expectedCcsMatrix = [
-        [0, 1, 4, 6, 7],
-        [0, 0, 1, 2, 1, 2, 2],
-        [1.0, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0]
-      ];
+      var mat2 = new DokSparseMatrix(_.iteratorFromList(fixtures[0].valueLst), fixtures[0].m, fixtures[0].n);
+      expect(mat2.m()).to.be(3);
+      expect(mat2.n()).to.be(4);
+    });
 
-      it('#constructor(lst, m, n)', function() {
-        dsm = new DokSparseMatrix(valueLst, m, n);
-        expect(dsm.m()).to.be(3);
-        expect(dsm.n()).to.be(4);
-      });
+    it('#at(i, j)', function() {
+      var mat = new DokSparseMatrix(fixtures[0].valueLst, fixtures[0].m, fixtures[0].n);
+      var i, j;
+      for (i = 0; i < fixtures[0].m; ++i)
+        for (j = 0; j < fixtures[0].n; ++j)
+          expect(mat.at(i, j)).to.be(fixtures[0].expectedFullMatrix[i][j]);
 
-      it('#at(i, j)', function() {
-        var i, j;
-        for (i = 0; i < m; ++i)
-          for (j = 0; j < n; ++j)
-            expect(dsm.at(i, j)).to.be(expectedFullMatrix[i][j]);
+      expect(mat.at.bind(mat, fixtures[0].m, 0)).to.throwException();
+      expect(mat.at.bind(mat, -1, 0)).to.throwException();
+      expect(mat.at.bind(mat, 0, -1)).to.throwException();
+      expect(mat.at.bind(mat, 0, fixtures[0].n)).to.throwException();
+    });
 
-        expect(dsm.at.bind(dsm, m, 0)).to.throwException();
-        expect(dsm.at.bind(dsm, -1, 0)).to.throwException();
-        expect(dsm.at.bind(dsm, 0, -1)).to.throwException();
-        expect(dsm.at.bind(dsm, 0, n)).to.throwException();
-      });
+    it('#set_(i, j, val)', function() {
+      var mat = new DokSparseMatrix(fixtures[0].valueLst, fixtures[0].m, fixtures[0].n);
+      var newMat = _.array2d(fixtures[0].m, fixtures[0].n, function(i, j) { return i + j; });
+      var i, j, val;
+      for (i = 0; i < fixtures[0].m; ++i)
+        for (j = 0; j < fixtures[0].n; ++j)
+          mat.set_(i, j, newMat[i][j]);
 
-      it('#set_(i, j, val)', function() {
-        var i, j, val;
-        var newMat = _.array2d(m, n, function(i, j) { return i + j; });
-        for (i = 0; i < m; ++i)
-          for (j = 0; j < n; ++j)
-            dsm.set_(i, j, newMat[i][j]);
+      expect(mat.set_.bind(mat, fixtures[0].m, 0, 1.0)).to.throwException();
+      expect(mat.set_.bind(mat, -1, 0, 1.0)).to.throwException();
+      expect(mat.set_.bind(mat, 0, -1, 1.0)).to.throwException();
+      expect(mat.set_.bind(mat, 0, fixtures[0].n, 1.0)).to.throwException();
+      expect(mat.toFull()).to.eql(newMat);
+    });
 
-        expect(dsm.set_.bind(dsm, m, 0, 1.0)).to.throwException();
-        expect(dsm.set_.bind(dsm, -1, 0, 1.0)).to.throwException();
-        expect(dsm.set_.bind(dsm, 0, -1, 1.0)).to.throwException();
-        expect(dsm.set_.bind(dsm, 0, n, 1.0)).to.throwException();
-        expect(dsm.toFull()).to.eql(newMat);
-      });
+    it('#toFull()', function() {
+      var m1 = new DokSparseMatrix(fixtures[0].valueLst, fixtures[0].m, fixtures[0].n);
+      expect(m1.toFull()).to.eql(fixtures[0].expectedFullMatrix);
 
-      it('#toFull()', function() {
-        var m1 = new DokSparseMatrix(valueLst, m, n);
-        expect(m1.toFull()).to.eql(expectedFullMatrix);
-
-        var m2 = new DokSparseMatrix([
-          [0, 1, 1],
-          [2, 1, 1],
-          [2, 2, 1]
-        ], 3, 3);
-        expect(m2.toFull()).to.eql([
-          [0, 1, 0],
-          [0, 0, 0],
-          [0, 1, 1]
-        ]);
-
-      });
-
-      it('#toCcs()', function() {
-        var m1 = new DokSparseMatrix(valueLst, m, n);
-        expect(m1.toCcs()).to.eql(expectedCcsMatrix);
-
-        var m2 = new DokSparseMatrix([
-          [0, 1, 1],
-          [2, 1, 1],
-          [2, 2, 1]
-        ], 3, 3);
-        expect(m2.toCcs()).to.eql([
-          [0, 0, 2, 3],
-          [0, 2, 2],
-          [1, 1, 1]
-        ]);
-      });
-
-
-      it('DokSparseMatrix::toValueList(), should return correct value list consist of tuple (rowIndex, colIndex, value)', function() {
-        var m1 = new DokSparseMatrix([
-          [1, 1, 2],
-          [2, 2, 5],
-          [0, 0, 2]
-        ], 4, 3);
-        expect(m1.toValueList().sort(_.byLexical)).to.eql([
-          [0, 0, 2],
-          [1, 1, 2],
-          [2, 2, 5]
-        ]);
-
-        expect((new DokSparseMatrix([], 3, 3)).toValueList()).to.eql([]);
-
-      });
+      var m2 = new DokSparseMatrix([
+        [0, 1, 1],
+        [2, 1, 1],
+        [2, 2, 1]
+      ], 3, 3);
+      expect(m2.toFull()).to.eql([
+        [0, 1, 0],
+        [0, 0, 0],
+        [0, 1, 1]
+      ]);
 
     });
 
-    describe('DokSparseMatrix::solveSparseVector(vec)/solveVector(vec)', function() {
-      it('should throw error if the vec is not a SparseVector.', function() {
-        var m = new DokSparseMatrix([], 3, 2);
-        expect(m.solveSparseVector.bind(m, [1, 2])).to.throwException();
-      });
+    it('#toCcs()', function() {
+      var m1 = new DokSparseMatrix(fixtures[0].valueLst, fixtures[0].m, fixtures[0].n);
+      expect(m1.toCcs()).to.eql(fixtures[0].expectedCcsMatrix);
 
-      it('should throw error if the sparse vector dimension does not match matrix dimension.', function() {
-        var A = new DokSparseMatrix([], 3, 3);
-        var b = new SparseVector([], 2);
-        expect(A.solveSparseVector.bind(A, b)).to.throwException();
-      });
+      var m2 = new DokSparseMatrix([
+        [0, 1, 1],
+        [2, 1, 1],
+        [2, 2, 1]
+      ], 3, 3);
+      expect(m2.toCcs()).to.eql([
+        [0, 0, 2, 3],
+        [0, 2, 2],
+        [1, 1, 1]
+      ]);
+    });
 
-      it('should return correct result for eye(3)', function() {
-        var A = new DokSparseMatrix([
-          [0, 0, 1.0],
-          [1, 1, 1.0],
-          [2, 2, 1.0]
-        ], 3, 3), b1 = [1.0, 2.0, 3.0];
-        var b2 = new SparseVector([
-          [0, 1.0],
-          [1, 2.0],
-          [2, 3.0]
-        ], 3);
 
-        var x1 = A.solveVector(b1);
-        expect(x1).to.eql(b1);
+    it('DokSparseMatrix::toValueList(), should return correct value list consist of tuple (rowIndex, colIndex, value)', function() {
+      var m1 = new DokSparseMatrix([
+        [1, 1, 2],
+        [2, 2, 5],
+        [0, 0, 2]
+      ], 4, 3);
+      expect(m1.toValueList().sort(_.byLexical)).to.eql([
+        [0, 0, 2],
+        [1, 1, 2],
+        [2, 2, 5]
+      ]);
 
-        var x2 = A.solveSparseVector(b2);
-        expect(x2.toCcs()).to.eql(b2.toCcs());
-      });
-
-      it('should return correct result for conceived A and b, b is an array', function() {
-        var A = new DokSparseMatrix([
-
-          [0, 0, 1.0],
-          [0, 1, 2.0],
-          [0, 2, 3.0],
-
-          [1, 0, 6.0],
-          [1, 1, 5.0],
-          [1, 2, 4.0],
-
-          [2, 0, 7.0],
-          [2, 1, 10.0],
-          [2, 2, 4.0]
-
-        ], 3, 3);
-        var b1 = [5.0, 9.0, 5.0];
-        var b2 = [ [5.0], [9.0], [5.0] ];
-
-        var xExpected = [1.0, -1.0, 2.0];
-        var x1 = A.solveVector(b1);
-        // var x2 = A.solveVector(b2);
-        var relDiff1 = numeric.norm2(numeric.sub(x1, xExpected)) / numeric.norm2(xExpected);
-        // var relDiff2 = numeric.norm2(numeric.sub(x2, xExpected)) / numeric.norm2(xExpected);
-        var tol = 1e-10;
-
-        expect(relDiff1).to.lessThan(tol);
-        // expect(relDiff2).to.lessThan(tol);
-      });
-
-      it('should return correct result for conceived A and b, b is a SparseVector', function() {
-        var A = new DokSparseMatrix([
-
-          [0, 0, 1.0],
-          [0, 1, 2.0],
-          [0, 2, 3.0],
-
-          [1, 0, 6.0],
-          [1, 1, 5.0],
-          [1, 2, 4.0],
-
-          [2, 0, 7.0],
-          [2, 1, 10.0],
-          [2, 2, 4.0]
-
-        ], 3, 3);
-        var b = new SparseVector([
-          [0, 5.0], [1, 9.0], [2, 5.0]
-        ], 3);
-
-        var xExpected = [1.0, -1.0, 2.0];
-        var x = A.solveSparseVector(b);
-        x = numeric.transpose(x.toFull())[0];
-
-        var relDiff = numeric.norm2(numeric.sub(x, xExpected)) / numeric.norm2(xExpected);
-        var tol = 1e-10;
-        expect(relDiff).to.lessThan(tol);
-      });
+      var m2 = new DokSparseMatrix([], 3, 3);
+      expect(m2.toValueList()).to.eql([]);
 
     });
 
@@ -306,8 +221,101 @@ describe('core.numeric', function() {
       ]);
     });
 
+  });
+
+
+  describe('solve DokSparseMatrix::solveSparseVector(vec)/solveVector(vec)', function() {
+    it('should throw error if the vec is not a SparseVector.', function() {
+      var m = new DokSparseMatrix([], 3, 2);
+      expect(m.solveSparseVector.bind(m, [1, 2])).to.throwException();
+    });
+
+    it('should throw error if the sparse vector dimension does not match matrix dimension.', function() {
+      var A = new DokSparseMatrix([], 3, 3);
+      var b = new SparseVector([], 2);
+      expect(A.solveSparseVector.bind(A, b)).to.throwException();
+    });
+
+    it('should return correct result for eye(3)', function() {
+      var A = new DokSparseMatrix([
+        [0, 0, 1.0],
+        [1, 1, 1.0],
+        [2, 2, 1.0]
+      ], 3, 3), b1 = [1.0, 2.0, 3.0];
+      var b2 = new SparseVector([
+        [0, 1.0],
+        [1, 2.0],
+        [2, 3.0]
+      ], 3);
+
+      var x1 = A.solveVector(b1);
+      expect(x1).to.eql(b1);
+
+      var x2 = A.solveSparseVector(b2);
+      expect(x2.toCcs()).to.eql(b2.toCcs());
+    });
+
+    it('should return correct result for conceived A and b, b is an array', function() {
+      var A = new DokSparseMatrix([
+
+        [0, 0, 1.0],
+        [0, 1, 2.0],
+        [0, 2, 3.0],
+
+        [1, 0, 6.0],
+        [1, 1, 5.0],
+        [1, 2, 4.0],
+
+        [2, 0, 7.0],
+        [2, 1, 10.0],
+        [2, 2, 4.0]
+
+      ], 3, 3);
+      var b1 = [5.0, 9.0, 5.0];
+      var b2 = [ [5.0], [9.0], [5.0] ];
+
+      var xExpected = [1.0, -1.0, 2.0];
+      var x1 = A.solveVector(b1);
+      // var x2 = A.solveVector(b2);
+      var relDiff1 = numeric.norm2(numeric.sub(x1, xExpected)) / numeric.norm2(xExpected);
+      // var relDiff2 = numeric.norm2(numeric.sub(x2, xExpected)) / numeric.norm2(xExpected);
+      var tol = 1e-10;
+
+      expect(relDiff1).to.lessThan(tol);
+      // expect(relDiff2).to.lessThan(tol);
+    });
+
+    it('should return correct result for conceived A and b, b is a SparseVector', function() {
+      var A = new DokSparseMatrix([
+
+        [0, 0, 1.0],
+        [0, 1, 2.0],
+        [0, 2, 3.0],
+
+        [1, 0, 6.0],
+        [1, 1, 5.0],
+        [1, 2, 4.0],
+
+        [2, 0, 7.0],
+        [2, 1, 10.0],
+        [2, 2, 4.0]
+
+      ], 3, 3);
+      var b = new SparseVector([
+        [0, 5.0], [1, 9.0], [2, 5.0]
+      ], 3);
+
+      var xExpected = [1.0, -1.0, 2.0];
+      var x = A.solveSparseVector(b);
+      x = numeric.transpose(x.toFull())[0];
+
+      var relDiff = numeric.norm2(numeric.sub(x, xExpected)) / numeric.norm2(xExpected);
+      var tol = 1e-10;
+      expect(relDiff).to.lessThan(tol);
+    });
 
   });
+
 
 
   xdescribe('#assembly()', function() {
