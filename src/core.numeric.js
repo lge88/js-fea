@@ -104,7 +104,7 @@ DokSparseMatrix.prototype.n = function() { return this._n; };
 
 DokSparseMatrix.prototype.at = function(i, j) {
   if (i >= 0 && i < this._m && j >= 0 && j < this._n) {
-    if (this._dict[i] && this._dict[i][j]) {
+    if (this._dict[j] && this._dict[j][i]) {
       return this._dict[i][j];
     }
     return 0.0;
@@ -117,8 +117,10 @@ DokSparseMatrix.prototype.set_ = function(i, j, val) {
     if (typeof val !== 'number')
       throw new Error('DokSparseMatrix::set_(i, j, val): val must be a number. val = ' + val);
 
-    if (!this._dict[i]) this._dict[i] = {};
-    this._dict[i][j] = val;
+    // Internally the dict is store the column index as first layer, then row index.
+    // This make convertion to ccs efficient.
+    if (!this._dict[j]) this._dict[j] = {};
+    this._dict[j][i] = val;
     return;
   }
   throw new Error('DokSparseMatrix::set_(i, j, val): i,j: ' + [i, j] + ' outof dimension m, n: ' + [this._m, this._n]);
