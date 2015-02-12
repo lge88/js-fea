@@ -108,6 +108,16 @@ function minIndex(vec) {
 }
 _.minIndex = minIndex;
 
+function isIterator(iter) {
+  return iter && typeof iter.hasNext === 'function' &&
+    typeof iter.next === 'function';
+}
+_.isIterator = isIterator;
+
+_.noopIterator = {
+  hasNext: function() { return false; },
+  next: function() { return null; }
+};
 
 function listFromIterator(iter) {
   var out = [];
@@ -128,5 +138,6 @@ function iteratorFromList(lst) {
   };
 }
 _.iteratorFromList = iteratorFromList;
+
 
 module.exports = exports = _;

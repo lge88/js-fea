@@ -144,7 +144,16 @@ describe('core.utils', function() {
     });
   });
 
-  describe('listFromIterator(iter)/iteratorFromList(lst)', function() {
+  describe('isIterator(iter)/noopIterator/listFromIterator(iter)/iteratorFromList(lst)', function() {
+    it('isIterator', function() {
+      var iter0 = _.iteratorFromList([]);
+      var iter1 = _.noopIterator;
+      var iter2 = { hasNext: false, next: function(){} };
+      expect(_.isIterator(iter0)).to.be(true);
+      expect(_.isIterator(iter1)).to.be(true);
+      expect(_.isIterator(iter2)).to.be(false);
+    });
+
     it('empty list', function() {
       var iter = _.iteratorFromList([]);
       expect(_.listFromIterator(iter)).to.eql([]);
