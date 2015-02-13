@@ -19,7 +19,7 @@ function assemble_(dest, sources) {
   sources.forEach(function(Ke) {
     var mat = Ke.matrix, eqnums = Ke.equationNumbers;
 
-    var nonTrial = eqnums.map(function(globalIndex, localIndex) {
+    var noneZeroIndices = eqnums.map(function(globalIndex, localIndex) {
       return {
         globalIndex: globalIndex,
         localIndex: localIndex
@@ -28,11 +28,11 @@ function assemble_(dest, sources) {
       return item.globalIndex !== 0;
     });
 
-    nonTrial.forEach(function(item0) {
+    noneZeroIndices.forEach(function(item0) {
       // Notice the equation number starts from 1.
       var globalRowIndex = item0.globalIndex - 1;
       var localRowIndex = item0.localIndex;
-      nonTrial.forEach(function(item1) {
+      noneZeroIndices.forEach(function(item1) {
         var globalColIndex = item1.globalIndex - 1;
         var localColIndex = item1.localIndex;
 
