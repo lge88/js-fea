@@ -10,6 +10,7 @@ var SparseVector = numeric.SparseVector;
 var ccsValueListIterator = numeric.ccsValueListIterator;
 var mldivide = numeric.mldivide;
 var vecEquals = numeric.vecEquals;
+var array2dEquals = numeric.array2dEquals;
 
 describe('core.numeric', function() {
 
@@ -86,6 +87,42 @@ describe('core.numeric', function() {
       });
     });
   });
+
+  describe('array2dEquals(a, b, aTolerance)', function() {
+    var fixtures = [
+      {
+        desc: 'a and b are of difference dimension',
+        a: [ [1, 2], [0, 0] ],
+        b: [ [1, 2] ],
+        expected: false
+      },
+      {
+        desc: '',
+        a: [ [1, 2], [2, 3] ],
+        b: [ [1, 2], [2, 3] ],
+        expected: true
+      },
+      {
+        desc: '',
+        a: [ [1, 2], [2, 3.1] ],
+        b: [ [1, 2], [2, 3] ],
+        expected: false
+      },
+      {
+        desc: 'when tol is large',
+        a: [ [1, 2], [2, 3.1] ],
+        b: [ [1, 2], [2, 3] ],
+        tol: 0.1,
+        expected: true
+      }
+    ];
+    dataDriven(fixtures, function() {
+      it('should return {expected} when {desc}', function(ctx) {
+        expect(array2dEquals(ctx.a, ctx.b, ctx.tol)).to.be(ctx.expected);
+      });
+    });
+  });
+
 
   describe('DokSparseMatrix', function() {
     var fixtures = [

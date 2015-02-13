@@ -24,6 +24,25 @@ function vecEquals(a, b, aTolerance) {
 vecEquals.TOLERANCE = 1e-4;
 exports.vecEquals = vecEquals;
 
+// both a and b are 2d array
+function array2dEquals(a, b, aTolerance) {
+  if (a.length !== b.length) return false;
+
+  var m = a.length;
+  if (m === 0) return false;
+
+  var n = a[0].length || 0;
+  if (n === 0) return false;
+  if (!(b && b[0] && b[0].length === n)) return false;
+
+  var tolerance = typeof aTolerance === 'number' ? aTolerance : array2dEquals.TOLERANCE;
+  var d = numeric.sub(a, b);
+  var relativeError = numeric.norm2(d) / numeric.norm2(b);
+  return relativeError < tolerance;
+}
+array2dEquals.TOLERANCE = 1e-4;
+exports.array2dEquals = array2dEquals;
+
 // input: ccs representation
 // output: iterator that emits a sequence of (i, j, value) tuple.
 function ccsValueListIterator(ccs) {
