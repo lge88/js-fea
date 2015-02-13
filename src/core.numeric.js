@@ -108,6 +108,10 @@ function DenseMatrix(m, n, fn) {
     var size = matrixSize(m);
     this._m = size[0];
     this._n = size[1];
+  } else if (m instanceof DenseMatrix){
+    this._m = m._m;
+    this._n = m._n;
+    this._data = _.cloneDeep(m._data);
   } else {
     throw new Error('DenseMatrix(m, n): m and n must be positive integer.');
   }

@@ -216,6 +216,12 @@ describe('core.numeric', function() {
         expect(m.toFull()).to.eql(expected);
       });
 
+      it('should work with copy constructor', function() {
+        var m1 = new DenseMatrix(3, 2, 5);
+        var m2 = new DenseMatrix(m1);
+        expect(m1.toFull()).to.eql(m2.toFull());
+      });
+
     });
 
     describe('DenseMatrix::size()', function() {
