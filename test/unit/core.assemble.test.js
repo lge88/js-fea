@@ -6,6 +6,7 @@ var assemble_ = require(SRC + '/core.assemble.js').assemble_;
 var ElementMatrix = require(SRC + '/core.assemble.js').ElementMatrix;
 var numeric = require(SRC + '/core.numeric');
 var DokSparseMatrix = numeric.DokSparseMatrix;
+var array2dEquals = numeric.array2dEquals;
 var read = require('fs').readFileSync;
 var fixtureFile = ROOT + '/test/fixtures/assemble.json';
 
@@ -27,8 +28,7 @@ describe('core.assemble', function() {
         var K = new DokSparseMatrix([], dim, dim);
         assemble_(K, elementMatrices);
 
-        // TODO: use matrixEquals(K, expectedK) to check equals
-        expect(K.toFull()).to.eql(expectedK);
+        expect(array2dEquals(K.toFull(), expectedK)).to.be(true);
       });
     });
 
