@@ -392,13 +392,4 @@ describe('core.numeric', function() {
     });
 
   });
-
-
-
-  xdescribe('#assembly()', function() {
-
-
-
-  });
-
 });
