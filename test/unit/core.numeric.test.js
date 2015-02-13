@@ -6,11 +6,13 @@ var dataDriven = require('data-driven');
 var _ = require(SRC + '/core.utils.js');
 var numeric = require(SRC + '/core.numeric');
 var DokSparseMatrix = numeric.DokSparseMatrix;
+var DenseMatrix = numeric.DenseMatrix;
 var SparseVector = numeric.SparseVector;
 var ccsValueListIterator = numeric.ccsValueListIterator;
 var mldivide = numeric.mldivide;
 var vecEquals = numeric.vecEquals;
 var array2dEquals = numeric.array2dEquals;
+var isMatrixLikeArray = numeric.isMatrixLikeArray;
 
 describe('core.numeric', function() {
 
@@ -123,6 +125,216 @@ describe('core.numeric', function() {
     });
   });
 
+  describe('isMatrixLikeArray(arr)', function() {
+    var fixtures = [
+      {
+        desc: 'arr is not a JS array',
+        arr: 'hello',
+        expected: false
+      },
+      {
+        desc: 'arr is empty arr',
+        arr: [],
+        expected: false
+      },
+      {
+        desc: 'arr is array of non-array enties',
+        arr: [ 1, 2, 3 ],
+        expected: false
+      },
+      {
+        desc: 'arr has rows that has zero entries',
+        arr: [ [] ],
+        expected: false
+      },
+      {
+        desc: 'arr has vary length rows',
+        arr: [ [1], [2, 3], [3, 4] ],
+        expected: false
+      },
+      {
+        desc: 'arr has same length rows',
+        arr: [ [1, 3], [2, 3], [3, 4] ],
+        expected: true
+      }
+    ];
+
+    dataDriven(fixtures, function() {
+      it('should return {expected} when {desc}', function(ctx) {
+        expect(isMatrixLikeArray(ctx.arr)).to.be(ctx.expected);
+      });
+    });
+  });
+
+
+  describe('DenseMatrix', function() {
+    var m2x2 = [ [1, 2], [3, 4] ];
+    var m3x4 = [
+      [ 1, 2, 3, 4 ],
+      [ 5, 6, 7, 8 ],
+      [ 9, 9, 9, 9 ]
+    ];
+    describe('DenseMatrix()', function() {
+      var f = function(a, b, c) {
+        return new DenseMatrix(a, b, c);
+      };
+
+      var casesShouldThrow = [
+        {
+          a: []
+        }
+      ];
+
+      dataDriven(casesShouldThrow, function() {
+        it('should throw', function(ctx) {
+          expect(f.bind(null, ctx.a, ctx.b, ctx.c)).to.throwException();
+        });
+      });
+
+      var casesShouldWork = [
+        {
+          a: 4,
+          b: 3
+        },
+        {
+          a: [ [1, 2], [3, 4] ]
+        }
+      ];
+
+      dataDriven(casesShouldWork, function() {
+        it('should work', function(ctx) {
+          f(ctx.a, ctx.b, ctx.c);
+        });
+      });
+
+      it('should work with fn', function() {
+        var m = f(2, 3, function(i, j) { return i*j; });
+        var expected = [
+          [0, 0, 0],
+          [0, 1, 2]
+        ];
+        expect(m.toFull()).to.eql(expected);
+      });
+
+    });
+
+    describe('DenseMatrix::size()', function() {
+      dataDriven([
+        {
+          mat: [ [1, 2], [3, 4] ],
+          size: [ 2, 2 ]
+        },
+        {
+          mat: [ [1, 2] ],
+          size: [ 1, 2 ]
+        },
+        {
+          mat: [ [1], [2] ],
+          size: [ 2, 1 ]
+        },
+      ], function() {
+        it('should return correct size', function(ctx) {
+          var m = new DenseMatrix(ctx.mat);
+          expect(m.size()).to.eql(ctx.size);
+        });
+      });
+    });
+
+    describe('DenseMatrix::at(i, j)', function() {
+      dataDriven([
+        { mat: m2x2, i: -1, j: 1 },
+        { mat: m2x2, i: 0, j: -1 },
+        { mat: m2x2, i: 3, j: 0 },
+        { mat: m2x2, i: 0, j: 3 },
+      ], function() {
+        it('should throw when given invalid location', function(ctx) {
+          var m = new DenseMatrix(ctx.mat);
+          expect(m.at.bind(m, ctx.i, ctx.j)).to.throwException();
+        });
+      });
+
+      dataDriven([
+        { mat: m2x2, i: 0, j: 0, val: 1 },
+        { mat: m2x2, i: 0, j: 1, val: 2 },
+        { mat: m2x2, i: 1, j: 0, val: 3 },
+        { mat: m2x2, i: 1, j: 1, val: 4 }
+      ], function() {
+        it('should return element at valid location', function(ctx) {
+          var m = new DenseMatrix(ctx.mat);
+          expect(m.at(ctx.i, ctx.j)).to.be(ctx.val);
+        });
+      });
+    });
+
+    describe('DenseMatrix::set_(i, j, val)', function() {
+
+      dataDriven([
+        { m: m3x4, i: -1, j: 0, val: 1 },
+        { m: m3x4, i: 3, j: 0, val: 1 },
+        { m: m3x4, i: 0, j: -1, val: 1 },
+        { m: m3x4, i: 0, j: 4, val: 1 }
+      ], function() {
+        it('should throw when i, j outof bound', function(ctx) {
+          var m = new DenseMatrix(ctx.m);
+          expect(m.set_.bind(m, ctx.i, ctx.j, ctx.val)).to.throwException();
+        });
+      });
+
+      dataDriven([
+        { m: m3x4, i: 0, j: 0, val: '1' },
+        { m: m3x4, i: 0, j: 0, val: [] },
+        { m: m3x4, i: 0, j: 0, val: {} }
+      ], function() {
+        it('should throw when val is not valid', function(ctx) {
+          var m = new DenseMatrix(ctx.m);
+          expect(m.set_.bind(m, ctx.i, ctx.j, ctx.val)).to.throwException();
+        });
+      });
+
+      dataDriven([
+        { m: m3x4, i: 0, j: 0, val: 2 },
+        { m: m3x4, i: 2, j: 1, val: 3 },
+        { m: m3x4, i: 1, j: 3, val: 5 }
+      ], function() {
+        it('should work', function(ctx) {
+          var m = new DenseMatrix(ctx.m);
+          m.set_(ctx.i, ctx.j, ctx.val);
+          expect(m.at(ctx.i, ctx.j)).to.be(ctx.val);
+        });
+      });
+    });
+
+    describe('DenseMatrix::toFull()', function() {
+      dataDriven([
+        { m: m2x2 },
+        { m: m3x4 }
+      ], function() {
+        it('should return correct 2d JS Array.', function(ctx) {
+          var m = new DenseMatrix(ctx.m);
+          expect(m.toFull()).to.eql(ctx.m);
+        });
+      });
+    });
+
+    describe('DenseMatrix::toCcs()', function() {
+      dataDriven([
+        {
+          m: [ [0, 1], [0, 0]],
+          ccs: [
+            [0, 0, 1],
+            [0],
+            [1]
+          ]
+        },
+      ], function() {
+        it('should return correct ccs.', function(ctx) {
+          var m = new DenseMatrix(ctx.m);
+          expect(m.toCcs()).to.eql(ctx.ccs);
+        });
+      });
+    });
+
+  });
 
   describe('DokSparseMatrix', function() {
     var fixtures = [

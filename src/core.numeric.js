@@ -74,41 +74,75 @@ function ccsValueListIterator(ccs) {
 }
 exports.ccsValueListIterator = ccsValueListIterator;
 
+// check whether a JS array is matrix like.
+function isMatrixLikeArray(arr) {
+  if (!_.isArray(arr)) return false;
+  if (arr.length <= 0) return false;
+
+  if (!_.isArray(arr[0])) return false;
+  var m = arr.length, n = arr[0].length;
+  if (n <= 0) return false;
+
+  var i;
+  for (i = 1; i < m; ++i)
+    if (!_.isArray(arr[i]) || arr[i].length !== n) return false;
+
+  return true;
+}
+exports.isMatrixLikeArray = isMatrixLikeArray;
+
+// Prerequisites: mat is a matrix-like 2d JS array.
+function matrixSize(mat) {
+  return [mat.length, mat[0].length];
+}
+
 function DenseMatrix(m, n, fn) {
   if (typeof m === 'number' && m > 0 &&
       typeof n === 'number' && n > 0) {
-    this.m = m;
-    this.n = n;
-    this._data = _.array2d(m, n, fn);
+    this._m = m;
+    this._n = n;
+    this._data = _.array2d(m, n, typeof fn !== 'undefined' ? fn : 0);
+  } else if (isMatrixLikeArray(m)) {
+    this._data = _.cloneDeep(m);
+
+    var size = matrixSize(m);
+    this._m = size[0];
+    this._n = size[1];
+  } else {
+    throw new Error('DenseMatrix(m, n): m and n must be positive integer.');
   }
-  throw new Error('DenseMatrix(m, n): m and n must be positive integer.');
 }
 
 DenseMatrix.prototype.at = function(i, j) {
-  if (i >= 0 && i < this.m && j >= 0 && j < this.n) {
+  if (i >= 0 && i < this._m && j >= 0 && j < this._n) {
     return this._data[i][j];
   }
   throw new Error('DenseMatrix::at(): index ' + [i, j] + ' outof bound ' + [this.m, this.n]);
 };
 
 DenseMatrix.prototype.size = function() {
-  throw new Error('DenseMatrix::size()');
+  return [this._m, this._n];
 };
 
 DenseMatrix.prototype.set_ = function(i, j, val) {
-  if (i >= 0 && i < this.m && j >= 0 && j < this.n) {
-    this._data[i][j] = val;
-  }
-  throw new Error('DenseMatrix::set(): index ' + [i, j] + ' outof bound ' + [this.m, this.n]);
+  if (i < 0 || i >= this._m || j < 0 || j >= this._n)
+    throw new Error('DenseMatrix::set(): index ' + [i, j] + ' outof bound ' + [this.m, this.n]);
+
+  if (typeof val !== 'number')
+    throw new Error('DenseMatrix::set_(i, j, val): val must be a number.');
+
+  this._data[i][j] = val;
 };
 
 DenseMatrix.prototype.toFull = function() {
-  return this._data;
+  return _.cloneDeep(this._data);
 };
 
 DenseMatrix.prototype.toCcs = function() {
-  return ccsSparse(this.toFull());
+  return ccsSparse(this._data);
 };
+
+exports.DenseMatrix = DenseMatrix;
 
 function DokSparseMatrix(valueList, m, n) {
   if ((m | 0) !== m || m <= 0 || (n | 0) !== n || n <= 0)
