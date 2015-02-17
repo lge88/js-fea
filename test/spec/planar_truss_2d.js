@@ -19,7 +19,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       [80, 40]
     ]);
 
-    var gcells = new fe.geometery.gcellset.L2({
+    var gcells = new fe.geometery.topology.L2({
       conn: [
         [ 1, 3 ],
         [ 1, 4 ],
@@ -36,7 +36,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var ebcFenids =[ 1, 1, 2, 2 ];
     var ebcPrescribed = [ 1, 1, 1, 1 ];
     var ebcComp = [ 1, 2, 1, 2 ];
-    var ebcVal = ebc_comp.map(function() { return 0; });
+    var ebcVal = ebcComp.map(function() { return 0; });
 
     var prop = new fe.property.LinearElasticISO({ E: E });
     var mater = new fe.material.DeformableSmallStrainLinearlyElasticUniaxial({

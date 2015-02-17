@@ -168,6 +168,8 @@ Topology.prototype.getMaxCells = function() {
   return this.getCellsInDim(this.getDim());
 };
 
+Topology.prototype.conn = Topology.prototype.getMaxCells;
+
 // Topology.prototype.remap = function(mapping) {
 
 // };
@@ -176,21 +178,21 @@ Topology.prototype.getMaxCells = function() {
 
 // };
 
-Topology.prototype.fuse = function(other) {
+// Topology.prototype.fuse = function(other) {
 
-};
+// };
 
 // Topology.prototype.invert = function() {
 
 // };
 
-Topology.prototype.skeleton = function(ord) {
+// Topology.prototype.skeleton = function(ord) {
 
-};
+// };
 
-Topology.prototype.boundary = function() {
+// Topology.prototype.boundary = function() {
 
-};
+// };
 
 // function __static__() {}
 
