@@ -15,10 +15,22 @@ var ccsLUPSolve = numeric.ccsLUPSolve;
 function vecEquals(a, b, aTolerance) {
   if (!_.isArray(a) || !_.isArray(b)) return false;
   if (a.length !== b.length) return false;
+  if (a.length === 0) return false;
+
+  var i, len = a.length;
+  for (i = 0; i < len; ++i)
+    if (typeof a[i] !== 'number') return false;
+
+  for (i = 0; i < len; ++i)
+    if (typeof b[i] !== 'number') return false;
 
   var tolerance = aTolerance || vecEquals.TOLERANCE;
   var d = numeric.sub(a, b);
-  var relativeError = numeric.norm2(d) / numeric.norm2(b);
+
+  var absError = numeric.norm2(d);
+  if (absError === 0) return true;
+
+  var relativeError = absError / numeric.norm2(b);
   return relativeError < tolerance;
 };
 vecEquals.TOLERANCE = 1e-4;
@@ -37,7 +49,11 @@ function array2dEquals(a, b, aTolerance) {
 
   var tolerance = typeof aTolerance === 'number' ? aTolerance : array2dEquals.TOLERANCE;
   var d = numeric.sub(a, b);
-  var relativeError = numeric.norm2(d) / numeric.norm2(b);
+
+  var absError = numeric.norm2(d);
+  if (absError === 0) return true;
+
+  var relativeError = absError / numeric.norm2(b);
   return relativeError < tolerance;
 }
 array2dEquals.TOLERANCE = 1e-4;

@@ -103,6 +103,18 @@ describe('core.numeric', function() {
         expected: false
       },
       {
+        desc: 'should return false and not die',
+        a: [[2]],
+        b: [2],
+        expected: false
+      },
+      {
+        desc: '[0] and [0] should be equal',
+        a: [0],
+        b: [0],
+        expected: true
+      },
+      {
         desc: 'a and b are of difference dimension',
         a: [],
         b: [1],
@@ -143,6 +155,12 @@ describe('core.numeric', function() {
 
   describe('array2dEquals(a, b, aTolerance)', function() {
     var fixtures = [
+      {
+        desc: '[[0]] should equals [[0]]',
+        a: [[0]],
+        b: [[0]],
+        expected: true
+      },
       {
         desc: 'a and b are of difference dimension',
         a: [ [1, 2], [0, 0] ],
