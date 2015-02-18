@@ -3,6 +3,7 @@
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
 var _ = require(SRC + '/core.utils.js');
+var dataDriven = require('data-driven');
 
 describe('core.utils', function() {
   describe('array1d()', function() {
@@ -164,6 +165,36 @@ describe('core.utils', function() {
       var iter = _.iteratorFromList(lst);
       expect(_.listFromIterator(iter)).to.eql(lst);
     });
+  });
+
+  describe('uuid()', function() {
+    it('should return a string', function() {
+      expect(_.uuid()).to.be.a('string');
+    });
+  });
+
+  describe('normalizedCell()', function() {
+    var fixtures = [
+      {
+        cell: [ 3, 2, 1 ],
+        normalized: [1, 3, 2]
+      },
+      {
+        cell: [ 3 ],
+        normalized: [ 3 ]
+      },
+      {
+        cell: [ 3, 4, 7, 1 ],
+        normalized: [ 1, 3, 4, 7 ]
+      }
+    ];
+
+    dataDriven(fixtures, function() {
+      it('should return normalized cell', function(ctx) {
+        expect(_.normalizedCell(ctx.cell)).to.eql(ctx.normalized);
+      });
+    });
+
   });
 
 });
