@@ -148,6 +148,21 @@ DenseMatrix.prototype.toCcs = function() {
 
 exports.DenseMatrix = DenseMatrix;
 
+function ensureMatrixDimension(mat, m, n) {
+  var dmat = new DenseMatrix(mat);
+  if (m !== null && dmat.m() !== m)
+    throw new Error('ensureMatrixDimension(mat, m, n): mat.m = ' +
+                    dmat.m() + ' but expect m = ' + m);
+
+  if (n !== null && dmat.n() !== n)
+    throw new Error('ensureMatrixDimension(mat, m, n): mat.n = ' +
+                    dmat.n() + ' but expect n = ' + n);
+
+  return mat;
+}
+// could be turned off by set numeric.ensureMatrixDimension = function(x) { return x; }
+exports.ensureMatrixDimension = ensureMatrixDimension;
+
 function DokSparseMatrix(valueList, m, n) {
   if ((m | 0) !== m || m <= 0 || (n | 0) !== n || n <= 0)
     throw new Error('DokSparseMatrix(ijvLst, m, n): m, n must be ' +
