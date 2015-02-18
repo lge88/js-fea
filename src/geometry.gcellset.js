@@ -12,12 +12,12 @@ var hypercube = require('./geometry.topology').hypercube;
 // Supposed to be private
 // TODO: support lookup by label.
 function GCellSet(topology) {
-  var cellSizeFromTopology = this._topology.getCellSizeInDim(this._topology.getDim());
+  var cellSizeFromTopology = topology.getCellSizeInDim(topology.getDim());
   var cellSizeShouldBe = this.cellSize();
   if (cellSizeFromTopology !== cellSizeShouldBe)
     throw new Error('GCellSet(): cellSize of the topology dismatch.');
 
-  var dimFromTopology = this._topology.getDim();
+  var dimFromTopology = topology.getDim();
   var dimShouldBe = this.dim();
   if (dimFromTopology !== dimShouldBe)
     throw new Error('GCellSet(): dim of the topology dismatch.');
@@ -284,6 +284,8 @@ function L2(conn, otherDimension, axisSymm) {
 
 L2.prototype = Object.create(Manifold1GCellSet.prototype);
 L2.prototype.constructor = L2;
+
+L2.prototype.cellSize = function() { return 2; };
 
 L2.prototype.type = function() { return 'L2'; };
 

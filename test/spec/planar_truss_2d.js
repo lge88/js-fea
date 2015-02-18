@@ -6,7 +6,7 @@ var fe = require(SRC);
 
 describe('FAESOR Planar_truess_with_anim example', function() {
 
-  it('should create model.', function() {
+  xit('should create model.', function() {
     var E = 1e7;
     var integrationOrder = 1;
 

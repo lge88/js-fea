@@ -33,12 +33,9 @@
 var _ = require('./core.utils');
 var array1d = _.array1d;
 var cloneDeep = _.cloneDeep;
-var Bimap = _.Bimap;
+var normalizedCell = _.normalizedCell;
 
-function normalizedCell(cell) {
-  var offset = _.minIndex(cell);
-  return _.rotateLeft(cell, offset);
-}
+var Bimap = _.Bimap;
 
 // dim = 0 -> point, dim = 1 -> curve,
 // dim = 2 -> surface, dim = 4 -> volumn'
