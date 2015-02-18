@@ -1,10 +1,11 @@
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
+var dataDriven = require('data-driven');
 var topology = require(SRC + '/geometry.topology.js');
 var Topology = topology.Topology;
-var hypercubeTopology = topology.hypercubeTopology;
-var simplexTopology = topology.simplexTopology;
+var hypercube = topology.hypercube;
+var simplex = topology.simplex;
 
 describe('geometry.topology', function() {
   var f = function(a, b, c) { return new Topology(a, b, c); };
@@ -269,18 +270,115 @@ describe('geometry.topology', function() {
 
   });
 
-  xdescribe('hypercubeTopology()', function() {
-    var f = function(a, b, c) { return new hypercubeTopology(a, b, c); };
-    it('hypercubeTopology([[]]) should throw()', function() {
-      expect(f.bind(null, [[[0], [1]]])).to.throwException();
+  describe('hypercube(conn, dim)', function() {
+    var casesShouldWork = [
+      {
+        desc: 'points made of P1',
+        conn: [
+          [1], [2], [3], [4]
+        ],
+        dim: 0,
+        expectedComplexes: [
+          [ [1], [2], [3], [4] ]
+        ]
+      },
+      {
+        desc: 'points from a flatten indices',
+        conn: [
+          1, 2, 3, 4
+        ],
+        dim: 0,
+        expectedComplexes: [
+          [ [1], [2], [3], [4] ]
+        ]
+      },
+      {
+        desc: 'A line made of L2',
+        conn: [
+          [1, 2]
+        ],
+        dim: 1,
+        expectedComplexes: [
+          [ [1], [2] ],
+          [ [1, 2] ]
+        ]
+      },
+      {
+        desc: 'A triangle made of L2',
+        conn: [
+          [1, 2],
+          [3, 2],
+          [1, 3]
+        ],
+        dim: 1,
+        expectedComplexes: [
+          [ [1], [2], [3] ],
+          [ [1, 2], [1, 3], [2, 3] ]
+        ]
+      },
+      {
+        desc: 'A quad made of L2',
+        conn: [
+          [1, 2],
+          [2, 3],
+          [3, 4],
+          [4, 1]
+        ],
+        dim: 1,
+        expectedComplexes: [
+          [ [1], [2], [3], [4] ],
+          [ [1, 2], [1, 4], [2, 3], [3, 4] ]
+        ]
+      },
+      {
+        desc: '2 quads made of Q4',
+        conn: [
+          [1, 2, 4, 3],
+          [3, 4, 6, 5]
+        ],
+        dim: 2,
+        expectedComplexes: [
+          [ [1], [2], [3], [4], [5], [6] ],
+          [ [1, 2], [2, 4], [4, 3], [3, 1], [4, 6], [6, 5], [5, 3] ],
+          [ [1, 2, 4, 3], [3, 4, 6, 5] ]
+        ]
+      },
+      {
+        desc: '2 brick made of H8',
+        conn: [
+          [1, 2, 5, 6, 7, 8, 11, 12],
+          [2, 3, 4, 5, 8, 9, 10, 11]
+        ],
+        dim: 3,
+        expectedComplexes: [
+          [
+            [1], [2], [3], [4], [5], [6],
+            [7], [8], [9], [10], [11], [12]
+          ],
+          [
+            [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 1], [2, 5],
+            [7, 8], [8, 9], [9, 10], [10, 11], [11, 12], [12, 7], [8, 11],
+            [1, 7], [6, 12], [2, 8], [5, 11], [3, 9], [4, 10]
+          ],
+          [
+            [1, 6, 5, 2], [1, 2, 8, 7], [2, 5, 11, 8], [5, 6, 12, 11], [1, 7, 12, 6], [7, 8, 11, 12],
+            [2, 5, 4, 3], [2, 3, 9, 8], [3, 4, 10, 9], [4, 5, 11, 10], [2, 8, 11, 5], [8, 9, 10, 11]
+          ],
+          [
+            [1, 2, 5, 6, 7, 8, 11, 12],
+            [2, 3, 4, 5, 8, 9, 10, 11]
+          ]
+        ]
+      },
+    ];
+
+    dataDriven(casesShouldWork, function() {
+      it('should work for dim = {dim} {desc}', function(ctx) {
+        var resultTopology = hypercube(ctx.conn, ctx.dim);
+        var expectedTopology = new Topology(ctx.expectedComplexes);
+        expect(resultTopology.equals(expectedTopology)).to.be(true);
+      });
     });
 
-    it('hypercubeTopology([[], [], ...], 0) should create points', function() {
-      var t = hypercubeTopology([
-        [0], [1], [2]
-      ], 0);
-      expect(t.getDim()).to.be(0);
-      expect(t.getNumOfCellsInDim(0)).to.be(3);
-    });
   });
 });

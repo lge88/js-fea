@@ -2,8 +2,8 @@
 // geometry.topology
 // FUNCTIONS:
 //   Topology(complexes)
-//   hypercubeTopology(conn, dim)
-//   simplexTopology(conn, dim)
+//   hypercube(conn, dim)
+//   simplex(conn, dim)
 // //
 // [Topology] constructor:
 //   Topology(complexes)
@@ -26,12 +26,19 @@
 //   Topology::skeleton(ord)
 //   Topology::boundary()
 // //
-// [hypercubeTopology] class methods:
-//   hypercubeTopology.getCellType(dim)
-//   hypercubeTopology.getCellSize(dim)
+// [hypercube] class methods:
+//   hypercube.getCellType(dim)
+//   hypercube.getCellSize(dim)
 
 var _ = require('./core.utils');
+var array1d = _.array1d;
+var cloneDeep = _.cloneDeep;
 var Bimap = _.Bimap;
+
+function normalizedCell(cell) {
+  var offset = _.minIndex(cell);
+  return _.rotateLeft(cell, offset);
+}
 
 // dim = 0 -> point, dim = 1 -> curve,
 // dim = 2 -> surface, dim = 4 -> volumn'
@@ -79,8 +86,9 @@ function Topology(complexes, cellSizes) {
   var _complexes = _.cloneDeep(complexes);
   _(_complexes).each(function(x, i) {
     _(_complexes[i]).each(function(y, j) {
-      var offset = _.minIndex(y);
-      _complexes[i][j] = _.rotateLeft(y, offset);
+      _complexes[i][j] = normalizedCell(y);
+      // var offset = _.minIndex(y);
+      // _complexes[i][j] = _.rotateLeft(y, offset);
     });
     _complexes[i].sort(_.byLexical);
   });
@@ -168,8 +176,6 @@ Topology.prototype.getMaxCells = function() {
   return this.getCellsInDim(this.getDim());
 };
 
-Topology.prototype.conn = Topology.prototype.getMaxCells;
-
 // Topology.prototype.remap = function(mapping) {
 
 // };
@@ -190,9 +196,9 @@ Topology.prototype.conn = Topology.prototype.getMaxCells;
 
 // };
 
-// Topology.prototype.boundary = function() {
-
-// };
+Topology.prototype.boundary = function() {
+  throw new Error('Topology::boundary(): is not implemented.');
+};
 
 // function __static__() {}
 
@@ -560,52 +566,126 @@ Topology.prototype.conn = Topology.prototype.getMaxCells;
 
 // dim = 0 -> point, dim = 1 -> line
 // dim = 2 -> quad, dim = 3 -> hexahedron
-function hypercubeTopology(conn, dim) {
-  var complexes = [];
-  return new Topology(complexes);
-};
-
-hypercubeTopology.DIM_CELLSIZE_BIMAP = new Bimap([
+var HYPERCUBE_DIM_CELLSIZE_BIMAP = new Bimap([
   [0, 1],
   [1, 2],
   [2, 4],
   [3, 8]
 ]);
 
-hypercubeTopology.DIM_CELLTYPE_BIMAP = new Bimap([
-  [0, 'P'],
-  [1, 'L2'],
-  [2, 'Q4'],
-  [3, 'H8']
-]);
-
-hypercubeTopology.getCellType = function(dim) {
-  var t = hypercubeTopology.DIM_CELLTYPE_BIMAP.leftFind(dim);
-  if (!t) {
-    throw new Error('HypercubeTopology::getCellType(dim) can not get cell type for dim ' + dim);
-  }
-  return t;
+// line -> two points
+function hypercubeCellBoundary1(cell) {
+  var p1 = [ cell[0] ];
+  var p2 = [ cell[1] ];
+  return [ p1, p2 ];
 };
 
-hypercubeTopology.getCellSize = function(dim) {
-  var s = hypercubeTopology.DIM_CELLSIZE_BIMAP.leftFind(dim);
-  if (!s) {
-    throw new Error('HypercubeTopology::getCellType(dim) can not get cell type for dim ' + dim);
-  }
-  return s;
+// quad -> four lines
+function hypercubeCellBoundary2(cell) {
+  var e1 = [ cell[0], cell[1] ];
+  var e2 = [ cell[1], cell[2] ];
+  var e3 = [ cell[2], cell[3] ];
+  var e4 = [ cell[3], cell[0] ];
+  return [ e1, e2, e3, e4 ];
 };
 
+// brick -> six quads
+function hypercubeCellBoundary3(cell) {
+  var v1 = cell[0], v2 = cell[1], v3 = cell[2], v4 = cell[3];
+  var v5 = cell[4], v6 = cell[5], v7 = cell[6], v8 = cell[7];
+  var f1 = [ v1, v4, v3, v2 ];
+  var f2 = [ v1, v2, v6, v5 ];
+  var f3 = [ v2, v3, v7, v6 ];
+  var f4 = [ v3, v4, v8, v7 ];
+  var f5 = [ v1, v5, v8, v4 ];
+  var f6 = [ v5, v6, v7, v8 ];
+  return [ f1, f2, f3, f4, f5, f6 ];
+};
+
+function hypercubeSkeleton(conn, dim) {
+  var getCellBoundary;
+  if (dim === 1)
+    getCellBoundary = hypercubeCellBoundary1;
+  else if (dim === 2)
+    getCellBoundary = hypercubeCellBoundary2;
+  else if (dim === 3)
+    getCellBoundary = hypercubeCellBoundary3;
+  else
+    throw new Error('hypercubeBoundaryCells(conn, dim): dim (' +
+                       dim + ') is not valid.');
+
+  var hashCell = function(cell) {
+    return normalizedCell(cell).join(',');
+  };
+
+  var seen = {}, skeleton = [];
+  conn.forEach(function(cell) {
+    var boundaryCells = getCellBoundary(cell);
+    boundaryCells.forEach(function(bdryCell) {
+      var key = hashCell(bdryCell);
+      if (!seen[key]) {
+        skeleton.push(bdryCell);
+        seen[key] = true;
+      }
+    });
+  });
+  return skeleton;
+}
+
+function hypercube0_(conn) {
+  if (typeof conn[0] === 'number')
+    return [ conn.map(function(idx) { return [idx]; }) ];
+  return [ cloneDeep(conn) ];
+}
+
+function hypercube1_(conn) {
+  var complexes = array1d(2, function() { return null; });
+  complexes[1] = cloneDeep(conn);
+  complexes[0] = hypercubeSkeleton(complexes[1], 1);
+  return complexes;
+}
+
+function hypercube2_(conn) {
+  var complexes = array1d(3, function() { return null; });
+  complexes[2] = cloneDeep(conn);
+  complexes[1] = hypercubeSkeleton(complexes[2], 2);
+  complexes[0] = hypercubeSkeleton(complexes[1], 1);
+  return complexes;
+}
+
+function hypercube3_(conn) {
+  var complexes = array1d(4, function() { return null; });
+  complexes[3] = cloneDeep(conn);
+  complexes[2] = hypercubeSkeleton(complexes[3], 3);
+  complexes[1] = hypercubeSkeleton(complexes[2], 2);
+  complexes[0] = hypercubeSkeleton(complexes[1], 1);
+  return complexes;
+}
+
+function hypercube(conn, dim) {
+  if (dim === 0) {
+    return new Topology(hypercube0_(conn));
+  } else if (dim === 1) {
+    return new Topology(hypercube1_(conn));
+  } else if (dim === 2) {
+    return new Topology(hypercube2_(conn));
+  } else if (dim === 3) {
+    return new Topology(hypercube3_(conn));
+  }
+
+  throw new Error('hypercube(conn, dim): dim must be one of 0,1,2,3.');
+};
 
 // dim = 0 -> point, dim = 1 -> line
 // dim = 2 -> triangle, dim = 3 -> tetrahedron
-function simplexTopology(conn, dim) {
+function simplex(conn, dim) {
   var complexes = [];
   return new Topology(complexes);
 };
 
-simplexTopology.prototype = Object.create(Topology.prototype);
-simplexTopology.prototype.constructor = simplexTopology;
+simplex.prototype = Object.create(Topology.prototype);
+simplex.prototype.constructor = simplex;
 
 exports.Topology = Topology;
-exports.hypercubeTopology = hypercubeTopology;
-exports.simplexTopology = simplexTopology;
+exports.hypercube = hypercube;
+exports.simplex = simplex;
