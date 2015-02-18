@@ -217,7 +217,6 @@ describe('core.numeric', function() {
     });
   });
 
-
   describe('DenseMatrix', function() {
     var m2x2 = [ [1, 2], [3, 4] ];
     var m3x4 = [
@@ -589,7 +588,6 @@ describe('core.numeric', function() {
 
   });
 
-
   describe('mldivide()', function() {
     var casesThatShouldThrow = [
       {
@@ -698,4 +696,5 @@ describe('core.numeric', function() {
     });
 
   });
+
 });
