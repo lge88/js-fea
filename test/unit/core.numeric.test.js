@@ -13,8 +13,59 @@ var mldivide = numeric.mldivide;
 var vecEquals = numeric.vecEquals;
 var array2dEquals = numeric.array2dEquals;
 var isMatrixLikeArray = numeric.isMatrixLikeArray;
+var ensureMatrixDimension = numeric.ensureMatrixDimension;
 
 describe('core.numeric', function() {
+
+  describe('ensureMatrixDimension', function() {
+    var casesShouldWork = [
+      {
+        mat: [ [1, 2] ],
+        m: 1,
+        n: 2,
+        desc: '1x2 matrix'
+      },
+      {
+        mat: [ [1], [2] ],
+        m: 2,
+        n: 1,
+        desc: '2x1 matrix'
+      },
+      {
+        mat: [ [1, 2], [2, 3] ],
+        m: 2,
+        n: 2,
+        desc: '2x2 matrix'
+      }
+    ];
+
+    dataDriven(casesShouldWork, function() {
+      it('should work {desc}', function(ctx) {
+        expect(ensureMatrixDimension(ctx.mat, ctx.m, ctx.n)).to.eql(ctx.mat);
+      });
+    });
+
+    var casesShouldNotWork = [
+      {
+        mat: [ [1, 2] ],
+        m: 1,
+        n: 1,
+        desc: '1x2 matrix'
+      },
+      {
+        mat: [ [1, 2], [1] ],
+        m: 2,
+        n: 1,
+        desc: 'not even a valid matrix'
+      }
+    ];
+
+    dataDriven(casesShouldNotWork, function() {
+      it('should not work {desc}', function(ctx) {
+        expect(ensureMatrixDimension.bind(null, ctx.mat, ctx.m, ctx.n)).to.throwException();
+      });
+    });
+  });
 
   describe('ccsValueListIterator()', function() {
 

@@ -128,6 +128,9 @@ DenseMatrix.prototype.size = function() {
   return [this._m, this._n];
 };
 
+DenseMatrix.prototype.m = function() { return this._m; };
+DenseMatrix.prototype.n = function() { return this._n; };
+
 DenseMatrix.prototype.set_ = function(i, j, val) {
   if (i < 0 || i >= this._m || j < 0 || j >= this._n)
     throw new Error('DenseMatrix::set(): index ' + [i, j] + ' outof bound ' + [this.m, this.n]);
