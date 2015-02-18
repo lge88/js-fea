@@ -169,7 +169,12 @@ describe('core.utils', function() {
 
   describe('uuid()', function() {
     it('should return a string', function() {
-      expect(_.uuid()).to.be.a('string');
+      var id, i = 10;
+      while (i-- > 0) {
+        id = _.uuid();
+        expect(id).to.be.a('string');
+        expect(id.length).to.be(36);
+      }
     });
   });
 
