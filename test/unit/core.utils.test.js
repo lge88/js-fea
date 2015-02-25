@@ -202,4 +202,98 @@ describe('core.utils', function() {
 
   });
 
+  describe('contracts', function() {
+    var aString = _.defineContract(_.assert.string);
+
+    it('should be able to be turn on/off', function() {
+      var alwaysWrong = function() {
+        throw new Error('always wrong!');
+      };
+
+      var inDevEnv = _.defineContract(alwaysWrong);
+      expect(inDevEnv.bind(null, 1)).to.throwException();
+
+      _._env = 'prod';
+      var inProdEnv = _.defineContract(alwaysWrong);
+      expect(inProdEnv.bind(null, 1)).not.to.throwException();
+
+      _._env = 'dev';
+    });
+
+    it('should report error message correctly.', function() {
+      var allNumbers = _.defineContract(function(a, b, c) {
+        _.assert.number(a, 'a is not a number.');
+        _.assert.number(b, 'b is not a number.');
+        _.assert.number(c, 'c is not a number.');
+      });
+
+      expect(allNumbers.bind(null, 1, 2, 3)).not.to.throwException();
+      expect(allNumbers.bind(null, '1', '2', 3)).to.throwException(/a is not a number/);
+      expect(allNumbers.bind(null, 1, '2', 3)).to.throwException(/b is not a number/);
+
+
+      var numWithStringMessage = _.defineContract(function(n) {
+        if (!_.check.number(n)) throw new Error();
+      }, 'input is not a number :(');
+
+      expect(numWithStringMessage.bind(null, 1)).not.to.throwException();
+      expect(numWithStringMessage.bind(null, '2')).to.throwException(/input is not a number/);
+
+    });
+
+    it('should error message be concated', function() {
+      var point3d = _.defineContract(function(p) {
+        _.assert.number(p.x, 'p.x: ' + p.x + ' is not a number.');
+        _.assert.number(p.y, 'p.y: ' + p.y + ' is not a number.');
+        _.assert.number(p.z, 'p.z: ' + p.z + ' is not a number.');
+      }, 'p is not a valid 3d point.');
+
+      var p = { x: 2, y: 3, z: NaN };
+
+      expect(point3d.bind(null, p)).to.throwException(function(e) {
+        expect(e.message).to.match(/p.z: (.+) is not a number/);
+        expect(e.message).to.match(/p is not a valid 3d point/);
+      });
+
+    });
+
+    it('should support custom function to report error message', function() {
+      var vecOfLenWithMoreMessage = _.defineContract(function(vec, n) {
+        if (!_.check.array(vec)) throw new Error('vec is not an array.');
+        if (vec.length !== n) throw new Error('vec is not of length ' + n);
+      }, function(vec, n) {
+        return 'vec is not a vector of length ' + n;
+      });
+
+      var vec = [1, 2, 3, 4];
+
+      expect(vecOfLenWithMoreMessage.bind(null, 1, 1)).to.throwException(/vec is not an array/);
+      expect(vecOfLenWithMoreMessage.bind(null, vec, 5)).to.throwException(function(e) {
+        expect(e.message).to.match(/vec is not of length 5/);
+        expect(e.message).to.match(/vec is not a vector of length 5/);
+      });
+    });
+
+    it('should support vanilla assert.', function() {
+      var intFromZeroToTen = _.defineContract(function(i) {
+        _.assert.integer(i);
+        _.assert(i >= 0, 'i < 0');
+        _.assert(i <= 10, 'i > 10');
+      }, 'input is not an integer in \[0, 10\]');
+
+      expect(intFromZeroToTen.bind(null, 0)).not.to.throwException();
+      expect(intFromZeroToTen.bind(null, -1)).to.throwException(function(e) {
+        expect(e.message).to.match(/i < 0/);
+        expect(e.message).to.match(/input is not an integer in \[0, 10\]/);
+      });
+
+      expect(intFromZeroToTen.bind(null, 11)).to.throwException(function(e) {
+        expect(e.message).to.match(/i > 10/);
+        expect(e.message).to.match(/input is not an integer in \[0, 10\]/);
+      });
+
+    });
+
+  });
+
 });

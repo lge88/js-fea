@@ -154,4 +154,61 @@ function normalizedCell(cell) {
 }
 _.normalizedCell = normalizedCell;
 
+
+// Type checking & contracts:
+var check = require('check-types');
+var assert = require('assert');
+
+_._env = 'dev';
+
+function noop() {}
+_.noop = noop;
+
+function defineContract(c, whatsWrong) {
+  if (_._env === 'dev') {
+    return function() {
+      try {
+        c.apply(null, arguments);
+      } catch(err) {
+        if (typeof whatsWrong === 'function')
+          err.message = whatsWrong.apply(null, arguments) + '\n' + err.message;
+
+        if (whatsWrong)
+          err.message = whatsWrong + '\n' + err.message;
+
+        throw err;
+      }
+    };
+  } else {
+    return noop;
+  }
+}
+
+assert.string = check.assert.string;
+assert.unemptyString = check.assert.unemptyString;
+assert.webUrl = check.assert.webUrl;
+assert.length = check.assert.length;
+assert.number = check.assert.number;
+assert.positive = check.assert.positive;
+assert.negative = check.assert.negative;
+assert.odd = check.assert.odd;
+assert.even = check.assert.even;
+assert.integer = check.assert.integer;
+assert.function = check.assert.function;
+assert.array = check.assert.array;
+assert.length = check.assert.length;
+assert.date = check.assert.date;
+assert.object = check.assert.object;
+assert.emptyObject = check.assert.emptyObject;
+assert.instance = check.assert.instance;
+assert.like = check.assert.like;
+assert.null = check.assert.null;
+assert.undefined = check.assert.undefined;
+assert.assigned = check.assert.assigned;
+assert.boolean = check.assert.boolean;
+
+_.check = check;
+_.assert = assert;
+_.defineContract = defineContract;
+
 module.exports = exports = _;
