@@ -317,7 +317,32 @@ describe('core.utils', function() {
         m: 2,
         n: 2,
         desc: '2x2 matrix'
-      }
+      },
+      {
+        mat: [ [1, 2, 4, 5], [2, 4, 5, 3] ],
+        m: 2,
+        n: '*',
+        desc: '2 x * matrix'
+      },
+      {
+        mat: [ [1, 2, 4 ], [2, 4, 5 ] ],
+        m: 2,
+        n: '*',
+        desc: '2 x * matrix'
+      },
+      {
+        mat: [ [1, 2, 4, 5], [2, 4, 5, 3] ],
+        m: '*',
+        n: 4,
+        desc: '* x 4 matrix'
+      },
+      {
+        mat: [ [2, 4, 5, 3] ],
+        m: '*',
+        n: 4,
+        desc: '* x 4 matrix'
+      },
+
     ];
 
 
@@ -369,7 +394,20 @@ describe('core.utils', function() {
         m: 2,
         n: 2,
         desc: 'has invalid element'
-      }
+      },
+      {
+        mat: [ [2, 4, 5 ] ],
+        m: '*',
+        n: 4,
+        desc: '* x 4 matrix'
+      },
+      {
+        mat: [ [2, 4, 5 ], [2, 1] ],
+        m: 2,
+        n: '*',
+        desc: '2 x * matrix'
+      },
+
     ];
 
     dataDriven(casesShouldNotWork, function() {
@@ -395,7 +433,18 @@ describe('core.utils', function() {
         vec: [ 1 ],
         n: 1,
         desc: '1D vector'
-      }
+      },
+      {
+        vec: [ 1 ],
+        n: '*',
+        desc: '*D vector'
+      },
+      {
+        vec: [ 1, 2 ],
+        n: '*',
+        desc: '*D vector'
+      },
+
     ];
 
     it('should not define a vector of 0 dimension', function() {
@@ -428,6 +477,11 @@ describe('core.utils', function() {
       {
         vec: [1, '2'],
         n: 2,
+        desc: 'has invalid element'
+      },
+      {
+        vec: [1, '2'],
+        n: '*',
         desc: 'has invalid element'
       }
     ];

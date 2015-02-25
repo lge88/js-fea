@@ -215,15 +215,20 @@ _.defineContract = defineContract;
 _.contracts = {};
 
 function matrixOfDimension(m, n, msg) {
-  assert.positive(m);
-  assert.positive(n);
+  if (m !== '*') assert.positive(m);
+  if (n !== '*') assert.positive(n);
+
   if (!msg) msg = 'input is not a matrix of ' + m + ' x ' + n + '.';
   return defineContract(function(mat) {
     assert.array(mat, 'mat is not a JS array');
+
+    if (m === '*') m = mat.length;
     assert(mat.length === m, 'mat length ' + mat.length + ' is not '+ m);
+
     var i, j;
     for (i = 0; i < m; ++i) {
       assert.array(mat[i], 'row ' + i + ' is not a JS array');
+      if (n === '*') n = mat[i].length;
       assert(mat[i].length === n, 'row ' + i + ' has ' + mat[i].length + ' elements' +
              ' instead of ' + n);
       for (j = 0; j < n; ++j) {
@@ -236,10 +241,11 @@ function matrixOfDimension(m, n, msg) {
 _.contracts.matrixOfDimension = matrixOfDimension;
 
 function vectorOfDimension(n, msg) {
-  assert.positive(n);
+  if (n !== '*') assert.positive(n);
   if (!msg) msg = 'input is not a vector of ' + n + ' dimension.';
   return defineContract(function(vec) {
     assert.array(vec, 'vec is not a JS array');
+    if (n === '*') n = vec.length;
     assert(vec.length === n, 'vec length ' + vec.length + ' is not ' + n);
 
     var i;
