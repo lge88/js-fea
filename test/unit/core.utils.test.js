@@ -296,4 +296,151 @@ describe('core.utils', function() {
 
   });
 
+  describe('matrixOfDimension(m, n, msg)', function() {
+    var matrixOfDimension = _.contracts.matrixOfDimension;
+
+    var casesShouldWork = [
+      {
+        mat: [ [1, 2] ],
+        m: 1,
+        n: 2,
+        desc: '1x2 matrix'
+      },
+      {
+        mat: [ [1], [2] ],
+        m: 2,
+        n: 1,
+        desc: '2x1 matrix'
+      },
+      {
+        mat: [ [1, 2], [2, 3] ],
+        m: 2,
+        n: 2,
+        desc: '2x2 matrix'
+      }
+    ];
+
+
+    it('should not define a matrix of 0 dimension', function() {
+      expect(matrixOfDimension.bind(null, 0, 2)).to.throwException();
+      expect(matrixOfDimension.bind(null, 2, 0)).to.throwException();
+    });
+
+    dataDriven(casesShouldWork, function() {
+      it('should work {desc}', function(ctx) {
+        var contract = matrixOfDimension(ctx.m, ctx.n);
+        expect(contract.bind(null, ctx.mat)).not.to.throwException();
+      });
+    });
+
+    var casesShouldNotWork = [
+      {
+        mat: 1,
+        m: 1,
+        n: 1,
+        desc: '1x1 matrix'
+      },
+      {
+        mat: [1, 2],
+        m: 1,
+        n: 2,
+        desc: '1x2 matrix'
+      },
+      {
+        mat: [ [1, 2] ],
+        m: 1,
+        n: 1,
+        desc: '1x2 matrix'
+      },
+      {
+        mat: [ [1, 2], [1] ],
+        m: 2,
+        n: 1,
+        desc: 'not even a valid matrix'
+      },
+      {
+        mat: [ [1, 2], [1, NaN] ],
+        m: 2,
+        n: 2,
+        desc: 'has invalid element'
+      },
+      {
+        mat: [ [1, 2], [1, '1'] ],
+        m: 2,
+        n: 2,
+        desc: 'has invalid element'
+      }
+    ];
+
+    dataDriven(casesShouldNotWork, function() {
+      it('should not work {desc}', function(ctx) {
+        var contract = matrixOfDimension(ctx.m, ctx.n);
+        expect(contract.bind(null, ctx.mat)).to.throwException(function(e) {
+          // console.log(e.message);
+        });
+      });
+    });
+  });
+
+  describe('vectorOfDimension(n, msg)', function() {
+    var vectorOfDimension = _.contracts.vectorOfDimension;
+
+    var casesShouldWork = [
+      {
+        vec: [ 1, 2 ],
+        n: 2,
+        desc: '2D vector'
+      },
+      {
+        vec: [ 1 ],
+        n: 1,
+        desc: '1D vector'
+      }
+    ];
+
+    it('should not define a vector of 0 dimension', function() {
+      expect(vectorOfDimension.bind(null, 0)).to.throwException();
+    });
+
+    dataDriven(casesShouldWork, function() {
+      it('should work {desc}', function(ctx) {
+        var contract = vectorOfDimension(ctx.n);
+        expect(contract.bind(null, ctx.vec)).not.to.throwException();
+      });
+    });
+
+    var casesShouldNotWork = [
+      {
+        vec: 1,
+        n: 1,
+        desc: 'single number is not a vector'
+      },
+      {
+        vec: [1, 2],
+        n: 1,
+        desc: 'vector length is not expected'
+      },
+      {
+        vec: [1, NaN],
+        n: 2,
+        desc: 'has invalid element'
+      },
+      {
+        vec: [1, '2'],
+        n: 2,
+        desc: 'has invalid element'
+      }
+    ];
+
+    dataDriven(casesShouldNotWork, function() {
+      it('should not work {desc}', function(ctx) {
+        var contract = vectorOfDimension(ctx.n);
+        expect(contract.bind(null, ctx.vec)).to.throwException(function(e) {
+          // console.log(e.message);
+        });
+      });
+    });
+  });
+
+
 });
