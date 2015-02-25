@@ -6,20 +6,26 @@ var fe = require(SRC);
 
 describe('FAESOR Planar_truess_with_anim example', function() {
 
-  xit('should create model.', function() {
+  it('should create model.', function() {
+    // import objects:
+    var PointSet = fe.geometry.pointset.PointSet;
+    var L2 = fe.geometry.gcellset.L2;
+    var LinElIso = fe.property.LinElIso;
+
+    // parameters:
     var E = 1e7;
     var integrationOrder = 1;
 
-    var fens = new fe.geometry.pointset([
-      [0, 0]
-      [0, 40]
-      [40, 0]
-      [40, 40]
-      [80, 0]
+    var fens = new PointSet([
+      [0, 0],
+      [0, 40],
+      [40, 0],
+      [40, 40],
+      [80, 0],
       [80, 40]
     ]);
 
-    var gcells = new fe.geometery.topology.L2({
+    var gcells = new L2({
       conn: [
         [ 1, 3 ],
         [ 1, 4 ],
@@ -38,7 +44,11 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var ebcComp = [ 1, 2, 1, 2 ];
     var ebcVal = ebcComp.map(function() { return 0; });
 
-    var prop = new fe.property.LinearElasticISO({ E: E });
+    var prop = new LinElIso({ E: E, nu: 0.0 });
+
+    // TODO: Everything below is not implemented.
+    return 0;
+
     var mater = new fe.material.DeformableSmallStrainLinearlyElasticUniaxial({
       property: prop
     });

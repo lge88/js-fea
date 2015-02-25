@@ -7,3 +7,10 @@ _.assign(exports, require('./femodel.js'));
 
 exports._ = _;
 exports.numeric = require('./core.numeric.js');
+
+exports.property = require('./materialproperty.js');
+exports.geometry = {
+  pointset: require('./geometry.pointset'),
+  topology: require('./geometry.topology'),
+  gcellset: require('./geometry.gcellset')
+};

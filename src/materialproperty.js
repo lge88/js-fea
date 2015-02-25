@@ -2,6 +2,8 @@
 // materialproperty
 
 var _ = require('./core.utils');
+var assert = _.assert;
+var check = _.check;
 var matrixOfDimension = _.contracts.matrixOfDimension;
 var mat6x6 = matrixOfDimension(6, 6);
 var diag = _.numeric.diag;
@@ -14,36 +16,41 @@ function MaterialProperty(props) {
 }
 
 MaterialProperty.prototype.rho = function() { return this._rho; };
+exports.MaterialProperty = MaterialProperty;
 
 var _input_contract_LinElIsoProp_ = _.defineContract(function(props) {
-  _.assert.object(props, 'props is not a JS object');
-  _.assert.undefined(props.G, 'props.G should not be set, it is compute from E and nu.');
-  _.assert.positive(props.E, 'props.E is not a positive number.');
-  _.assert.number(props.nu, 'props.nu is not a number.');
-  if (props.nu < 0) throw new Error('props.nu < 0.');
+  assert.object(props, 'props is not a JS object');
+  assert.undefined(props.G, 'props.G should not be set, it is compute from E and nu.');
+  assert.positive(props.E, 'props.E is not a positive number.');
+  if (check.assigned(props.nu)) {
+    assert.number(props.nu, 'props.nu is not a number.');
+    if (props.nu < 0) throw new Error('props.nu < 0.');
+  }
 }, 'input is not a valid linear elasitc iso property.');
 
-function LinElIsoProp(props) {
+function LinElIso(props) {
   _input_contract_LinElIsoProp_(props);
 
   MaterialProperty.call(this, props);
   this._E = props.E;
   this._nu = props.nu;
+  if (!check.assigned(this._nu)) this._nu = 0.0;
 }
+exports.LinElIso = LinElIso;
 
-LinElIsoProp.prototype = Object.create(MaterialProperty.prototype);
-LinElIsoProp.prototype.constructor = LinElIsoProp;
+LinElIso.prototype = Object.create(MaterialProperty.prototype);
+LinElIso.prototype.constructor = LinElIso;
 
-LinElIsoProp.prototype.E = function() { return this._E; };
-LinElIsoProp.prototype.nu = function() { return this._nu; };
-LinElIsoProp.prototype.G = function() {
+LinElIso.prototype.E = function() { return this._E; };
+LinElIso.prototype.nu = function() { return this._nu; };
+LinElIso.prototype.G = function() {
   if (!this._G)
     this._G = 0.5 * this._E/(1+this._nu);
   return this._G;
 };
 
 var _output_contract_D_ = mat6x6;
-LinElIsoProp.prototype.D = function() {
+LinElIso.prototype.D = function() {
   // compute D;
   if (!this._D) {
     var E = this.E(), nu = this.nu(), G = this.G();

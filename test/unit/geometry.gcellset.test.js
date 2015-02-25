@@ -18,7 +18,11 @@ describe('geometry.gcellset', function() {
       [ 5, 6 ]
     ];
 
-    var gcells = new L2(conn, 1.0, false);
+    var gcells = new L2({
+      conn: conn,
+      otherDimension: 1.0,
+      axisSymm: false
+    });
 
     expect(gcells.conn()).to.eql(conn.map(_.normalizedCell).sort(_.byLexical));
     expect(gcells.otherDimension()).to.be(1.0);

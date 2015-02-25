@@ -36,7 +36,7 @@ gulp.task('unit', function(cb) {
     });
 });
 
-gulp.task('spec', function() {
+gulp.task('spec', ['lib:dev'], function() {
   gulp
     .src(config.paths.spec, {read: false})
     .pipe($.mocha(config.mocha));

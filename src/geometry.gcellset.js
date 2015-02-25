@@ -3,6 +3,10 @@
 
 var _ = require('./core.utils');
 var uuid = _.uuid;
+var defineContract = _.defineContract;
+var assert = _.assert;
+var check = _.check;
+var matrixnx2 = _.contracts.matrixOfDimension('*', 2);
 
 var numeric = require('./core.numeric');
 var ensureMatrixDimension = numeric.ensureMatrixDimension;
@@ -277,7 +281,27 @@ Manifold1GCellSet.prototype.jacobianInDim = function(conn, N, J, x, dim) {
   }
 };
 
-function L2(conn, otherDimension, axisSymm) {
+var _input_contract_L2_ = defineContract(function(options) {
+  assert.object(options);
+  matrixnx2(options.conn);
+  if (check.assigned(options.otherDimension)) {
+    assert.number(options.otherDimension);
+  }
+
+  if (check.assigned(options.axisSymm)) {
+    assert.boolean(options.axisSymm);
+  }
+});
+
+function L2(options) {
+  _input_contract_L2_(options);
+
+  var conn = options.conn;
+  var otherDimension = check.assigned(options.otherDimension) ?
+        options.otherDimension : 1.0;
+  var axisSymm = check.assigned(options.axisSymm) ?
+        options.axisSymm : false;
+
   var topology = hypercube(conn, 1);
   Manifold1GCellSet.call(this, topology, otherDimension, axisSymm);
 }
