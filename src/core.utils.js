@@ -17,13 +17,14 @@ var conflicts = [
 ];
 
 // TODO: do not mount numeric directly under _ namespace.
-// Not that effecient, maybe precompute this.
 _(numeric)
   .keys()
   .difference(conflicts)
   .forEach(function(method) {
     _[method] = numeric[method];
   });
+
+_.numeric = numeric;
 
 _.Bimap = require('./core.bimap').Bimap;
 _.Bipartite= require('./core.bipartite').Bipartite;

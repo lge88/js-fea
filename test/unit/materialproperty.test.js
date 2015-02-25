@@ -3,8 +3,8 @@ var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
 require(SRC + '/materialproperty.js');
 
-xdescribe('materialproperty', function() {
-  it('should fail', function() {
+describe('materialproperty', function() {
+  xit('should fail', function() {
     expect(false).to.be(true);
   });
 });
