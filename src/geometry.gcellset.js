@@ -1,17 +1,117 @@
 /*global require*/
 // geometry.gcellset
 
+// FUNCTIONS:
+//   GCellSet(topology)
+//   Manifold1GCellSet(topology, otherDimension, axisSymm)
+//   L2(options)
+// //
+// [GCellSet] constructor:
+//   GCellSet(topology)
+// //
+// [GCellSet] instance methods:
+//   GCellSet::type()
+//   GCellSet::boundaryGCellSetConstructor()
+//   GCellSet::boundaryCellType()
+//   GCellSet::boundary()
+//   GCellSet::dim()
+//   GCellSet::cellSize()
+//   GCellSet::id()
+//   GCellSet::conn()
+//   GCellSet::jacobianMatrix(nder, x)
+//   GCellSet::bfun(paramCoords)
+//   GCellSet::bfundpar(paramCoords)
+//   GCellSet::bfundsp(nder, x)
+//   GCellSet::cat()
+//   GCellSet::count()
+//   GCellSet::isInParametric(paramCoords)
+//   GCellSet::map2parametric(x, c)
+//   GCellSet::subset(indices)
+//   GCellSet::clone()
+//   GCellSet::updateConnectivity()
+// //
+// [Manifold1GCellSet] constructor:
+//   Manifold1GCellSet(topology, otherDimension, axisSymm)
+// //
+// [Manifold1GCellSet] instance methods:
+//   Manifold1GCellSet::dim()
+//   Manifold1GCellSet::otherDimension(conn, N, x)
+//   Manifold1GCellSet::axisSymm()
+//   Manifold1GCellSet::jacobian(conn, N, J, x)
+//   Manifold1GCellSet::jacobianCurve(conn, N, J, x)
+//   Manifold1GCellSet::jacobianSurface(conn, N, J, x)
+//   Manifold1GCellSet::jacobianVolumn(conn, N, J, x)
+//   Manifold1GCellSet::jacobianInDim(conn, N, J, x, dim)
+// //
+// [L2] constructor:
+//   L2(options)
+// //
+// [L2] instance methods:
+//   L2::cellSize()
+//   L2::type()
+//   L2::bfun(paramCoords)
+//   L2::bfundpar(paramCoords)
+
+
 var _ = require('./core.utils');
 var uuid = _.uuid;
+var noop = _.noop;
 var defineContract = _.defineContract;
 var assert = _.assert;
 var check = _.check;
-var matrixnx2 = _.contracts.matrixOfDimension('*', 2);
+var matrixOfDimension = _.contracts.matrixOfDimension;
+var vectorOfDimension = _.contracts.vectorOfDimension;
 
 var numeric = require('./core.numeric');
-var ensureMatrixDimension = numeric.ensureMatrixDimension;
-
 var hypercube = require('./geometry.topology').hypercube;
+
+var gcellsetMethodContracts = [
+  { name: 'type', input: noop, output: function(out) { assert.string(out); } },
+  { name: 'boundaryGCellSetConstructor', input: noop, output: function() {} },
+  { name: 'boundaryCellType', input: noop, output: function() {} },
+  { name: 'boundary', input: noop, output: function() {} },
+  { name: 'dim', input: noop, output: function() {} },
+  { name: 'cellSize', input: noop, output: function() {} },
+  { name: 'id', input: noop, output: function() {} },
+  { name: 'conn', input: noop, output: function() {} },
+  { name: 'jacobianMatrix', input: noop, output: function() {} },
+  { name: 'bfun', input: noop, output: function() {} },
+  { name: 'bfundpar', input: noop, output: function() {} },
+  { name: 'bfundsp', input: noop, output: function() {} },
+  { name: 'cat', input: noop, output: function() {} },
+  { name: 'count', input: noop, output: function() {} },
+  { name: 'isInParametric', input: noop, output: function() {} },
+  { name: 'map2parametric', input: noop, output: function() {} },
+  { name: 'subset', input: noop, output: function() {} },
+  { name: 'clone', input: noop, output: function() {} },
+  { name: 'updateConnectivity', input: noop, output: function() {} },
+];
+
+var contracts = {};
+gcellsetMethodContracts.forEach(function(method) {
+  var methodName = method.name;
+  var inputContract = '_input_contract_' + methodName + '_';
+  var outputContract = '_output_contract_' + methodName + '_';
+
+  contracts[inputContract] = defineContract(function(gcellset) {
+    assert.instance(gcellset, GCellSet);
+    var params = Array.prototype.slice.call(arguments).slice(1);
+    method.input.apply(null, params);
+  });
+
+  contracts[outputContract] = method.output;
+
+  exports[methodName] = function(gcellset) {
+    contracts[inputContract].apply(null, arguments);
+
+    var params = Array.prototype.slice.call(arguments, 1);
+    var res = gcellset[methodName].apply(gcellset, params);
+
+    contracts[outputContract](res);
+    return res;
+  };
+  exports[methodName].name = methodName;
+});
 
 // Supposed to be private
 // TODO: support lookup by label.
@@ -73,8 +173,18 @@ GCellSet.prototype.conn = function() {
 // JacobianMatrix :: 2D JS array of dimension this.dim() by this.dim()
 GCellSet.prototype.jacobianMatrix = function(nder, x) {
   var m = this.cellSize(), n = this.dim();
-  nder = ensureMatrixDimension(nder, m, n);
-  x = ensureMatrixDimension(x, m, n);
+  matrixOfDimension(
+    m,
+    n,
+    'NodalDerivativesInParametricDomain is not a matrix of ' + m + ' x ' + n
+  )(nder);
+
+  matrixOfDimension(
+    m,
+    n,
+    'NodalCoordinatesInSpatialDomain is not a matix of ' + m + ' x ' + n
+  )(x);
+
   return numeric.mul(numeric.transpose(x), nder);
 };
 
@@ -106,11 +216,27 @@ GCellSet.prototype.bfundpar = function(paramCoords) {
 // bfundsp: derivatives of the basis functions in spatical domain.
 GCellSet.prototype.bfundsp = function(nder, x) {
   var m = this.cellSize(), n = this.dim();
-  nder = ensureMatrixDimension(nder, m, n);
-  x = ensureMatrixDimension(x, m, n);
+
+  matrixOfDimension(
+    m,
+    n,
+    'NodalDerivativesInParametricDomain is not a matrix of ' + m + ' x ' + n
+  )(nder);
+
+  matrixOfDimension(
+    m,
+    n,
+    'NodalCoordinatesInSpatialDomain is not a matix of ' + m + ' x ' + n
+  )(x);
+
   var J = numeric.mul(numeric.transpose(x), nder);
-  J = ensureMatrixDimension(J, 1, 1);
-  J = J[0][0];
+
+  matrixOfDimension(
+    n,
+    n,
+    'J is not a matrix of ' + n + ' x ' + n
+  )(J);
+
   return numeric.div(nder, J);
 };
 
@@ -165,6 +291,10 @@ function Manifold1GCellSet(topology, otherDimension, axisSymm) {
   GCellSet.call(this, topology);
 }
 
+
+
+
+
 Manifold1GCellSet.prototype = Object.create(GCellSet.prototype);
 Manifold1GCellSet.prototype.constructor = Manifold1GCellSet;
 
@@ -178,6 +308,17 @@ Manifold1GCellSet.prototype.otherDimension = function(conn, N, x) {
 
 Manifold1GCellSet.prototype.axisSymm = function() { return this._axisSymm; };
 
+var _input_contract_m1_jac_ = _.defineContract(function(conn, N, J, x) {
+  vectorOfDimension(2)(conn);
+  matrixOfDimension(2, '*')(N);
+  matrixOfDimension(1, 1)(J);
+  matrixOfDimension(2, 1)(x);
+}, 'input is not valid for mainfold 1 gcellset jacobian.');
+
+var _output_contract_jac_ = _.defineContract(function(jac) {
+  assert.number(jac);
+}, 'jac is not a number');
+
 // jacobian :: GCellSet -> ConnectivityList -> NodalContributionVector -> JacobianMatrix
 //             -> NodalCoordinatesInSpatialDomain
 //             -> ManifoldJacobian
@@ -187,7 +328,12 @@ Manifold1GCellSet.prototype.axisSymm = function() { return this._axisSymm; };
 // NodalCoordinatesInSpatialDomain :: 2D JS array of dimension this.cellSize() by this.dim()
 // ManifoldJacobian :: number
 Manifold1GCellSet.prototype.jacobian = function(conn, N, J, x) {
-  return this.jacobianCurve(conn, N, J, x);
+  _input_contract_m1_jac_(conn, N, J, x);
+
+  var jac = this.jacobianCurve(conn, N, J, x);
+
+  _output_contract_jac_(jac);
+  return jac;
 };
 
 // jacobian :: GCellSet -> ConnectivityList -> NodalContributionVector -> JacobianMatrix
@@ -199,10 +345,13 @@ Manifold1GCellSet.prototype.jacobian = function(conn, N, J, x) {
 // NodalCoordinatesInSpatialDomain :: 2D JS array of dimension this.cellSize() by this.dim()
 // ManifoldJacobian :: number
 Manifold1GCellSet.prototype.jacobianCurve = function(conn, N, J, x) {
-  J = ensureMatrixDimension(J, null, 1);
-  // TODO: not so effecient?
+  _input_contract_m1_jac_(conn, N, J, x);
+
   var vec = numeric.transpose(J)[0];
-  return numeric.norm2(vec);
+  var jac = numeric.norm2(vec);
+
+  _output_contract_jac_(jac);
+  return jac;
 };
 
 // jacobian :: GCellSet -> ConnectivityList -> NodalContributionVector -> JacobianMatrix
@@ -220,15 +369,21 @@ Manifold1GCellSet.prototype.jacobianCurve = function(conn, N, J, x) {
 //     (ii) the product of the curve Jacobian and the circumference of
 //     the circle through the point pc.
 Manifold1GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
+  _input_contract_m1_jac_(conn, N, J, x);
+
+  var jac;
   if (this.axisSymm()) {
     var m = this.cellSize(), n = this.dim();
-    N = ensureMatrixDimension(N, m, 1);
-    x = ensureMatrixDimension(N, m, n);
+    matrixOfDimension(m, 1)(N);
+    matrixOfDimension(m, n)(x);
     var xyz = numeric.mul(numeric.transpose(N), x)[0];
-    return this.jacobianCurve(conn, N, J, x) * 2 * Math.PI * xyz[0];
+    jac = this.jacobianCurve(conn, N, J, x) * 2 * Math.PI * xyz[0];
   } else {
-    return this.jacobianCurve(conn, N, J, x) * this.otherDimension(conn, N, x);
+    jac = this.jacobianCurve(conn, N, J, x) * this.otherDimension(conn, N, x);
   }
+
+  _output_contract_jac_(jac);
+  return jac;
 };
 
 // jacobian :: GCellSet -> ConnectivityList -> NodalContributionVector -> JacobianMatrix
@@ -247,15 +402,19 @@ Manifold1GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
 //     the circle through the point pc and the other dimension (units of
 //     length)
 Manifold1GCellSet.prototype.jacobianVolumn = function(conn, N, J, x) {
+  _input_contract_m1_jac_(conn, N, J, x);
+
+  var jac;
   if (this.axisSymm()) {
     var m = this.cellSize(), n = this.dim();
-    N = ensureMatrixDimension(N, m, 1);
-    x = ensureMatrixDimension(N, m, n);
     var xyz = numeric.mul(numeric.transpose(N), x)[0];
-    return this.jacobianCurve(conn, N, J, x) * 2 * Math.PI * xyz[0] * this.otherDimension(conn, N, x);
+    jac = this.jacobianCurve(conn, N, J, x) * 2 * Math.PI * xyz[0] * this.otherDimension(conn, N, x);
   } else {
-    return this.jacobianCurve(conn, N, J, x) * this.otherDimension(conn, N, x);
+    jac = this.jacobianCurve(conn, N, J, x) * this.otherDimension(conn, N, x);
   }
+
+  _output_contract_jac_(jac);
+  return jac;
 };
 
 // jacobian :: GCellSet -> ConnectivityList -> NodalContributionVector -> JacobianMatrix
@@ -269,21 +428,38 @@ Manifold1GCellSet.prototype.jacobianVolumn = function(conn, N, J, x) {
 // ManifoldJacobian :: number
 // jacobianInDim: A convinient wrapper for jacobianCurve, jacobianSurface, jacobianVolumn
 Manifold1GCellSet.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+  _input_contract_m1_jac_(conn, N, J, x);
+
+  var jac;
+
   switch (dim) {
   case 3:
-    return this.jacobianVolumn(conn, N, J, x);
+    jac = this.jacobianVolumn(conn, N, J, x);
+    break;
   case 2:
-    return this.jacobianSurface(conn, N, J, x);
+    jac = this.jacobianSurface(conn, N, J, x);
+    break;
   case 1:
-    return this.jacobianCurve(conn, N, J, x);
+    jac = this.jacobianCurve(conn, N, J, x);
+    break;
   default:
     throw new Error('Manifold1GCellSet::jacobianInDim(): wrong dimension ' + dim);
   }
+
+  _output_contract_jac_(jac);
+  return jac;
 };
 
-var _input_contract_L2_ = defineContract(function(options) {
+var _input_contract_gcellset_ = defineContract(function(options) {
   assert.object(options);
-  matrixnx2(options.conn);
+  assert.assigned(options.conn);
+  matrixOfDimension('*', '*')(options.conn);
+}, 'input is not a valid gcellset option.');
+
+var _input_contract_L2_ = defineContract(function(options) {
+  _input_contract_gcellset_(options);
+
+  matrixOfDimension('*', 2)(options.conn);
   if (check.assigned(options.otherDimension)) {
     assert.number(options.otherDimension);
   }
@@ -291,7 +467,7 @@ var _input_contract_L2_ = defineContract(function(options) {
   if (check.assigned(options.axisSymm)) {
     assert.boolean(options.axisSymm);
   }
-});
+}, 'input is not a valid L2 option.');
 
 function L2(options) {
   _input_contract_L2_(options);
@@ -308,20 +484,33 @@ function L2(options) {
 
 L2.prototype = Object.create(Manifold1GCellSet.prototype);
 L2.prototype.constructor = L2;
+// TODO:
+// L2.prototype.boundaryGCellSetConstructor = function() {
+//   return P1;
+// };
 
 L2.prototype.cellSize = function() { return 2; };
 
 L2.prototype.type = function() { return 'L2'; };
 
+var _input_contract_l2_param_coords_ = defineContract(function(paramCoords) {
+  vectorOfDimension(1)(paramCoords);
+}, 'input is not a valid l2 param coords, which should be of vector of dimension 1.');
+
 L2.prototype.bfun = function(paramCoords) {
+  _input_contract_l2_param_coords_(paramCoords);
+
   var x = paramCoords[0];
-  return [
+  var out = [
     [ 0.5 * (1 - x) ],
     [ 0.5 * (1 + x) ]
   ];
+  return out;
 };
 
 L2.prototype.bfundpar = function(paramCoords) {
+  _input_contract_l2_param_coords_(paramCoords);
+
   return [
     [ -0.5 ],
     [ +0.5 ]
