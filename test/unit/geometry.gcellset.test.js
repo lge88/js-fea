@@ -141,37 +141,39 @@ describe('geometry.gcellset', function() {
         .map(function(ctx) {
           return _([
             'type',
-            'cellSize'
+            'cellSize',
+            // 'id', don't care as long as it is a string.
+            'dim',
           ])
             .map(function(method) {
-              var tcs = ctx[method];
-              console.log("method = ", method);
-              console.log("tcs = ", tcs);
-              tcs.forEach(function(tc) {
-                // TODO:
-                console.log("tc._type = ", tc._type);
-                console.log("gcellset = ", gcellset);
-
-                tc._type = ctx._type;
-                tc._init = ctx._init;
-                tc._init_result = ctx._init_result;
-                console.log("tc._init = ", tc._init);
-
-                tc.instance = new gcellset[tc._type](tc._init);
-                tc.method = method;
+              return ctx[method].map(function(io) {
+                var out = {
+                  instance: new gcellset[ctx._type](ctx._init),
+                  type: ctx._type,
+                  method: method,
+                  input: io.input,
+                  output: io.output
+                };
+                return out;
               });
-              return tcs;
             })
             .value();
         })
         .flatten()
         .value();
 
-  console.log("testCases = ", testCases);
-
   dataDriven(testCases, function() {
-    it('{_type}:{method}()', function(ctx) {
-      console.log("ctx = ", ctx);
+    it('{type}:{method}()', function(ctx) {
+      var ins = ctx.instance;
+      var method = ctx.method;
+
+      // TODO: need change ctx.input to be an array instead of object.
+      // TODO: need to handle exception/dont care cases
+      var res = ins[method].apply(ins, ctx.input);
+
+      // TODO: need to define equals (vecEqual, matrixEqual...);
+      // equals(res, ctx.output);
+      expect(res).to.eql(ctx.output);
 
     });
 
