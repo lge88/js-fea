@@ -6,6 +6,7 @@ var dataDriven = require('data-driven');
 var _ = require(SRC + '/core.utils');
 var assert = _.assert;
 var check = _.check;
+var defineContract = _.defineContract;
 var matrixOfDimension = _.contracts.matrixOfDimension;
 var vectorOfDimension = _.contracts.vectorOfDimension;
 
@@ -13,6 +14,29 @@ var gcellset = require(SRC + '/geometry.gcellset.js');
 
 var EXCEPTION = {};
 var DONT_CARE = {};
+var VERIFY_METHODS = {
+  'toBe': function(computed, expected) { expect(computed).to.be(expected); },
+  'toEql': function(computed, expected) { expect(computed).to.eql(expected); },
+  'id': function(computed) {
+    if (!check.string(computed))
+      throw new Error('id is not a string');
+
+    var ID_LEN = 36;
+    if (computed.length !== ID_LEN)
+      throw new Error('id is not of length ' + ID_LEN + ', but ' + computed.length);
+  },
+  'jacbianMatrix': function(computed, expected) {
+    matrixOfDimension(1, 1, 'jacbianMatrix is not of dimension 1 x 1')(computed);
+  },
+  'vecEql': function(computed, expected) {
+    // TODO:
+    expect().fail('vecEql not implemented');
+  },
+  'matEql': function(computed, expected) {
+    // TODO:
+    expect().fail('matEql not implemented');
+  }
+};
 
 describe('geometry.gcellset', function() {
   var fixtures = [
@@ -52,16 +76,26 @@ describe('geometry.gcellset', function() {
       ],
       _init_output: DONT_CARE,
 
-      type: [ { input: null, output: 'L2' } ],
-      dim: [ { input: null, output: 1 } ],
-      cellSize: [ { input: null, output: 2 } ],
-      id: [ { input: null, outputContract: assert.string } ],
-
-      otherDimension: [ { input: null, output: 1.0 } ],
-      axisSymm: [ { input: null, output: false } ],
+      type: [
+        { output: 'L2' }
+      ],
+      dim: [
+        { output: 1 }
+      ],
+      cellSize: [
+        { output: 2 }
+      ],
+      id: [
+        { verify: 'id' }
+      ],
+      otherDimension: [
+        { output: 1.0 }
+      ],
+      axisSymm: [
+        { output: false }
+      ],
       conn: [
         {
-          input: null ,
           output: [
             [ 1, 3 ],
             [ 1, 4 ],
@@ -74,7 +108,8 @@ describe('geometry.gcellset', function() {
             // [ 6, 4 ],
             [ 4, 6 ],
             [ 5, 6 ]
-          ]
+          ],
+          verify: 'toEql'
         }
       ],
 
@@ -84,8 +119,24 @@ describe('geometry.gcellset', function() {
             [ [1], [2] ],
             [ [2], [2] ]
           ],
-          outputContract: matrixOfDimension(1, 1),
-          output: null
+          output: null,
+          verify: 'jacbianMatrix'
+        },
+        {
+          input: [
+            [ [1] ],
+            [ [2], [2] ]
+          ],
+          output: EXCEPTION,
+          desc: 'nder wrong dimension'
+        },
+        {
+          input: [
+            [ [1], [2] ],
+            [ [2], [2], [3] ]
+          ],
+          output: EXCEPTION,
+          desc: 'x wrong dimension'
         }
       ],
 
@@ -109,9 +160,11 @@ describe('geometry.gcellset', function() {
       ],
 
       bfundsp: [
-        // TODO:
         {
-          input: [],
+          input: [
+            [ [1], [2] ],
+            [ [2], [2] ]
+          ],
           output: null
         }
       ],
@@ -155,13 +208,12 @@ describe('geometry.gcellset', function() {
                 method: 'constructor',
                 input: initParams,
                 output: EXCEPTION,
-                fn: create,
+                fn: create.bind(null, initParams),
                 desc: ctx.desc
               }
             ];
           }
 
-          // console.log("initParams = ", initParams);
           var ins = create.apply(null, initParams);
           var methods = Object
                 .keys(ctx)
@@ -171,23 +223,33 @@ describe('geometry.gcellset', function() {
 
           return _(methods)
             .map(function(method) {
-              return ctx[method].map(function(io) {
-                var out = {
+              return ctx[method].map(function(testCase) {
+                var cleaned = {
                   instance: ins,
                   type: type,
                   method: method,
-                  input: io.input,
-                  output: io.output,
-                  outputContract: io.outputContract,
-                  desc: check.string(io.desc) ? io.desc : ''
+                  input: testCase.input,
+                  output: testCase.output,
+                  desc: check.string(testCase.desc) ? testCase.desc : ''
                 };
-                out.fn = out.instance[method];
 
-                // TODO handle vec/matrix equals:
-                // out.equals = ...
+                if (check.string(testCase.verify))
+                  cleaned.verify = VERIFY_METHODS[testCase.verify];
 
+                if (!check.assigned(cleaned.verify)) {
+                  // Do we even care the output?
+                  // If we do, by default verify use expect().to.be();
+                  if (check.assigned(cleaned.output) && cleaned.output !== DONT_CARE) {
+                    cleaned.verify = VERIFY_METHODS['toBe'];
+                  } else {
+                    cleaned.verify = null;
+                  }
+                }
 
-                return out;
+                var fn = cleaned.instance[method];
+                cleaned.fn = fn.bind.apply(fn, [ins].concat(cleaned.input));
+
+                return cleaned;
               });
             })
             .value();
@@ -198,190 +260,16 @@ describe('geometry.gcellset', function() {
   dataDriven(testCases, function() {
     it('{type}:{method}() {desc}', function(ctx) {
       if (ctx.output === EXCEPTION) {
-        var fn = function() {
-          return ctx.fn.apply(ctx.instance, ctx.input);
-        };
-        expect(fn).to.throwException();
+        expect(ctx.fn).to.throwException();
       } else {
-        var res;
-        if (check.assigned(ctx.outputContract)) {
-          res = ctx.fn.apply(ctx.instance, ctx.input);
-          expect(ctx.outputContract.bind(null, res)).not.to.throwException();
-        }
+        // Should not throw
+        var res = ctx.fn();
 
-        if (check.assigned(ctx.output) && ctx.output !== DONT_CARE) {
-          res = ctx.fn.apply(ctx.instance, ctx.input);
-
-          var equals = ctx.equals;
-          if (check.function(equals)) {
-            expect(ctx.equals(res, ctx.output)).to.be(true);
-          } else {
-            if (check.array(res) || check.object(res))
-              expect(res).to.eql(ctx.output);
-            else
-              expect(res).to.be(ctx.output);
-          }
-        }
+        // If we do care the output, call verify()
+        if (check.function(ctx.verify))
+          ctx.verify(res, ctx.output, ctx.input, ctx.instance);
       }
     });
 
-  });
-
-  return;
-  xdescribe('common interfaces', function() {
-    var fixtures = [
-      {
-        type: 'L2',
-        init: {
-          conn: [
-            [ 1, 3 ],
-            [ 1, 4 ],
-            [ 2, 4 ],
-            [ 3, 4 ],
-            [ 3, 5 ],
-            [ 5, 4 ],
-            [ 6, 4 ],
-            [ 5, 6 ]
-          ],
-          otherDimension: 1.0,
-          axisSymm: 1.0
-        },
-        jacobianMatrix: {
-          input: {
-            nder: [ [1], [2] ],
-            x: [ [2], [2] ]
-          },
-          output: {
-            // TODO:
-          }
-        },
-        bfunParams: {
-          paramCoords: [ 0.8 ]
-        },
-        bfundparParams: {
-          paramCoords: [ 0.8 ]
-        },
-        jacobianParams: {
-          conn: [1, 3],
-          N: [
-            [ 1.0 ],
-            [ 0.5 ]
-          ],
-          J: [ [1.0] ],
-          x: [
-            [ 0.5 ],
-            [ 0.0 ],
-          ]
-        }
-      }
-    ];
-
-    dataDriven(fixtures, function() {
-      it('should create {name}() ', function(ctx) {
-        ctx.gcellset = new ctx.gcellsetConstructor(ctx.initParams);
-      });
-
-      it('should {name}::type() has correct signature', function(ctx) { type(ctx.gcellset); });
-      it('should {name}::boundaryGCellSetConstructor() has correct signature', function(ctx) { boundaryGCellSetConstructor(ctx.gcellset); });
-      it('should {name}::boundaryCellType() has correct signature', function(ctx) { boundaryCellType(ctx.gcellset); });
-      it('should {name}::boundary() has correct signature', function(ctx) { boundary(ctx.gcellset); });
-      it('should {name}::dim() has correct signature', function(ctx) { dim(ctx.gcellset); });
-      it('should {name}::cellSize() has correct signature', function(ctx) { cellSize(ctx.gcellset); });
-      it('should {name}::id() has correct signature', function(ctx) { id(ctx.gcellset); });
-      it('should {name}::conn() has correct signature', function(ctx) { conn(ctx.gcellset); });
-      it('should {name}::count() has correct signature', function(ctx) { count(ctx.gcellset); });
-      it('should {name}::clone() has correct signature', function(ctx) { clone(ctx.gcellset); });
-
-      it('should {name}::jacobianMatrix() has correct signature', function(ctx) {
-        jacobianMatrix(ctx.gcellset, ctx.jacobianMatrixParams.nder, ctx.jacobianMatrixParams.x);
-      });
-
-
-
-      // it('should {name}::jacobianSurface() has correct signature', function(ctx) {
-      //   jacobianSurface(ctx.gcellset, ctx.jacobianMatrixParams.nder, ctx.jacobianMatrixParams.x);
-      // });
-    });
-
-
-  });
-
-
-  xdescribe('geometry.gcellset.L2', function() {
-    var connList = [
-      [ 1, 3 ],
-      [ 1, 4 ],
-      [ 2, 4 ],
-      [ 3, 4 ],
-      [ 3, 5 ],
-      [ 5, 4 ],
-      [ 6, 4 ],
-      [ 5, 6 ]
-    ];
-
-    var gcells = new L2({
-      conn: connList,
-      otherDimension: 1.0,
-      axisSymm: false
-    });
-
-    var jacParams = {
-      conn: [1, 3],
-      N: [
-        [ 1.0 ],
-        [ 0.5 ]
-      ],
-      J: [ [1.0] ],
-      x: [
-        [ 0.5 ],
-        [ 0.0 ],
-      ]
-    };
-
-    // it('should implement desired interfaces', function() {
-    //   expect(gcells.type()).to.be.a('string');
-
-    //   // TODO:
-    //   // expect(gcells.boundaryGCellSetConstructor()).to.be.a('function');
-    //   // expect(gcells.boundaryCellType()).to.be.a('string');
-    //   // expect(gcells.boundary()).to.be.a(GCellSet);
-
-    //   expect(gcells.dim()).to.be.a('number');
-    //   expect(gcells.cellSize()).to.a('number');
-    //   expect(gcells.id()).to.be.a('string');
-
-    //   expect(gcells.conn()).to.be.a('array');
-
-    //   expect(gcells.otherDimension()).to.be.a('number');
-    //   expect(gcells.axisSymm()).to.be.a('boolean');
-    //   expect(gcells.dim()).to.be.a('number');
-
-    //   var jac = gcells.jacobian(jacParams.conn, jacParams.N, jacParams.J, jacParams.x);
-    //   var jacC = gcells.jacobianCurve(jacParams.conn, jacParams.N, jacParams.J, jacParams.x);
-    //   var jacS = gcells.jacobianSurface(jacParams.conn, jacParams.N, jacParams.J, jacParams.x);
-    //   var jacV = gcells.jacobianVolumn(jacParams.conn, jacParams.N, jacParams.J, jacParams.x);
-    //   var jacD = gcells.jacobianInDim(jacParams.conn, jacParams.N, jacParams.J, jacParams.x, 2);
-
-    //   expect(jac).to.be.a('number');
-    //   expect(jacC).to.be.a('number');
-    //   expect(jacS).to.be.a('number');
-    //   expect(jacV).to.be.a('number');
-    //   expect(jacD).to.be.a('number');
-
-    // });
-
-    // it('should return correct values', function() {
-    //   expect(conn(gcells)).to.eql(connList.map(_.normalizedCell).sort(_.byLexical));
-
-    //   // expect(otherDimension(gcells)).to.be(1.0);
-    //   // expect(axisSymm(gcells)).to.be(false);
-
-    //   expect(dim(gcells)).to.be(1);
-    //   expect(cellSize(gcells)).to.be(2);
-    //   expect(type(gcells)).to.be('L2');
-
-    //   var jac = gcells.jacobianCurve(jacParams.conn, jacParams.N, jacParams.J, jacParams.x);
-    //   expect(jac).to.be(1);
-    // });
   });
 });

@@ -237,7 +237,8 @@ GCellSet.prototype.bfundsp = function(nder, x) {
     'J is not a matrix of ' + n + ' x ' + n
   )(J);
 
-  return numeric.div(nder, J);
+  var res = numeric.dot(nder, numeric.inv(J));
+  return res;
 };
 
 GCellSet.prototype.cat = function() {
