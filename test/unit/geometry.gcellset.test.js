@@ -12,8 +12,6 @@ var vectorOfDimension = _.contracts.vectorOfDimension;
 
 var gcellset = require(SRC + '/geometry.gcellset.js');
 
-var EXCEPTION = {};
-var DONT_CARE = {};
 var VERIFY_METHODS = {
   'toBe': function(computed, expected) { expect(computed).to.be(expected); },
   'toEql': function(computed, expected) { expect(computed).to.eql(expected); },
@@ -54,7 +52,7 @@ describe('geometry.gcellset', function() {
           axisSymm: false
         }
       ],
-      _init_output: EXCEPTION
+      exception: true
     },
     {
       _type: 'L2',
@@ -74,7 +72,6 @@ describe('geometry.gcellset', function() {
           axisSymm: false
         }
       ],
-      _init_output: DONT_CARE,
 
       type: [
         { output: 'L2' }
@@ -127,7 +124,7 @@ describe('geometry.gcellset', function() {
             [ [1] ],
             [ [2], [2] ]
           ],
-          output: EXCEPTION,
+          exception: true,
           desc: 'nder wrong dimension'
         },
         {
@@ -135,7 +132,7 @@ describe('geometry.gcellset', function() {
             [ [1], [2] ],
             [ [2], [2], [3] ]
           ],
-          output: EXCEPTION,
+          exception: true,
           desc: 'x wrong dimension'
         }
       ],
@@ -200,14 +197,14 @@ describe('geometry.gcellset', function() {
             return new Constr(a, b, c, d, e);
           };
 
-          if (ctx._init_output === EXCEPTION) {
+          if (ctx.exception === true) {
             return [
               {
                 instance: null,
                 type: type,
                 method: 'constructor',
                 input: initParams,
-                output: EXCEPTION,
+                exception: true,
                 fn: create.bind(null, initParams),
                 desc: ctx.desc
               }
@@ -230,6 +227,7 @@ describe('geometry.gcellset', function() {
                   method: method,
                   input: testCase.input,
                   output: testCase.output,
+                  exception: testCase.exception,
                   desc: check.string(testCase.desc) ? testCase.desc : ''
                 };
 
@@ -239,7 +237,7 @@ describe('geometry.gcellset', function() {
                 if (!check.assigned(cleaned.verify)) {
                   // Do we even care the output?
                   // If we do, by default verify use expect().to.be();
-                  if (check.assigned(cleaned.output) && cleaned.output !== DONT_CARE) {
+                  if (check.assigned(cleaned.output)) {
                     cleaned.verify = VERIFY_METHODS['toBe'];
                   } else {
                     cleaned.verify = null;
@@ -259,7 +257,7 @@ describe('geometry.gcellset', function() {
 
   dataDriven(testCases, function() {
     it('{type}:{method}() {desc}', function(ctx) {
-      if (ctx.output === EXCEPTION) {
+      if (ctx.exception === true) {
         expect(ctx.fn).to.throwException();
       } else {
         // Should not throw
