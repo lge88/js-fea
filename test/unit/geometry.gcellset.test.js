@@ -6,7 +6,7 @@ var ModuleTester = require(ROOT + '/test/lib/module-tester').ModuleTester;
 
 var _ = require(SRC + '/core.utils');
 // var assert = _.assert;
-// var check = _.check;
+var check = _.check;
 // var defineContract = _.defineContract;
 var matrixOfDimension = _.contracts.matrixOfDimension;
 // var vectorOfDimension = _.contracts.vectorOfDimension;
@@ -14,6 +14,14 @@ var matrixOfDimension = _.contracts.matrixOfDimension;
 var gcellset = require(SRC + '/geometry.gcellset.js');
 
 var VERIFIES = {
+  'id': function(computed) {
+    if (!check.string(computed))
+      throw new Error('id is not a string');
+
+    var ID_LEN = 36;
+    if (computed.length !== ID_LEN)
+      throw new Error('id is not of length ' + ID_LEN + ', but ' + computed.length);
+  },
   'L2::jacbianMatrix': function(computed, expected) {
     matrixOfDimension(1, 1, 'jacbianMatrix is not of dimension 1 x 1')(computed);
   }
@@ -90,7 +98,7 @@ describe('geometry.gcellset', function() {
             [ 4, 6 ],
             [ 5, 6 ]
           ],
-          verify: 'toEql'
+          verify: 'eql'
         }
       ],
 
