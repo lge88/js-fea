@@ -65,54 +65,6 @@ var vectorOfDimension = _.contracts.vectorOfDimension;
 var numeric = require('./core.numeric');
 var hypercube = require('./geometry.topology').hypercube;
 
-// var gcellsetMethodContracts = [
-//   { name: 'type', input: noop, output: function(out) { assert.string(out); } },
-//   { name: 'boundaryGCellSetConstructor', input: noop, output: function() {} },
-//   { name: 'boundaryCellType', input: noop, output: function() {} },
-//   { name: 'boundary', input: noop, output: function() {} },
-//   { name: 'dim', input: noop, output: function() {} },
-//   { name: 'cellSize', input: noop, output: function() {} },
-//   { name: 'id', input: noop, output: function() {} },
-//   { name: 'conn', input: noop, output: function() {} },
-//   { name: 'jacobianMatrix', input: noop, output: function() {} },
-//   { name: 'bfun', input: noop, output: function() {} },
-//   { name: 'bfundpar', input: noop, output: function() {} },
-//   { name: 'bfundsp', input: noop, output: function() {} },
-//   { name: 'cat', input: noop, output: function() {} },
-//   { name: 'count', input: noop, output: function() {} },
-//   { name: 'isInParametric', input: noop, output: function() {} },
-//   { name: 'map2parametric', input: noop, output: function() {} },
-//   { name: 'subset', input: noop, output: function() {} },
-//   { name: 'clone', input: noop, output: function() {} },
-//   { name: 'updateConnectivity', input: noop, output: function() {} },
-// ];
-
-// var contracts = {};
-// gcellsetMethodContracts.forEach(function(method) {
-//   var methodName = method.name;
-//   var inputContract = '_input_contract_' + methodName + '_';
-//   var outputContract = '_output_contract_' + methodName + '_';
-
-//   contracts[inputContract] = defineContract(function(gcellset) {
-//     assert.instance(gcellset, GCellSet);
-//     var params = Array.prototype.slice.call(arguments).slice(1);
-//     method.input.apply(null, params);
-//   });
-
-//   contracts[outputContract] = method.output;
-
-//   exports[methodName] = function(gcellset) {
-//     contracts[inputContract].apply(null, arguments);
-
-//     var params = Array.prototype.slice.call(arguments, 1);
-//     var res = gcellset[methodName].apply(gcellset, params);
-
-//     contracts[outputContract](res);
-//     return res;
-//   };
-//   exports[methodName].name = methodName;
-// });
-
 // Supposed to be private
 // TODO: support lookup by label.
 function GCellSet(topology) {

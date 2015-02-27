@@ -9,7 +9,7 @@ var mat6x6 = matrixOfDimension(6, 6);
 var diag = _.numeric.diag;
 var transpose = _.numeric.transpose;
 var add = _.numeric.add;
-var mul = _.numeric.mul;
+var dot = _.numeric.dot;
 
 function MaterialProperty(props) {
   this._rho = (props && typeof props.rho === 'number') ? props.rho : 1.0;
@@ -59,7 +59,7 @@ LinElIso.prototype.D = function() {
     var mI = diag([1, 1, 1, 0.5, 0.5, 0.5]);
     var m1 = transpose([1, 1, 1, 0, 0, 0]);
 
-    this._D = add(mul(lambda, mul(m1, transpose(m1))), mul(2*mu,  mI));
+    this._D = add(dot(lambda, dot(m1, transpose(m1))), dot(2*mu,  mI));
   }
 
   _output_contract_D_(this._D);
