@@ -48,7 +48,7 @@ function ModuleTester(mod, testDatasetOrFile, verifyMethods, options) {
         return new Constr(a, b, c, d, e);
       };
 
-      if (ctx.exception === true) {
+      if (ctx._exception === true) {
         return [
           {
             instance: null,

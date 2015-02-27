@@ -44,7 +44,7 @@ describe('geometry.gcellset', function() {
           axisSymm: false
         }
       ],
-      exception: true
+      _exception: true
     },
     {
       _type: 'L2',
