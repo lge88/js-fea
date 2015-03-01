@@ -13,7 +13,9 @@ describe('material', function() {
     {
       _type: 'DeforSSLinElUniax',
       _init_params: [
-        { _type: 'LinElIso', E: 1000 }
+        {
+          property: { _type: 'LinElIso', E: 1000 }
+        }
       ],
 
       tangentModuli: [
@@ -24,7 +26,9 @@ describe('material', function() {
       _type: 'DeforSSLinElUniax',
       _desc: 'should throw if params is not an instance of LinElIso',
       _init_params: [
-        { E: 1000 }
+        {
+          property: { E: 1000 }
+        }
       ],
       _exception: true
     }
@@ -32,8 +36,8 @@ describe('material', function() {
 
   dataset = dataset.map(function(item) {
     item._init_params = item._init_params.map(function(arg) {
-      if (arg._type)
-        return new property[arg._type](arg);
+      if (arg.property && arg.property._type)
+        return { property: new property[arg.property._type](arg.property) };
       return arg;
     });
     return item;

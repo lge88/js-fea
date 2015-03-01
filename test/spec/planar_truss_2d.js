@@ -11,6 +11,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var PointSet = fe.geometry.pointset.PointSet;
     var L2 = fe.geometry.gcellset.L2;
     var LinElIso = fe.property.LinElIso;
+    var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
 
     // parameters:
     var E = 1e7;
@@ -46,12 +47,12 @@ describe('FAESOR Planar_truess_with_anim example', function() {
 
     var prop = new LinElIso({ E: E, nu: 0.0 });
 
-    // TODO: Everything below is not implemented.
-    return 0;
-
-    var mater = new fe.material.DeformableSmallStrainLinearlyElasticUniaxial({
+    var mater = new DeforSSLinElUniax({
       property: prop
     });
+
+    // TODO: Everything below is not implemented.
+    return 0;
 
     var feb = new fe.feblock.DeformableSmallStrain({
       material: mater,

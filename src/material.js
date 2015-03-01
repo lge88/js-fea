@@ -3,6 +3,7 @@
 
 var _ = require('./core.utils');
 var check = _.check;
+var assert = _.assert;
 var defineContract = _.defineContract;
 var property = require('./property');
 var LinElIso = property.LinElIso;
@@ -17,15 +18,16 @@ Material.prototype.update = function() {
   throw new Error('Material::update(): is not implemented.');
 };
 
-var _input_contract_linel_uniax_prop_ = defineContract(function(p) {
-  if (!check.instance(p, LinElIso)) {
+var _input_contract_linel_uniax_prop_ = defineContract(function(o) {
+  assert.object(o);
+  if (!check.instance(o.property, LinElIso)) {
     throw new Error('input is not a instance of LinElIso.');
   }
-});
+}, 'Input is not a valid option for DeforSSLinElUniax');
 
-function DeforSSLinElUniax(prop) {
-  _input_contract_linel_uniax_prop_(prop);
-  this._prop = prop;
+function DeforSSLinElUniax(options) {
+  _input_contract_linel_uniax_prop_(options);
+  this._prop = options.property;
 }
 
 DeforSSLinElUniax.prototype = Object.create(Material.prototype);

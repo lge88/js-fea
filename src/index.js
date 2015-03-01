@@ -9,6 +9,7 @@ exports._ = _;
 exports.numeric = require('./core.numeric.js');
 
 exports.property = require('./property.js');
+exports.material = require('./material.js');
 exports.geometry = {
   pointset: require('./geometry.pointset'),
   topology: require('./geometry.topology'),
