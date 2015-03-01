@@ -355,6 +355,7 @@ describe('core.utils', function() {
       it('should work {desc}', function(ctx) {
         var contract = matrixOfDimension(ctx.m, ctx.n);
         expect(contract.bind(null, ctx.mat)).not.to.throwException();
+        expect(_.isMatrixOfDimension(ctx.mat, ctx.m, ctx.n)).to.be(true);
       });
     });
 
@@ -416,6 +417,7 @@ describe('core.utils', function() {
         expect(contract.bind(null, ctx.mat)).to.throwException(function(e) {
           // console.log(e.message);
         });
+        expect(_.isMatrixOfDimension(ctx.mat, ctx.m, ctx.n)).to.be(false);
       });
     });
   });
@@ -455,6 +457,7 @@ describe('core.utils', function() {
       it('should work {desc}', function(ctx) {
         var contract = vectorOfDimension(ctx.n);
         expect(contract.bind(null, ctx.vec)).not.to.throwException();
+        expect(_.isVectorOfDimension(ctx.vec, ctx.n)).to.be(true);
       });
     });
 
@@ -492,6 +495,7 @@ describe('core.utils', function() {
         expect(contract.bind(null, ctx.vec)).to.throwException(function(e) {
           // console.log(e.message);
         });
+        expect(_.isVectorOfDimension(ctx.vec, ctx.n)).to.be(false);
       });
     });
   });

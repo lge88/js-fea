@@ -240,6 +240,16 @@ function matrixOfDimension(m, n, msg) {
 
 _.contracts.matrixOfDimension = matrixOfDimension;
 
+function isMatrixOfDimension(mat, m, n) {
+  try {
+    matrixOfDimension(m, n)(mat);
+  } catch(err) {
+    return false;
+  }
+  return true;
+}
+_.isMatrixOfDimension = isMatrixOfDimension;
+
 function vectorOfDimension(n, msg) {
   if (n !== '*') assert.positive(n);
   if (!msg) msg = 'input is not a vector of ' + n + ' dimension.';
@@ -259,6 +269,15 @@ function vectorOfDimension(n, msg) {
 _.contracts.vectorOfDimension = vectorOfDimension;
 
 
+function isVectorOfDimension(vector, n) {
+  try {
+    vectorOfDimension(n)(vector);
+  } catch(err) {
+    return false;
+  }
+  return true;
+}
+_.isVectorOfDimension = isVectorOfDimension;
 
 
 module.exports = exports = _;
