@@ -12,6 +12,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var L2 = fe.geometry.gcellset.L2;
     var LinElIso = fe.property.LinElIso;
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
+    var GaussRule = fe.numeric.GaussRule;
 
     // parameters:
     var E = 1e7;
@@ -51,13 +52,15 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       property: prop
     });
 
+    var ir = new GaussRule(1, integrationOrder);
+
     // TODO: Everything below is not implemented.
     return 0;
 
-    var feb = new fe.feblock.DeformableSmallStrain({
+    var feb = new DeforSS({
       material: mater,
       gcells: gcells,
-      integrationRule: new fe.numeric.GaussRule(1, integrationOrder),
+      integrationRule: ir,
       Rm: fe.utils.genISORm
     });
 

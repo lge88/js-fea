@@ -7,6 +7,7 @@ _.assign(exports, require('./femodel.js'));
 
 exports._ = _;
 exports.numeric = require('./core.numeric.js');
+_.assign(exports.numeric, require('./core.numeric.integrationrule.js'));
 
 exports.property = require('./property.js');
 exports.material = require('./material.js');
