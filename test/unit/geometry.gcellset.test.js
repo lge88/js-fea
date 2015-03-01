@@ -101,6 +101,12 @@ describe('geometry.gcellset', function() {
           verify: 'eql'
         }
       ],
+      count: [
+        { output: 8 }
+      ],
+      nfens: [
+        { output: 6 }
+      ],
 
       jacobianMatrix: [
         {

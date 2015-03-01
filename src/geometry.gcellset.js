@@ -203,6 +203,11 @@ GCellSet.prototype.count = function() {
 };
 GCellSet.prototype.size = GCellSet.prototype.count;
 
+// number of nodes this gcellset connect
+GCellSet.prototype.nfens = function() {
+  return this._topology.getNumOfCellsInDim(0);
+};
+
 // isInParametric :: GCellSet -> ParametricCoordinates
 //                   -> bool
 // ParametricCoordinates :: 1D JS array of length this.dim()
