@@ -61,7 +61,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       material: mater,
       gcells: gcells,
       integrationRule: ir,
-      Rm: fe.utils.genISORm
+      rm: fe.utils.genISORm
     });
 
     var geomField = new fe.field.Field({

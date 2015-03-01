@@ -13,6 +13,7 @@ var assign = _.assign;
 // var matrixOfDimension = _.contracts.matrixOfDimension;
 // var vectorOfDimension = _.contracts.vectorOfDimension;
 
+// TODO: Make it work with functions as well.
 function ModuleTester(mod, testDatasetOrFile, verifyMethods, options) {
   // built-in verify methods
   var VERIFY_METHODS = {
