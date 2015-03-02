@@ -11,7 +11,7 @@ var check = _.check;
 var matrixOfDimension = _.contracts.matrixOfDimension;
 // var vectorOfDimension = _.contracts.vectorOfDimension;
 
-var gcellset = require(SRC + '/geometry.gcellset.js');
+var gcellset = require(SRC + '/gcellset.js');
 
 var VERIFIES = {
   'id': function(computed) {
@@ -28,7 +28,7 @@ var VERIFIES = {
 };
 
 
-describe('geometry.gcellset', function() {
+describe('gcellset', function() {
   var fixtures = [
     {
       _desc: 'should fail if conn is of wrong dimension',

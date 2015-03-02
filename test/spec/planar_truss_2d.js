@@ -9,7 +9,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
   it('should create model.', function() {
     // import objects:
     var PointSet = fe.geometry.pointset.PointSet;
-    var L2 = fe.geometry.gcellset.L2;
+    var L2 = fe.gcellset.L2;
     var LinElIso = fe.property.LinElIso;
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
     var GaussRule = fe.numeric.GaussRule;

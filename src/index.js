@@ -13,6 +13,7 @@ exports.property = require('./property.js');
 exports.material = require('./material.js');
 exports.geometry = {
   pointset: require('./geometry.pointset'),
-  topology: require('./geometry.topology'),
-  gcellset: require('./geometry.gcellset')
+  topology: require('./geometry.topology')
 };
+
+exports.gcellset = require('./gcellset.js');

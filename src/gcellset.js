@@ -1,5 +1,5 @@
 /*global require*/
-// geometry.gcellset
+// gcellset
 
 // FUNCTIONS:
 //   GCellSet(topology)
