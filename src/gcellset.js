@@ -166,30 +166,44 @@ GCellSet.prototype.bfundpar = function(paramCoords) {
 // NodalCoordinatesInSpatialDomain :: 2D JS array of dimension this.cellSize() by this.dim()
 // NodalDerivativesInSpatialDomain :: 2D JS array of dimension this.cellSize() by this.dim()
 // bfundsp: derivatives of the basis functions in spatical domain.
+var _input_contract_funct_bfundsp_ = function(m, n) {
+  return defineContract(function(nder, x) {
+    matrixOfDimension(
+      m,
+      n,
+      'NodalDerivativesInParametricDomain is not a matrix of ' + m + ' x ' + n
+    )(nder);
+
+    matrixOfDimension(
+      m,
+      n,
+      'NodalCoordinatesInSpatialDomain is not a matix of ' + m + ' x ' + n
+    )(x);
+  }, 'Input is invalid for bfundsp');
+};
+
+var _contract_funct_J_ = function(n) {
+  return defineContract(function(J) {
+    matrixOfDimension(n,n)(J);
+  },'J is not a matrix of ' + n + ' x ' + n);
+};
+
+var _output_contract_funct_bfundsp_ = function(m, n) {
+  return defineContract(function(mat) {
+    matrixOfDimension(m, n)(mat);
+  }, 'Output is invalid for bfunsp, it is not ' + m + ' by ' + n);
+};
+
 GCellSet.prototype.bfundsp = function(nder, x) {
   var m = this.cellSize(), n = this.dim();
 
-  matrixOfDimension(
-    m,
-    n,
-    'NodalDerivativesInParametricDomain is not a matrix of ' + m + ' x ' + n
-  )(nder);
-
-  matrixOfDimension(
-    m,
-    n,
-    'NodalCoordinatesInSpatialDomain is not a matix of ' + m + ' x ' + n
-  )(x);
-
+  _input_contract_funct_bfundsp_(m, n)(nder, x);
   var J = numeric.mul(numeric.transpose(x), nder);
-
-  matrixOfDimension(
-    n,
-    n,
-    'J is not a matrix of ' + n + ' x ' + n
-  )(J);
+  _contract_funct_J_(n)(J);
 
   var res = numeric.dot(nder, numeric.inv(J));
+  _output_contract_funct_bfundsp_(m, n)(res);
+
   return res;
 };
 
