@@ -342,7 +342,24 @@ describe('core.utils', function() {
         n: 4,
         desc: '* x 4 matrix'
       },
-
+      {
+        mat: [ [2, 4], [3, 4] ],
+        m: '*',
+        n: '*',
+        desc: '* x * matrix'
+      },
+      {
+        mat: [ [2, 4] ],
+        m: '*',
+        n: '*',
+        desc: '* x * matrix'
+      },
+      {
+        mat: [ [2], [4] ],
+        m: '*',
+        n: '*',
+        desc: '* x * matrix'
+      }
     ];
 
 
@@ -408,6 +425,18 @@ describe('core.utils', function() {
         n: '*',
         desc: '2 x * matrix'
       },
+      {
+        mat: [ [2, 4, 5 ], [2, 1] ],
+        m: '*',
+        n: '*',
+        desc: '* x * matrix'
+      },
+      {
+        mat: [ [2], [2, 1] ],
+        m: '*',
+        n: '*',
+        desc: '* x * matrix'
+      }
 
     ];
 
