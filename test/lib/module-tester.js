@@ -5,6 +5,7 @@ var dataDriven = require('data-driven');
 var _ = require(SRC + '/core.utils');
 // var assert = _.assert;
 var check = _.check;
+var assigned = check.assigned;
 var flatten = _.flatten;
 var filter = _.filter;
 var map = _.map;
@@ -49,15 +50,15 @@ function ModuleTester(mod, testDatasetOrFile, verifyMethods, options) {
         return new Constr(a, b, c, d, e);
       };
 
-      if (ctx._exception === true) {
+      if (assigned(ctx._exception)) {
         return [
           {
             instance: null,
             type: type,
             method: 'constructor',
             input: initParams,
-            exception: true,
-            fn: create.bind(null, initParams),
+            exception: ctx._exception,
+            fn: create.bind.apply(create, [null].concat(initParams)),
             desc: ctx._desc
           }
         ];
@@ -127,6 +128,13 @@ function ModuleTester(mod, testDatasetOrFile, verifyMethods, options) {
       it('{type}:{method}() {desc}', function(ctx) {
         if (ctx.exception === true) {
           expect(ctx.fn).to.throwException();
+        } else if (ctx.exception === false) {
+          try {
+            ctx.fn();
+          } catch(err) {
+            throw err;
+          }
+          // expect(ctx.fn).not.to.throwException();
         } else {
           // Should not throw
           var res = ctx.fn();
