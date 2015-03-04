@@ -94,8 +94,12 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     });
     return 0;
 
-    var ems = feb.stiffness(geomField, u);
-    var neqns = u.getNumEquations();
+    var tmp = feb.stiffness(geomField, u);
+    var ems = tmp.ems;
+    var eqnums = tmp.eqnums;
+
+    // var ems = feb.stiffness(geomField, u);
+    var neqns = u.neqns();
     var K = new fe.numeric.DokSparseMatrix([], neqns, neqns);
     fe.assemble.assemble_(K, ems);
 

@@ -12,6 +12,17 @@ var ccsFull = numeric.ccsFull;
 var ccsLUP = numeric.ccsLUP;
 var ccsLUPSolve = numeric.ccsLUPSolve;
 
+// pre: mat is a matrix;
+function size(mat, dim) {
+  if (dim === 1)
+    return mat.length;
+  else if (dim === 2)
+    return mat[0].length;
+  else
+    return [mat.length, mat[0].length];
+}
+exports.size = size;
+
 function vecEquals(a, b, aTolerance) {
   if (!_.isArray(a) || !_.isArray(b)) return false;
   if (a.length !== b.length) return false;
@@ -35,6 +46,7 @@ function vecEquals(a, b, aTolerance) {
 };
 vecEquals.TOLERANCE = 1e-4;
 exports.vecEquals = vecEquals;
+exports.array1dEquals = vecEquals;
 
 // both a and b are 2d array
 function array2dEquals(a, b, aTolerance) {
@@ -58,6 +70,7 @@ function array2dEquals(a, b, aTolerance) {
 }
 array2dEquals.TOLERANCE = 1e-4;
 exports.array2dEquals = array2dEquals;
+exports.matrixEquals = array2dEquals;
 
 // input: ccs representation
 // output: iterator that emits a sequence of (i, j, value) tuple.
@@ -457,6 +470,14 @@ function mldivide(A, b) {
   throw new Error('mldivide(A, b): unsupported type A or b. A, b: ' + A + ', ' + b);
 }
 exports.mldivide = mldivide;
+
+function eye(n) {
+  return array2d(n, n, function(i, j) {
+    if (i === j) return 1;
+    return 0;
+  });
+}
+
 
 exports.SparseVector = SparseVector;
 _.assign(exports, numeric);

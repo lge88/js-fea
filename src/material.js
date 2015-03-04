@@ -35,7 +35,7 @@ DeforSSLinElUniax.prototype = Object.create(Material.prototype);
 DeforSSLinElUniax.prototype.constructor = DeforSSLinElUniax;
 
 DeforSSLinElUniax.prototype.tangentModuli = function() {
-  return this._prop.E();
+  return [ [this._prop.E()] ];
 };
 
 exports.DeforSSLinElUniax = DeforSSLinElUniax;

@@ -284,8 +284,8 @@ Manifold1GCellSet.prototype.axisSymm = function() { return this._axisSymm; };
 var _input_contract_m1_jac_ = _.defineContract(function(conn, N, J, x) {
   vectorOfDimension(2)(conn);
   matrixOfDimension(2, '*')(N);
-  matrixOfDimension(1, 1)(J);
-  matrixOfDimension(2, 1)(x);
+  matrixOfDimension('*', 1)(J);
+  matrixOfDimension(2, 2)(x);
 }, 'input is not valid for mainfold 1 gcellset jacobian.');
 
 var _output_contract_jac_ = _.defineContract(function(jac) {

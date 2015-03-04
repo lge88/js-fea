@@ -715,4 +715,16 @@ describe('core.numeric', function() {
 
   });
 
+  describe('size', function() {
+    xit('size', function() {
+      throw new Error('size() is not tested.');
+    });
+  });
+
+  describe('eye', function() {
+    xit('eye', function() {
+      throw new Error('eye() is not tested.');
+    });
+  });
+
 });

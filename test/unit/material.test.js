@@ -19,7 +19,7 @@ describe('material', function() {
       ],
 
       tangentModuli: [
-        { output: 1000 }
+        { output: [[1000]], verify: 'eql' }
       ]
     },
     {
