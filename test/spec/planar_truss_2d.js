@@ -16,12 +16,44 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var GaussRule = fe.numeric.GaussRule;
     var Field = fe.field.Field;
     var DeforSS = fe.feblock.DeforSS;
+    var size = fe.numeric.size;
+    var eye = fe.numeric.eye;
+    var div = fe.numeric.div;
+    var norm2 = fe.numeric.norm2;
 
     // parameters:
     var E = 1e7;
     var integrationOrder = 1;
 
-    var fens = new FeNodeSet({
+    var feb, fens, gcells, mater, prop, ebcGroup, geom, u;
+
+    function genISORm(xyz, tangents) {
+      var tmp = size(tangents);
+      var sdim = tmp[0], ntan = tmp[1];
+      if (sdim === ntan) {
+        return eye(sdim);
+      } else {
+        var e1 = tangents.map(function(row) {
+          return [row[0]];
+        });
+
+        e1 = div(e1, norm2(e1));
+        switch (ntan) {
+        case 1:
+          return e1;
+          break;
+        case 2:
+          throw new Error('genISORm: ntan = ' + ntan + ' is not implemented.');
+          break;
+        default:
+          throw new Error('genISORm: incorrect size of tangents, ntan = ' + ntan);
+        }
+
+      }
+
+    }
+
+    fens = new FeNodeSet({
       xyz: [
         [0, 0],
         [0, 40],
@@ -32,7 +64,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       ]
     });
 
-    var gcells = new L2({
+    gcells = new L2({
       conn: [
         [ 1, 3 ],
         [ 1, 4 ],
@@ -46,62 +78,58 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       otherDimension: 1.5
     });
 
-    var ebcFenids =[ 1, 1, 2, 2 ];
-    var ebcPrescribed = [ 1, 1, 1, 1 ];
-    var ebcComp = [ 1, 2, 1, 2 ];
-    var ebcVal = ebcComp.map(function() { return 0; });
+    ebcGroup = {
+      fenids: [1,1,2,2],
+      prescribed: [1,1,1,1],
+      component: [1,2,1,2],
+      value: [0,0,0,0]
+    };
 
-    var prop = new LinElIso({ E: E, nu: 0.0 });
+    prop = new LinElIso({ E: E, nu: 0.0 });
 
-    var mater = new DeforSSLinElUniax({
+    mater = new DeforSSLinElUniax({
       property: prop
     });
 
     var ir = new GaussRule(1, integrationOrder);
 
-    var geomField = new Field({
+    geom = new Field({
       name: 'geom',
       fens: fens
     });
 
-    var u = new Field({
+    u = new Field({
       name: 'u',
-      dim: geomField.dim(),
-      nfens: geomField.nfens(),
-      ebcs: [
-        {
-          fenids: [1,1,2,2],
-          prescribed: [1,1,1,1],
-          component: [1,2,1,2],
-          value: [0,0,0,0]
-        }
-      ]
+      dim: geom.dim(),
+      nfens: geom.nfens(),
+      ebcs: [ ebcGroup ]
     });
-    // u = u.map(function() { return 0; });
 
-    // u = u.setEBC(ebcFenids, ebcPrescribed, ebcComp, ebcVal);
-    // u = u.applyEBC();
-
-    // u = u.numberEquations();
-
-    // TODO: Everything below is not implemented.
-
-    var feb = new DeforSS({
+    feb = new DeforSS({
       material: mater,
       gcells: gcells,
-      integrationRule: ir
-      // rm: fe.utils.genISORm
+      integrationRule: ir,
+      rm: genISORm
     });
-    return 0;
 
-    var tmp = feb.stiffness(geomField, u);
-    var ems = tmp.ems;
-    var eqnums = tmp.eqnums;
+    var tmp = feb.stiffness(geom, u);
+    var ems = tmp.matrices.map(function(mat, i) {
+      return {
+        matrix: mat,
+        equationNumbers: tmp.eqnums[i]
+      };
+    });
+
+    // var ems = tmp.matrices;
+    // var eqnums = tmp.eqnums;
 
     // var ems = feb.stiffness(geomField, u);
     var neqns = u.neqns();
     var K = new fe.numeric.DokSparseMatrix([], neqns, neqns);
     fe.assemble.assemble_(K, ems);
+    // console.log("K = ", K.toFull());
+
+    return 0;
 
     var F = new fe.numeric.SparseVector([], neqns);
     var nodalLoads = [
