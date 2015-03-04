@@ -81,6 +81,7 @@ function GCellSet(topology) {
   this._id = uuid();
   this._topology = topology;
 }
+exports.GCellSet = GCellSet;
 
 GCellSet.prototype.type = function() {
   throw new Error('GCellSet::type(): is not implemented.');

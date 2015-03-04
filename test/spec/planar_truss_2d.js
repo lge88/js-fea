@@ -15,6 +15,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
     var GaussRule = fe.numeric.GaussRule;
     var Field = fe.field.Field;
+    var DeforSS = fe.feblock.DeforSS;
 
     // parameters:
     var E = 1e7;
@@ -84,7 +85,6 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     // u = u.numberEquations();
 
     // TODO: Everything below is not implemented.
-    return 0;
 
     var feb = new DeforSS({
       material: mater,
@@ -92,6 +92,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       integrationRule: ir
       // rm: fe.utils.genISORm
     });
+    return 0;
 
     var ems = feb.stiffness(geomField, u);
     var neqns = u.getNumEquations();

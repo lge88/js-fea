@@ -17,6 +17,7 @@ Material.prototype.newState = function() {
 Material.prototype.update = function() {
   throw new Error('Material::update(): is not implemented.');
 };
+exports.Material = Material;
 
 var _input_contract_linel_uniax_prop_ = defineContract(function(o) {
   assert.object(o);
