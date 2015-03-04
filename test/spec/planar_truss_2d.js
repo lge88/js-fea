@@ -8,24 +8,28 @@ describe('FAESOR Planar_truess_with_anim example', function() {
 
   it('should create model.', function() {
     // import objects:
-    var PointSet = fe.geometry.pointset.PointSet;
+    // var PointSet = fe.geometry.pointset.PointSet;
+    var FeNodeSet = fe.fens.FeNodeSet;
     var L2 = fe.gcellset.L2;
     var LinElIso = fe.property.LinElIso;
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
     var GaussRule = fe.numeric.GaussRule;
+    var Field = fe.field.Field;
 
     // parameters:
     var E = 1e7;
     var integrationOrder = 1;
 
-    var fens = new PointSet([
-      [0, 0],
-      [0, 40],
-      [40, 0],
-      [40, 40],
-      [80, 0],
-      [80, 40]
-    ]);
+    var fens = new FeNodeSet({
+      xyz: [
+        [0, 0],
+        [0, 40],
+        [40, 0],
+        [40, 40],
+        [80, 0],
+        [80, 40]
+      ]
+    });
 
     var gcells = new L2({
       conn: [
@@ -54,30 +58,40 @@ describe('FAESOR Planar_truess_with_anim example', function() {
 
     var ir = new GaussRule(1, integrationOrder);
 
+    var geomField = new Field({
+      name: 'geom',
+      fens: fens
+    });
+
+    var u = new Field({
+      name: 'u',
+      dim: geomField.dim(),
+      nfens: geomField.nfens(),
+      ebcs: [
+        {
+          fenids: [1,1,2,2],
+          prescribed: [1,1,1,1],
+          component: [1,2,1,2],
+          value: [0,0,0,0]
+        }
+      ]
+    });
+    // u = u.map(function() { return 0; });
+
+    // u = u.setEBC(ebcFenids, ebcPrescribed, ebcComp, ebcVal);
+    // u = u.applyEBC();
+
+    // u = u.numberEquations();
+
     // TODO: Everything below is not implemented.
     return 0;
 
     var feb = new DeforSS({
       material: mater,
       gcells: gcells,
-      integrationRule: ir,
-      rm: fe.utils.genISORm
+      integrationRule: ir
+      // rm: fe.utils.genISORm
     });
-
-    var geomField = new fe.field.Field({
-      name: 'geom',
-      dim: 2,
-      fens: fens
-    });
-
-    var u = geomField.clone();
-    u.name = 'u';
-    u = u.map(function() { return 0; });
-
-    u = u.setEBC(ebcFenids, ebcPrescribed, ebcComp, ebcVal);
-    u = u.applyEBC();
-
-    u = u.numberEquations();
 
     var ems = feb.stiffness(geomField, u);
     var neqns = u.getNumEquations();
