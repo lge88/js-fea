@@ -34,6 +34,7 @@ var _ = require('./core.utils');
 var array1d = _.array1d;
 var cloneDeep = _.cloneDeep;
 var normalizedCell = _.normalizedCell;
+var byLexical = _.byLexical;
 
 var Bimap = _.Bimap;
 
@@ -81,14 +82,14 @@ function Topology(complexes, cellSizes) {
   }
 
   var _complexes = _.cloneDeep(complexes);
-  _(_complexes).each(function(x, i) {
-    _(_complexes[i]).each(function(y, j) {
-      _complexes[i][j] = normalizedCell(y);
-      // var offset = _.minIndex(y);
-      // _complexes[i][j] = _.rotateLeft(y, offset);
-    });
-    _complexes[i].sort(_.byLexical);
-  });
+  // _(_complexes).each(function(x, i) {
+  //   _(_complexes[i]).each(function(y, j) {
+  //     _complexes[i][j] = normalizedCell(y);
+  //     // var offset = _.minIndex(y);
+  //     // _complexes[i][j] = _.rotateLeft(y, offset);
+  //   });
+  //   _complexes[i].sort(_.byLexical);
+  // });
   this._complexes = _complexes;
 
   var errs = [];
@@ -143,6 +144,17 @@ Topology.prototype.clone = function() {
   return copy;
 };
 
+Topology.prototype.normalized = function() {
+  var copy = cloneDeep(this._complexes);
+  copy.forEach(function(x, i) {
+    x.forEach(function(y, j) {
+      x[j] = normalizedCell(y);
+    });
+    x.sort(byLexical);
+  });
+  return new Topology(copy, this._cellSizes);
+};
+
 Topology.prototype.equals = function(other) {
   if (this.getDim() !== other.getDim())
     return false;
@@ -152,6 +164,26 @@ Topology.prototype.equals = function(other) {
     if (this.getCellSizeInDim(i) !== other.getCellSizeInDim(i))
       return false;
   }
+
+
+  // var complexes1 = this._complexes;
+  // var complexes2 = other._complexes;
+  // complexes1 = complexes1.map(function(x, i) {
+  //   complexes1[i].map(function(y, j) {
+
+  //   });
+  //   // complexes1[i].s
+  // });
+
+
+  // _(_complexes).each(function(x, i) {
+  //   _(_complexes[i]).each(function(y, j) {
+  //     _complexes[i][j] = normalizedCell(y);
+  //     // var offset = _.minIndex(y);
+  //     // _complexes[i][j] = _.rotateLeft(y, offset);
+  //   });
+  //   _complexes[i].sort(_.byLexical);
+  // });
 
   var j, ncells;
   for (i = 0; i <= dim; ++i) {

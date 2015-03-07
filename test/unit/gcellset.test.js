@@ -91,11 +91,8 @@ describe('gcellset', function() {
             [ 2, 4 ],
             [ 3, 4 ],
             [ 3, 5 ],
-            // FIXME: topology resorts the cell indices..
-            // [ 5, 4 ],
-            [ 4, 5 ],
-            // [ 6, 4 ],
-            [ 4, 6 ],
+            [ 5, 4 ],
+            [ 6, 4 ],
             [ 5, 6 ]
           ],
           verify: 'eql'

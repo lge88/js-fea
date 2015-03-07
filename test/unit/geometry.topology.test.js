@@ -1,6 +1,10 @@
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
+var _ = require(SRC + '/core.utils');
+var cloneDeep = _.cloneDeep;
+var normalizedCell = _.normalizedCell;
+var byLexical = _.byLexical;
 var dataDriven = require('data-driven');
 var topology = require(SRC + '/geometry.topology.js');
 var Topology = topology.Topology;
@@ -84,13 +88,8 @@ describe('geometry.topology', function() {
 
       expect(t.toList()).to.eql([
         [ [0], [1], [2], [3] ],
-        [ [0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3] ],
-        [
-          [0, 1, 3],
-          [0, 2, 1],
-          [0, 3, 2],
-          [1, 2, 3]
-        ],
+        [ [0, 1], [1, 2], [2, 0], [3, 0], [3, 1], [3, 2] ],
+        [ [0, 2, 1], [3, 0, 1], [3, 1, 2], [3, 2, 0] ],
         [ [0, 1, 2, 3] ]
       ]);
 
@@ -223,6 +222,31 @@ describe('geometry.topology', function() {
     });
   });
 
+  describe('Topology::normalized', function() {
+    var dataset = [
+      {
+        input: [
+          [ [3], [1], [0], [2] ],
+          [ [0, 1], [1, 2], [2, 3], [3, 0] ],
+          [ [2, 3, 0, 1] ]
+        ],
+        output: [
+          [ [0], [1], [2], [3] ],
+          [ [0, 1], [0, 3], [1, 2], [2, 3] ],
+          [ [0, 1, 2, 3] ]
+        ]
+      }
+    ];
+
+    dataDriven(dataset, function() {
+      it('should work {desc}', function(ctx) {
+        var t1 = new Topology(ctx.input);
+        var t2 = new Topology(ctx.output);
+        expect(t1.normalized().equals(t2)).to.be(true);
+      });
+    });
+  });
+
   xdescribe('Topology::fuse()', function() {
     it('should work with empty set', function() {
       var t1 = Topology([[[0], [1]]]);
@@ -313,7 +337,7 @@ describe('geometry.topology', function() {
         dim: 1,
         expectedComplexes: [
           [ [1], [2], [3] ],
-          [ [1, 2], [1, 3], [2, 3] ]
+          [ [1, 2], [3, 2], [1, 3] ]
         ]
       },
       {
@@ -327,7 +351,7 @@ describe('geometry.topology', function() {
         dim: 1,
         expectedComplexes: [
           [ [1], [2], [3], [4] ],
-          [ [1, 2], [1, 4], [2, 3], [3, 4] ]
+          [ [1, 2], [2, 3], [3, 4], [4, 1] ]
         ]
       },
       {
@@ -374,8 +398,8 @@ describe('geometry.topology', function() {
 
     dataDriven(casesShouldWork, function() {
       it('should work for dim = {dim} {desc}', function(ctx) {
-        var resultTopology = hypercube(ctx.conn, ctx.dim);
-        var expectedTopology = new Topology(ctx.expectedComplexes);
+        var resultTopology = hypercube(ctx.conn, ctx.dim).normalized();
+        var expectedTopology = (new Topology(ctx.expectedComplexes)).normalized();
         expect(resultTopology.equals(expectedTopology)).to.be(true);
       });
     });
