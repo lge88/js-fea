@@ -1,23 +1,13 @@
 /*global require*/
 // core.assemble
 
-function ElementMatrix(matrix, equationNumbers) {
-  // TODO: do some type checking and convertion here;
-  // matrix is a 2d array of size m x m
-  // equationNumbers is a 1d array m x 1
-  this.matrix = matrix;
-  this.equationNumbers = equationNumbers;
-}
-
-exports.ElementMatrix = ElementMatrix;
-
 // dest: DokSparseMatrix|DenseMatrix
 // sources: [ ElementMatrix ]
 function assemble_(dest, sources) {
   // TODO: ensure sources of made of ElementMatrix;
 
   sources.forEach(function(Ke) {
-    var mat = Ke.matrix, eqnums = Ke.equationNumbers;
+    var mat = Ke.matrix, eqnums = Ke.eqnums;
 
     var noneZeroIndices = eqnums.map(function(globalIndex, localIndex) {
       return {

@@ -18,6 +18,14 @@ var Material = require('./material').Material;
 var GCellSet = require('./gcellset').GCellSet;
 var IntegrationRule = require('./core.numeric.integrationrule').IntegrationRule;
 
+
+function ElementMatrix(mat, eqnums) {
+  // TODO: input check
+  this.matrix = mat;
+  this.eqnums = eqnums;
+}
+exports.ElementMatrix = ElementMatrix;
+
 function Feblock() {}
 
 var _input_contract_deforss_option = defineContract(function(o) {
@@ -88,6 +96,7 @@ DeforSS.prototype._blmat1 = function(N, Ndersp, c, Rm) {
 // In:
 //   geom: Geometry Field
 //   geom: Displacemeent Field
+// out: [ ElementMatrix ]
 // out: { matrices: [ 2D JS Array of dimension cellSize x cellSize ] }
 //  eqnums: [ 1D JS Array of dimension cellSize ] }
 DeforSS.prototype.stiffness = function(geom, u) {
@@ -178,11 +187,17 @@ DeforSS.prototype.stiffness = function(geom, u) {
     }
   }
 
-  var res = {
-    matrices: Ke,
-    eqnums: eqnums
-  };
-  return res;
+  var elementMatrix = Ke.map(function(mat, i) {
+    return new ElementMatrix(mat, eqnums[i]);
+  });
+
+  return elementMatrix;
+
+  // var res = {
+  //   matrices: Ke,
+  //   eqnums: eqnums
+  // };
+  // return res;
 };
 
 

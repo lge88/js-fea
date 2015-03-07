@@ -3,7 +3,7 @@ var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
 var dataDriven = require('data-driven');
 var assemble_ = require(SRC + '/core.assemble.js').assemble_;
-var ElementMatrix = require(SRC + '/core.assemble.js').ElementMatrix;
+var ElementMatrix = require(SRC + '/feblock.js').ElementMatrix;
 var numeric = require(SRC + '/core.numeric');
 var DokSparseMatrix = numeric.DokSparseMatrix;
 var array2dEquals = numeric.array2dEquals;
