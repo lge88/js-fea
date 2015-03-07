@@ -14,13 +14,14 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var LinElIso = fe.property.LinElIso;
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
     var GaussRule = fe.numeric.GaussRule;
-    var DokSparseMatrix = fe.numeric.DokSparseMatrix;
+    var SparseSystemMatrix = fe.system.SparseSystemMatrix;
     var Field = fe.field.Field;
     var DeforSS = fe.feblock.DeforSS;
     var size = fe.numeric.size;
     var eye = fe.numeric.eye;
     var div = fe.numeric.div;
     var norm2 = fe.numeric.norm2;
+    var mldivide = fe.numeric.mldivide;
 
     // parameters:
     var E = 1e7;
@@ -114,21 +115,12 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     });
 
     var Kes = feb.stiffness(geom, u);
-    // var ems = tmp.matrices.map(function(mat, i) {
-    //   return {
-    //     matrix: mat,
-    //     equationNumbers: tmp.eqnums[i]
-    //   };
-    // });
-
-    // var ems = tmp.matrices;
-    // var eqnums = tmp.eqnums;
-
-    // var ems = feb.stiffness(geomField, u);
     var neqns = u.neqns();
-    var K = new DokSparseMatrix([], neqns, neqns);
-    fe.assemble.assemble_(K, Kes);
-    console.log("K = ", K.toFull());
+    var K = new SparseSystemMatrix(neqns, neqns, Kes);
+
+    // var K = new DokSparseMatrix([], neqns, neqns);
+    // fe.assemble.assemble_(K, Kes);
+    // console.log("K = ", K.toFull());
 
     return 0;
 
@@ -147,7 +139,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       fe.assemble.assembleF_(F, evs);
     });
 
-    var x = fe.numeric.mldivide(K, F);
+    var x = mldivide(K, F);
 
     u = u.scatter(x);
 

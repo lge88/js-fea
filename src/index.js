@@ -20,4 +20,5 @@ exports.gcellset = require('./gcellset.js');
 exports.field = require('./field.js');
 exports.fens = require('./fens.js');
 exports.feblock = require('./feblock.js');
-exports.assemble = require('./core.assemble.js');
+exports.system = {};
+_.assign(exports.system, require('./system.matrix.js'));
