@@ -15,8 +15,11 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
     var GaussRule = fe.numeric.GaussRule;
     var SparseSystemMatrix = fe.system.SparseSystemMatrix;
+    var SparseSystemVector = fe.system.SparseSystemVector;
+    var solve = fe.system.solve;
     var Field = fe.field.Field;
     var DeforSS = fe.feblock.DeforSS;
+    var NodalLoad = fe.nodalload.NodalLoad;
     var size = fe.numeric.size;
     var eye = fe.numeric.eye;
     var div = fe.numeric.div;
@@ -114,32 +117,35 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       rm: genISORm
     });
 
-    var Kes = feb.stiffness(geom, u);
+    var elementMatrices = feb.stiffness(geom, u);
     var neqns = u.neqns();
-    var K = new SparseSystemMatrix(neqns, neqns, Kes);
+    var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
+    console.log("K = ", K.toFull());
 
-    // var K = new DokSparseMatrix([], neqns, neqns);
-    // fe.assemble.assemble_(K, Kes);
-    // console.log("K = ", K.toFull());
+    var nodalLoads = [
+      { id: 3, dir: 2, magn: -2000 },
+      { id: 5, dir: 1, magn: +2000 },
+      { id: 6, dir: 1, magn: +4000 },
+      { id: 6, dir: 2, magn: +6000 },
+    ].map(function(item) {
+      return new NodalLoad(item);
+    });
+
+    var elementVectors = nodalLoads
+          .map(function(nl) {
+            return nl.loads(u);
+          })
+          .reduce(function(sofar, ev) {
+            return sofar.concat(ev);
+          }, []);
+
+    var F = new SparseSystemVector(neqns, elementVectors);
+    console.log("F = ", F.toFull());
+
+    var x = mldivide(K.dokMatrix(), F.sparseVector());
+    console.log("x = ", x);
 
     return 0;
-
-    var F = new fe.numeric.SparseVector([], neqns);
-    var nodalLoads = [
-      { nodeId: 3, dir: 2, magnitude: -2000 },
-      { nodeId: 5, dir: 1, magnitude: +2000 },
-      { nodeId: 6, dir: 1, magnitude: +4000 },
-      { nodeId: 6, dir: 2, magnitude: +6000 },
-    ].map(function(item) {
-      return new fe.nodalload.NodalLoad(item);
-    });
-
-    nodalLoads.forEach(function(nl) {
-      var evs = nl.loads(u);
-      fe.assemble.assembleF_(F, evs);
-    });
-
-    var x = mldivide(K, F);
 
     u = u.scatter(x);
 

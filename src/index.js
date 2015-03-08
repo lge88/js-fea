@@ -22,3 +22,5 @@ exports.fens = require('./fens.js');
 exports.feblock = require('./feblock.js');
 exports.system = {};
 _.assign(exports.system, require('./system.matrix.js'));
+_.assign(exports.system, require('./system.vector.js'));
+exports.nodalload = require('./nodalload');
