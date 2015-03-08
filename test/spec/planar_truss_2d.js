@@ -14,8 +14,8 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var LinElIso = fe.property.LinElIso;
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
     var GaussRule = fe.numeric.GaussRule;
-    var SparseSystemMatrix = fe.system.SparseSystemMatrix;
-    var SparseSystemVector = fe.system.SparseSystemVector;
+    var SparseSystemMatrix = fe.system.matrix.SparseSystemMatrix;
+    var SparseSystemVector = fe.system.vector.SparseSystemVector;
     var solve = fe.system.solve;
     var Field = fe.field.Field;
     var DeforSS = fe.feblock.DeforSS;
@@ -24,7 +24,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var eye = fe.numeric.eye;
     var div = fe.numeric.div;
     var norm2 = fe.numeric.norm2;
-    var mldivide = fe.numeric.mldivide;
+    // var mldivide = fe.numeric.mldivide;
 
     // parameters:
     var E = 1e7;
@@ -120,7 +120,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var elementMatrices = feb.stiffness(geom, u);
     var neqns = u.neqns();
     var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
-    console.log("K = ", K.toFull());
+    // console.log("K = ", K.toFull());
 
     var nodalLoads = [
       { id: 3, dir: 2, magn: -2000 },
@@ -140,14 +140,18 @@ describe('FAESOR Planar_truess_with_anim example', function() {
           }, []);
 
     var F = new SparseSystemVector(neqns, elementVectors);
-    console.log("F = ", F.toFull());
+    // console.log("F = ", F.toFull());
 
-    var x = mldivide(K.dokMatrix(), F.sparseVector());
-    console.log("x = ", x);
+    // var x = mldivide(K.dokMatrix(), F.sparseVector());
+    var x1 = solve(K, F);
+    // console.log("x1 = ", x1);
+
+    var x2 = solve(K, F.sparseVector().toList());
+    // console.log("x2 = ", x2);
 
     return 0;
 
-    u = u.scatter(x);
+    u = u.scatterSystemVector(x);
 
     var values = u.getValues();
     console.log("values = ", values);

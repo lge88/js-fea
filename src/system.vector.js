@@ -9,7 +9,7 @@ var SparseVector = numeric.SparseVector;
 // var mldivide = numeric.mldivide;
 
 function SparseSystemVector(dim, elementVectors) {
-  console.log("elementVectors = ", elementVectors);
+  // console.log("elementVectors = ", elementVectors);
   this._dim = dim;
   this._evs = elementVectors;
   this._sparseVector = null;
@@ -27,14 +27,14 @@ SparseSystemVector.prototype._assemble_ = function() {
       throw new Error('SparseSystemVector::_assemble_: evs must be a iterator or array.');
   }
 
-  var ev;
+  var ev, val, en, idx, was;
   while (sources.hasNext()) {
     ev = sources.next();
-    console.log("ev = ", ev);
-    var val = ev.value, en = ev.eqnum;
-    console.log("val = ", val);
-    var idx = en - 1;
-    var was = dest.at(idx);
+
+    val = ev.value;
+    en = ev.eqnum;
+    idx = en - 1;
+    was = dest.at(idx);
 
     dest.set_(idx, was + val);
   }
