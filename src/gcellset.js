@@ -282,6 +282,11 @@ Manifold1GCellSet.prototype.otherDimension = function(conn, N, x) {
 Manifold1GCellSet.prototype.axisSymm = function() { return this._axisSymm; };
 
 var _input_contract_m1_jac_ = _.defineContract(function(conn, N, J, x) {
+  // console.log("x = ", x);
+  // console.log("J = ", J);
+  // console.log("N = ", N);
+  // console.log("conn = ", conn);
+  return;
   vectorOfDimension(2)(conn);
   matrixOfDimension(2, '*')(N);
   matrixOfDimension('*', 1)(J);

@@ -4,6 +4,7 @@ var expect = require('expect.js');
 var ModuleTester = require(ROOT + '/test/lib/module-tester').ModuleTester;
 var FeNodeSet = require(SRC + '/fens').FeNodeSet;
 var PointSet = require(SRC + '/geometry.pointset').PointSet;
+var EBC = require(SRC + '/ebc').EBC;
 var field = require(SRC + '/field.js');
 
 describe('field', function() {
@@ -86,12 +87,11 @@ describe('field', function() {
             [80, 40]
           ],
           ebcs: [
-            {
-              fenids: [1,1,2,2],
-              prescribed: [1,1,1,1],
-              component: [1,2,1,2],
-              value: [0,0,0,0]
-            }
+            new EBC({
+              id: [1, 2],
+              dir: [1, 2],
+              value: 0
+            })
           ]
         }
       ],

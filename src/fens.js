@@ -39,6 +39,8 @@ FeNodeSet.prototype.xyzById = function(id) {
   return this._xyz.get(id - 1);
 };
 
+FeNodeSet.prototype.get = FeNodeSet.prototype.xyzById;
+
 FeNodeSet.prototype.xyzIter = function() {
   var i = 0, xyz = this._xyz, len = xyz.getSize();
   return {

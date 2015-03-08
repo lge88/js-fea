@@ -53,16 +53,18 @@ function Field(options) {
     // +1 because the id and direction index starts from 1;
     var prescribed = array2d(this.nfens() + 1, this.dim() + 1, false);
     var prescribedValues =  array2d(this.nfens() + 1, this.dim() + 1, 0);
-    options.ebcs.forEach(function(ebc) {
-      // TODO: make sure ebc object is valid;
-      ebc.fenids.forEach(function(fenid, i) {
-        var comp = ebc.component[i];
-        prescribed[fenid][comp] = !!(ebc.prescribed[i]);
-        prescribedValues[fenid][comp] = ebc.value[i];
-      });
-    });
     this._prescribed = prescribed;
     this._prescribedValues = prescribedValues;
+
+    options.ebcs.forEach(function(ebc) {
+      // TODO: make sure ebc object is valid;
+      // ebc.fenids.forEach(function(fenid, i) {
+      //   var comp = ebc.component[i];
+      //   prescribed[fenid][comp] = !!(ebc.prescribed[i]);
+      //   prescribedValues[fenid][comp] = ebc.value[i];
+      // });
+      ebc.applyToField_(this);
+    }, this);
   }
 
   this._eqnums = null;
@@ -95,6 +97,15 @@ Field.prototype.prescribedValue = function(id, direction) {
   if (this.isPrescribed(id, direction))
     return this._prescribedValues[id][direction];
   return null;
+};
+
+Field.prototype.setPrescribedValue_ = function(id, dir, val) {
+  // console.log("val = ", val);
+  // console.log("dir = ", dir);
+  // console.log("id = ", id);
+  // console.log("this._prescribed = ", this._prescribed);
+  this._prescribed[id][dir] = true;
+  this._prescribedValues[id][dir] = val;
 };
 
 Field.prototype._numberEqnums_ = function() {

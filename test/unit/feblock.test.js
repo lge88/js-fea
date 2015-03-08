@@ -17,6 +17,7 @@ var LinElIso = require(SRC + '/property.js').LinElIso;
 var DeforSSLinElUniax = require(SRC + '/material.js').DeforSSLinElUniax;
 var GaussRule = require(SRC + '/integrationrule').GaussRule;
 var Field = require(SRC + '/field').Field;
+var EBC = require(SRC + '/ebc').EBC;
 
 var feblock = require(SRC + '/feblock.js');
 var DeforSS = feblock.DeforSS;
@@ -27,7 +28,7 @@ describe('feblock', function() {
     var E = 1e7;
     var integrationOrder = 1;
 
-    var feb, fens, gcells, mater, prop, ebcGroup, geom, u;
+    var feb, fens, gcells, mater, prop, fixedSupport, geom, u;
 
     function genISORm(xyz, tangents) {
       var tmp = size(tangents);
@@ -80,12 +81,11 @@ describe('feblock', function() {
       otherDimension: 1.5
     });
 
-    ebcGroup = {
-      fenids: [1,1,2,2],
-      prescribed: [1,1,1,1],
-      component: [1,2,1,2],
-      value: [0,0,0,0]
-    };
+    fixedSupport = new EBC({
+      id: [1, 2],
+      dir: [1, 2],
+      value: 0
+    });
 
     prop = new LinElIso({ E: E, nu: 0.0 });
 
@@ -104,7 +104,7 @@ describe('feblock', function() {
       name: 'u',
       dim: geom.dim(),
       nfens: geom.nfens(),
-      ebcs: [ ebcGroup ]
+      ebcs: [ fixedSupport ]
     });
 
     feb = new DeforSS({

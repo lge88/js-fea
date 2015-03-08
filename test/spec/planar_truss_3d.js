@@ -4,7 +4,7 @@ var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
 var fe = require(SRC);
 
-describe('FAESOR Planar_truess_with_anim example', function() {
+describe('FAESOR Planar_truess_with_anim 3d', function() {
 
   it('should create model.', function() {
     // import objects:
@@ -15,9 +15,9 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var GaussRule = fe.integrationrule.GaussRule;
     var SparseSystemMatrix = fe.system.matrix.SparseSystemMatrix;
     var SparseSystemVector = fe.system.vector.SparseSystemVector;
+    var EBC = fe.ebc.EBC;
     var mldivide = fe.system.mldivide;
     var Field = fe.field.Field;
-    var EBC = fe.ebc.EBC;
     var DeforSS = fe.feblock.DeforSS;
     var NodalLoad = fe.nodalload.NodalLoad;
     var genISORm = fe.feutils.genISORm;
@@ -26,16 +26,16 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var E = 1e7;
     var integrationOrder = 1;
 
-    var feb, fens, gcells, mater, prop, fixedSupport, geom, u;
+    var feb, fens, gcells, mater, prop, ebcGroup, geom, u;
 
     fens = new FeNodeSet({
       xyz: [
-        [0, 0],
-        [0, 40],
-        [40, 0],
-        [40, 40],
-        [80, 0],
-        [80, 40]
+        [0, 0, 0],
+        [0, 40, 0],
+        [40, 0, 0],
+        [40, 40, 0],
+        [80, 0, 0],
+        [80, 40, 0]
       ]
     });
 
@@ -65,10 +65,18 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       name: 'geom',
       fens: fens
     });
+    // console.log("geom.dim() = ", geom.dim());
 
-    fixedSupport = new EBC({
+    var fixedSupports = new EBC({
       id: [1, 2],
-      dir: [1, 2],
+      dir: [1, 2, 3],
+      value: 0
+    });
+
+    //  zero out-of-plane displacement
+    var inPlaneConstraints = new EBC({
+      id: 'all',
+      dir: 3,
       value: 0
     });
 
@@ -76,7 +84,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       name: 'u',
       dim: geom.dim(),
       nfens: geom.nfens(),
-      ebcs: [ fixedSupport ]
+      ebcs: [ fixedSupports, inPlaneConstraints ]
     });
 
     feb = new DeforSS({
@@ -111,7 +119,6 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var F = new SparseSystemVector(neqns, elementVectors);
     // console.log("F = ", F.toFull());
 
-    // var x = mldivide(K.dokMatrix(), F.sparseVector());
     var x1 = mldivide(K, F);
     // console.log("x1 = ", x1);
 
@@ -124,16 +131,16 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     // console.log("values = ", values);
 
     var expected = [
-      [0, 0],
-      [0, 0],
-      [0.0213, 0.0408],
-      [-0.0160, 0.0462],
-      [0.0427, 0.1501],
-      [-0.0053, 0.1661],
+      [0, 0, 0],
+      [0, 0, 0],
+      [0.0213, 0.0408, 0],
+      [-0.0160, 0.0462, 0],
+      [0.0427, 0.1501, 0],
+      [-0.0053, 0.1661, 0]
     ];
     // console.log("expected = ", expected);
 
-    expect(fe.numeric.matrixEquals(values, expected, 1e-4)).to.be(true);
+    expect(fe.numeric.matrixEquals(values, expected, 1e-6)).to.be(true);
     return 0;
   });
 
