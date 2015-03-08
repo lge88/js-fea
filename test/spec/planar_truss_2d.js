@@ -16,7 +16,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var GaussRule = fe.numeric.GaussRule;
     var SparseSystemMatrix = fe.system.matrix.SparseSystemMatrix;
     var SparseSystemVector = fe.system.vector.SparseSystemVector;
-    var solve = fe.system.solve;
+    var mldivide = fe.system.mldivide;
     var Field = fe.field.Field;
     var DeforSS = fe.feblock.DeforSS;
     var NodalLoad = fe.nodalload.NodalLoad;
@@ -24,7 +24,6 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var eye = fe.numeric.eye;
     var div = fe.numeric.div;
     var norm2 = fe.numeric.norm2;
-    // var mldivide = fe.numeric.mldivide;
 
     // parameters:
     var E = 1e7;
@@ -143,15 +142,15 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     // console.log("F = ", F.toFull());
 
     // var x = mldivide(K.dokMatrix(), F.sparseVector());
-    var x1 = solve(K, F);
+    var x1 = mldivide(K, F);
     // console.log("x1 = ", x1);
 
-    var x2 = solve(K, F.sparseVector().toList());
+    var x2 = mldivide(K, F.sparseVector().toList());
     // console.log("x2 = ", x2);
 
     return 0;
 
-    u = u.scatterSystemVector(x);
+    u = u.scatterSystemVector(x1);
 
     var values = u.getValues();
     console.log("values = ", values);

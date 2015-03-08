@@ -11,7 +11,7 @@ exports.matrix = matrix;
 exports.vector = vector;
 
 // Return a full vector (1d js array).
-function solve(A, b) {
+function mldivide(A, b) {
   if (A instanceof SparseSystemMatrix && b instanceof SparseSystemVector) {
     return A.dokMatrix().solveSparseVector(b.sparseVector()).toList();
   } else if (A instanceof SparseSystemMatrix && isVector(b)) {
@@ -21,4 +21,4 @@ function solve(A, b) {
   throw new Error('system.solve(): unsupported type A and b.');
 }
 
-exports.solve = solve;
+exports.mldivide = mldivide;
