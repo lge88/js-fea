@@ -148,12 +148,10 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var x2 = mldivide(K, F.sparseVector().toList());
     // console.log("x2 = ", x2);
 
-    return 0;
 
-    u = u.scatterSystemVector(x1);
-
-    var values = u.getValues();
-    console.log("values = ", values);
+    u.scatterSystemVector_(x1);
+    var values = u.values();
+    // console.log("values = ", values);
 
     var expected = [
       [0, 0],
@@ -163,8 +161,10 @@ describe('FAESOR Planar_truess_with_anim example', function() {
       [0.0427, 0.1501],
       [-0.0053, 0.1661],
     ];
+    // console.log("expected = ", expected);
 
-    expect(fe.numeric.vecEqual(values, expected)).to.be(true);
+    expect(fe.numeric.matrixEquals(values, expected, 1e-4)).to.be(true);
+    return 0;
   });
 
 });

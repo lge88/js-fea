@@ -4,6 +4,7 @@
 var _ = require('./core.utils');
 var check = _.check;
 var assert = _.assert;
+var isVectorOfDimension = _.isVectorOfDimension;
 var array2d = _.array2d;
 var array1d = _.array1d;
 var defineContract = _.defineContract;
@@ -81,6 +82,10 @@ Field.prototype.dim = function() {
   return this._values.getRn();
 };
 
+Field.prototype.values = function() {
+  return this._values.toList();
+};
+
 Field.prototype.isPrescribed = function(id, direction) {
   if (!this._prescribed) return false;
   return this._prescribed[id][direction];
@@ -137,6 +142,31 @@ Field.prototype.gatherValuesMatrix = function(conn) {
     mat[i] = this._values.get(idx);
   }, this);
   return mat;
+};
+
+Field.prototype.scatterSystemVector_ = function(vec) {
+  var neqns = this.neqns();
+  if (!isVectorOfDimension(vec, neqns))
+    throw new Error('Field::scatterSystemVector(): vec is not a vector of ' +
+                    'dimension ' + neqns);
+
+  if (!this._eqnums) this._numberEqnums_();
+
+  var eqnums = this._eqnums;
+  var nfens = this.nfens();
+  var dim = this.dim();
+  var values = this._values;
+  var i, j, en, val;
+
+  for (i = 1; i <= nfens; ++i) {
+    for (j = 1; j <= dim; ++j) {
+      en = eqnums[i][j];
+      if (en !== 0) {
+        val = vec[en - 1];
+        values.setAtDir_(i-1, j-1, val);
+      }
+    }
+  }
 };
 
 exports.Field = Field;

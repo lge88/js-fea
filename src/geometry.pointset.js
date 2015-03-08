@@ -130,6 +130,20 @@ PointSet.prototype.set_ = function(index, point) {
   throw new Error('PointSet::set() index outof bounds.');
 };
 
+// dir: index of the dimension, start from zero.
+PointSet.prototype.setAtDir_ = function(index, dir, val) {
+  if (dir < 0 || dir >= this.getRn()) {
+    throw new Error('PointSet::setAtDir_() dir is out of range.');
+  }
+
+  if (index >= 0 && index < this._points.length) {
+    var _points = this._points;
+    _points[index][dir] = val;
+    return;
+  }
+  throw new Error('PointSet::set() index outof bounds.');
+};
+
 PointSet.prototype.forEach = function(iterator) {
   var i, size, p;
   for (i = 0, size = this.getSize(); i < size; ++i) {
