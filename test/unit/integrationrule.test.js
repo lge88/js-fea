@@ -7,7 +7,7 @@ var gaussRulesFile = ROOT + '/test/fixtures/gauss-rules.json';
 var numeric = require(SRC + '/core.numeric');
 var array2dEquals = numeric.array2dEquals;
 var vecEquals = numeric.vecEquals;
-var integrationRule = require(SRC + '/core.numeric.integrationrule.js');
+var integrationRule = require(SRC + '/integrationrule.js');
 var IntegrationRule = integrationRule.IntegrationRule;
 var GaussRule = integrationRule.GaussRule;
 
@@ -17,7 +17,7 @@ function loadFixtures(fileName) {
   return json;
 }
 
-describe('core.numeric.integrationrule', function() {
+describe('integrationrule', function() {
   describe('IntegrationRule', function() {
     var ir = new IntegrationRule();
     dataDriven([

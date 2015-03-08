@@ -16,7 +16,7 @@ var mul = numeric.mul;
 var inv = numeric.inv;
 var Material = require('./material').Material;
 var GCellSet = require('./gcellset').GCellSet;
-var IntegrationRule = require('./core.numeric.integrationrule').IntegrationRule;
+var IntegrationRule = require('./integrationrule').IntegrationRule;
 
 
 function ElementMatrix(mat, eqnums) {

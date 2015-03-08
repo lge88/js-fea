@@ -13,7 +13,7 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var L2 = fe.gcellset.L2;
     var LinElIso = fe.property.LinElIso;
     var DeforSSLinElUniax = fe.material.DeforSSLinElUniax;
-    var GaussRule = fe.numeric.GaussRule;
+    var GaussRule = fe.integrationrule.GaussRule;
     var SparseSystemMatrix = fe.system.matrix.SparseSystemMatrix;
     var SparseSystemVector = fe.system.vector.SparseSystemVector;
     var mldivide = fe.system.mldivide;

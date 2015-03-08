@@ -15,7 +15,7 @@ var FeNodeSet = require(SRC + '/fens').FeNodeSet;
 var L2 = require(SRC + '/gcellset').L2;
 var LinElIso = require(SRC + '/property.js').LinElIso;
 var DeforSSLinElUniax = require(SRC + '/material.js').DeforSSLinElUniax;
-var GaussRule = require(SRC + '/core.numeric.integrationrule').GaussRule;
+var GaussRule = require(SRC + '/integrationrule').GaussRule;
 var Field = require(SRC + '/field').Field;
 
 var feblock = require(SRC + '/feblock.js');
