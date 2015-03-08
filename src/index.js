@@ -13,6 +13,7 @@ exports.geometry = {
   topology: require('./geometry.topology')
 };
 
+exports.feutils = require('./feutils');
 exports.fens = require('./fens');
 exports.gcellset = require('./gcellset');
 exports.field = require('./field');

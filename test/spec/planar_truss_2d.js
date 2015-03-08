@@ -8,7 +8,6 @@ describe('FAESOR Planar_truess_with_anim example', function() {
 
   it('should create model.', function() {
     // import objects:
-    // var PointSet = fe.geometry.pointset.PointSet;
     var FeNodeSet = fe.fens.FeNodeSet;
     var L2 = fe.gcellset.L2;
     var LinElIso = fe.property.LinElIso;
@@ -20,42 +19,13 @@ describe('FAESOR Planar_truess_with_anim example', function() {
     var Field = fe.field.Field;
     var DeforSS = fe.feblock.DeforSS;
     var NodalLoad = fe.nodalload.NodalLoad;
-    var size = fe.numeric.size;
-    var eye = fe.numeric.eye;
-    var div = fe.numeric.div;
-    var norm2 = fe.numeric.norm2;
+    var genISORm = fe.feutils.genISORm;
 
     // parameters:
     var E = 1e7;
     var integrationOrder = 1;
 
     var feb, fens, gcells, mater, prop, ebcGroup, geom, u;
-
-    function genISORm(xyz, tangents) {
-      var tmp = size(tangents);
-      var sdim = tmp[0], ntan = tmp[1];
-      if (sdim === ntan) {
-        return eye(sdim);
-      } else {
-        var e1 = tangents.map(function(row) {
-          return [row[0]];
-        });
-
-        e1 = div(e1, norm2(e1));
-        switch (ntan) {
-        case 1:
-          return e1;
-          break;
-        case 2:
-          throw new Error('genISORm: ntan = ' + ntan + ' is not implemented.');
-          break;
-        default:
-          throw new Error('genISORm: incorrect size of tangents, ntan = ' + ntan);
-        }
-
-      }
-
-    }
 
     fens = new FeNodeSet({
       xyz: [

@@ -48,9 +48,9 @@ gulp.task('lib:dev', function() {
   return gulp.src(config.paths.entry)
     .pipe($.webpack({
       output: {
-        filename: 'fea.js',
+        filename: 'fe.js',
         libraryTarget: 'var',
-        library: 'fea'
+        library: 'fe'
       }
     }))
     .pipe(gulp.dest('build'));
