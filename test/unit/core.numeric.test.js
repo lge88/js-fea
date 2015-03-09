@@ -757,15 +757,106 @@ describe('core.numeric', function() {
           [1],
           [5]
         ]
+      },
+      {
+        A: A,
+        rows: ':',
+        cols: [3],
+        desc: ': syntax for rows',
+        expected: [
+          [3],
+          [7],
+          [4],
+          [5]
+        ]
+      },
+      {
+        A: A,
+        rows: [2,1],
+        cols: ':',
+        desc: ': syntax for cols',
+        expected: [
+          [5,6,7,8],
+          [1,2,3,4]
+        ]
       }
     ];
     dataDriven(dataset, function() {
-      it('should work {desc}', function(ctx) {
+      it('ix() should work {desc}', function(ctx) {
         var expected = ctx.expected;
         var computed = numeric.ix(ctx.A, ctx.rows, ctx.cols);
         expect(expected).to.eql(computed);
       });
     });
+  });
+
+  describe('ixUpdate', function() {
+    var dataset = [
+      {
+        A: [
+          [1,2,3],
+          [4,5,6],
+          [7,8,9],
+          [10,11,12]
+        ],
+        rows: [1,2],
+        cols: [2],
+        val: [ [0], [0] ],
+        desc: '',
+        expected: [
+          [1,0,3],
+          [4,0,6],
+          [7,8,9],
+          [10,11,12]
+        ]
+      },
+      {
+        A: [
+          [1,2,3],
+          [4,5,6],
+          [7,8,9],
+          [10,11,12]
+        ],
+        rows: ':',
+        cols: [3],
+        val: 0,
+        desc: 'colon syntax',
+        expected: [
+          [1,2,0],
+          [4,5,0],
+          [7,8,0],
+          [10,11,0]
+        ]
+      },
+      {
+        A: [
+          [1,2,3],
+          [4,5,6],
+          [7,8,9],
+          [10,11,12]
+        ],
+        rows: [4],
+        cols: ':',
+        val: [[1,2,3]],
+        desc: 'colon syntax',
+        expected: [
+          [1,2,3],
+          [4,5,6],
+          [7,8,9],
+          [1,2,3]
+        ]
+      },
+    ];
+
+    dataDriven(dataset, function() {
+      it('ixUpdate() should work {desc}', function(ctx) {
+        var computed = numeric.ixUpdate(ctx.A, ctx.rows, ctx.cols, ctx.val);
+        var expected = ctx.expected;
+
+        expect(computed).to.eql(expected);
+      });
+    });
+
   });
 
 });
