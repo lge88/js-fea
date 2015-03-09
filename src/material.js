@@ -9,6 +9,11 @@ var property = require('./property');
 var LinElIso = property.LinElIso;
 var numeric = require('./core.numeric');
 var ix = numeric.ix;
+var ixUpdate = numeric.ixUpdate;
+var mul = numeric.mul;
+var div = numeric.div;
+var dot = numeric.dot;
+var add = numeric.add;
 
 function Material() {}
 
@@ -53,7 +58,7 @@ var _input_contract_linel_biax_prop_ = defineContract(function(o) {
 function DeforSSLinElBiax(options) {
   _input_contract_linel_uniax_prop_(options);
   this._prop = options.property;
-  this._reduction = options.reducion || 'strain';
+  this._reduction = options.reduction || 'strain';
 }
 exports.DeforSSLinElBiax = DeforSSLinElBiax;
 
@@ -63,9 +68,19 @@ DeforSSLinElBiax.prototype.constructor = DeforSSLinElBiax;
 // return: mat:(3, 3) or mat:(4, 4)
 DeforSSLinElBiax.prototype.tangentModuli = function() {
   var D = this._prop.D();
+  var reduced, Dt;
   if (this._reduction === 'strain') {
-    return ix(D, [1, 2, 4], [1, 2, 4]);
+    reduced = ix(D, [1, 2, 4], [1, 2, 4]);
+  } else if (this._reduction === 'axisSymm') {
+    reduced = ix(D, [1, 2, 3, 4], [1, 2, 3, 4]);
+  } else if (this._reduction === 'stress') {
+    Dt = ix(D, [1,2], [1,2]);
+    Dt = add(Dt, mul(-1, div(dot(ix(D, [1,2], [3]), ix(D, [3], [1,2])), D[2][2])));
+    reduced = ix(D, [1,2,4], [1,2,4]);
+    reduced = ixUpdate(reduced, [1,2], [1,2], Dt);
   } else {
     throw new Error('DeforSSLinElBiax::tangentModuli() is ');
   }
+
+  return reduced;
 };

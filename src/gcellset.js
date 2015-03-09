@@ -252,6 +252,14 @@ GCellSet.prototype.map2parametric = function(x, c) {
 //           -> GCellSet
 // Indices :: [ Int ]
 // subset: Return a new GCellSet which is a subset of self by given indices.
+// index starts from zero
+function subset(conn, indices) {
+  var newConn = [];
+  indices.forEach(function(idx) {
+    return newConn.push(conn[idx]);
+  });
+  return newConn;
+}
 GCellSet.prototype.subset = function(indices) {
   throw new Error('GCellSet::subset(): is not implemented.');
 };
@@ -533,6 +541,15 @@ L2.prototype.boundaryGCellSetConstructor = function() {
   return P1;
 };
 
+L2.prototype.subset = function(indices) {
+  var conn = subset(this.conn(), indices);
+  return new L2({
+    conn: conn,
+    axisSymm: this.axisSymm(),
+    otherDimension: this._otherDimension
+  });
+};
+
 L2.prototype.cellSize = function() { return 2; };
 
 L2.prototype.type = function() { return 'L2'; };
@@ -576,6 +593,15 @@ function Q4(options) {
 exports.Q4 = Q4;
 Q4.prototype = Object.create(Manifold2GCellSet.prototype);
 Q4.prototype.constructor = Q4;
+
+Q4.prototype.subset = function(indices) {
+  var conn = subset(this.conn(), indices);
+  return new Q4({
+    conn: conn,
+    axisSymm: this.axisSymm(),
+    otherDimension: this._otherDimension
+  });
+};
 
 Q4.prototype.cellSize = function() { return 4; };
 

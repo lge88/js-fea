@@ -96,7 +96,7 @@ Field.prototype.isPrescribed = function(id, direction) {
 Field.prototype.prescribedValue = function(id, direction) {
   if (this.isPrescribed(id, direction))
     return this._prescribedValues[id][direction];
-  return null;
+  return 0;
 };
 
 Field.prototype.setPrescribedValue_ = function(id, dir, val) {
@@ -106,6 +106,7 @@ Field.prototype.setPrescribedValue_ = function(id, dir, val) {
   // console.log("this._prescribed = ", this._prescribed);
   this._prescribed[id][dir] = true;
   this._prescribedValues[id][dir] = val;
+  this._values.setAtDir_(id-1, dir-1, val);
 };
 
 Field.prototype._numberEqnums_ = function() {
@@ -153,6 +154,18 @@ Field.prototype.gatherValuesMatrix = function(conn) {
     mat[i] = this._values.get(idx);
   }, this);
   return mat;
+};
+
+// return: vec(conn.length)
+Field.prototype.gatherPrescirbedValues = function(conn) {
+  var vec = [], dim = this.dim();
+  conn.forEach(function(id) {
+    var dir;
+    for (dir = 1; dir <= dim; ++dir) {
+      vec.push(this.prescribedValue(id, dir));
+    }
+  }, this);
+  return vec;
 };
 
 Field.prototype.scatterSystemVector_ = function(vec) {

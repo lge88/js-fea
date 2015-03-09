@@ -34,7 +34,7 @@ var _input_contract_deforss_option = defineContract(function(o) {
     throw new Error('options.gcells is not a instance of GCellSet');
 
   if (!check.instance(o.integrationRule, IntegrationRule))
-    throw new Error('options.integrationRule is not a instance of GCellSet');
+    throw new Error('options.integrationRule is not a instance of integrationRule');
 
 }, 'Input is not valid DeforSS option.');
 
@@ -109,9 +109,13 @@ DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
       vals = [
         [ Ndersp[i-1][0], 0 ],
         [ 0, Ndersp[i-1][1] ],
-        [ Ndersp[i-1][1], Ndersp[i-1,0] ]
+        [ Ndersp[i-1][1], Ndersp[i-1][0] ]
       ];
+      // console.log("B = ", B);
+      // console.log("cols = ", cols);
+      // console.log("vals = ", vals);
       B = ixUpdate(B, ':', cols, vals);
+      // console.log("B = ", B);
     }
   } else
     throw new Error('_blmat1: not implmented when !Rm');
@@ -172,8 +176,8 @@ DeforSS.prototype.stiffness = function(geom, u) {
     for (j = 0; j < npts; ++j) {
       c = dot(transpose(Ns[j]), x);
       J = dot(transpose(x), Nders[j]);
-      console.log("c = ", c);
-      console.log("J = ", J);
+      // console.log("c = ", c);
+      // console.log("J = ", J);
       if (rmh)
         rm = rmh(c, J);
 
@@ -191,6 +195,8 @@ DeforSS.prototype.stiffness = function(geom, u) {
       // TODO: _hBlmat
       B = this.hBlmat(Ns[j], Ndersp, c, rm);
       // console.log("B = ", B);
+      // size(B)
+      // console.log("size(B) = ", size(B));
       D = mat.tangentModuli({ xyz: c });
       // console.log("D = ", D);
 
@@ -201,6 +207,9 @@ DeforSS.prototype.stiffness = function(geom, u) {
       // console.log("B' = ", transpose(B));
       // console.log("dot(transpose(B), mid) = ", dot(transpose(B), mid));
 
+      // console.log("Jac = ", Jac);
+      // console.log("mul(D, Jac*w[j]) = ", mul(D, Jac*w[j]));
+      // console.log("dot(transpose(B), mul(D, Jac*w[j])) = ", dot(transpose(B), mul(D, Jac*w[j])));
       delta = dot(dot(transpose(B), mul(D, Jac*w[j])), B);
       // console.log("delta = ", delta);
       // console.log("delta = ", delta);
@@ -232,16 +241,21 @@ DeforSS.prototype.noneZeroEBCLoads = function(geom, u) {
     conn = conns[i];
     pu = u.gatherPrescirbedValues(conn);
     if (norm(pu) !== 0) {
+      // console.log("this._gcells.subset(i) = ", this._gcells.subset([i]));
       feb = new DeforSS({
         material: this._mater,
-        gcells: this._gcells.subset(i),
-        ir: this._ir,
+        gcells: this._gcells.subset([i]),
+        integrationRule: this._ir,
         rm: this._rm
       });
+      // this._gcells = this._gcells.subset([i]);
       ems = feb.stiffness(geom, u);
+      // console.log("ems = ", ems);
       Ke = ems[0].matrix;
+      // console.log("Ke = ", Ke);
 
       f = mul(-1, dot(Ke, pu));
+      // console.log("f = ", f);
       eqnums = u.gatherEqnumsVector(conn);
       evs.push(new ElementVector(f, eqnums));
     }

@@ -41,10 +41,12 @@ SparseSystemVector.prototype._assemble_ = function() {
     vec = ev.vector;
     ens = ev.eqnums;
     ens.forEach(function(en, i) {
-      var val = vec[i];
-      var idx = en - 1;
-      var was = dest.at(idx);
-      dest.set_(idx, was + val);
+      if (en !== 0) {
+        var val = vec[i];
+        var idx = en - 1;
+        var was = dest.at(idx);
+        dest.set_(idx, was + val);
+      }
     });
   }
   this._sparseVector = dest;

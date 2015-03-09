@@ -18,6 +18,7 @@ var EBC = fe.ebc.EBC;
 var DeforSS = fe.feblock.DeforSS;
 var NodalLoad = fe.nodalload.NodalLoad;
 var genISORm = fe.feutils.genISORm;
+var matrixEquals = fe.numeric.matrixEquals;
 
 describe('FAESOR Ltract example', function() {
 
@@ -34,14 +35,13 @@ describe('FAESOR Ltract example', function() {
     var mesh = L2x2();
           // .refineQ4().refineQ4();
     fens = mesh.fens;
-    console.log("fens = ", fens);
     gcells = mesh.gcells;
-    console.log("gcells = ", gcells);
 
     prop = new LinElIso({ E: E, nu: nu });
 
     mater = new DeforSSLinElBiax({
-      property: prop
+      property: prop,
+      reduction: 'stress'
     });
 
     ir = new GaussRule(2, integrationOrder);
@@ -95,36 +95,38 @@ describe('FAESOR Ltract example', function() {
     var elementMatrices = feb.stiffness(geom, u);
     var neqns = u.neqns();
     var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
-    console.log("K = ", K.toFull());
+    // console.log("K = ", K.toFull());
 
-    return 0;
     var elementVectors = feb.noneZeroEBCLoads(geom, u);
+    // console.log("elementVectors = ", elementVectors);
 
     var F = new SparseSystemVector(neqns, elementVectors);
-    console.log("F = ", F.toFull());
+    // console.log("F = ", F.toFull());
 
     var x1 = mldivide(K, F);
-    console.log("x1 = ", x1);
+    // console.log("x1 = ", x1);
 
     var x2 = mldivide(K, F.sparseVector().toList());
-    console.log("x2 = ", x2);
+    // console.log("x2 = ", x2);
 
 
     u.scatterSystemVector_(x1);
     var values = u.values();
-    console.log("values = ", values);
+    // console.log("values = ", values);
 
-    // var expected = [
-    //   [0, 0],
-    //   [0, 0],
-    //   [0.0213, 0.0408],
-    //   [-0.0160, 0.0462],
-    //   [0.0427, 0.1501],
-    //   [-0.0053, 0.1661],
-    // ];
+    var expected = [
+      [-0.05623,0.00000],
+      [-0.10050,0.00000],
+      [-0.06318,0.10703],
+      [-0.02666,0.17392],
+      [-0.02529,0.25000],
+      [0.00740,0.25000],
+      [0.00000,0.25000],
+      [0.00000,0.26186]
+    ];
     // console.log("expected = ", expected);
 
-    // expect(fe.numeric.matrixEquals(values, expected, 1e-4)).to.be(true);
+    expect(matrixEquals(values, expected, 1e-2)).to.be(true);
     return 0;
   });
 
