@@ -71,6 +71,26 @@ function ixUpdate(A, rows, cols, val) {
 }
 exports.ixUpdate = ixUpdate;
 
+function colon(from, to, step) {
+  if (typeof step !== 'number') step = 1;
+  var out = [], val = from;
+  if (step > 0) {
+    while (val <= to) {
+      out.push(val);
+      val = val + step;
+    }
+  } else if (step < 0) {
+    while (val >= to) {
+      out.push(val);
+      val = val + step;
+    }
+  } else
+    throw new Error('colon(): step must not equals to 0.');
+  return out;
+}
+
+exports.colon = colon;
+
 // pre: mat is a matrix;
 function size(mat, dim) {
   if (dim === 1)

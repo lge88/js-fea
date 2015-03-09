@@ -859,4 +859,34 @@ describe('core.numeric', function() {
 
   });
 
+  describe('colon', function() {
+    var dataset = [
+      {
+        from: 1,
+        to: 10,
+        expected: [1,2,3,4,5,6,7,8,9,10]
+      },
+      {
+        from: 10,
+        to: 1,
+        step: -1,
+        expected: [10,9,8,7,6,5,4,3,2,1]
+      },
+      {
+        from: 1,
+        to: 10,
+        step: 3.1,
+        expected: [1,4.1,7.2]
+      },
+    ];
+
+    dataDriven(dataset, function() {
+      it('colon() should work {desc}', function(ctx) {
+        var computed = numeric.colon(ctx.from, ctx.to, ctx.step);
+        var expected = ctx.expected;
+        expect(numeric.vecEquals(computed, expected)).to.be(true);
+      });
+    });
+  });
+
 });
