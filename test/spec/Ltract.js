@@ -58,7 +58,6 @@ describe('FAESOR Ltract example', function() {
       fens: fens
     });
 
-    return 0;
     ebcs = [
       {
         id: fens.boxSelect({
@@ -92,6 +91,7 @@ describe('FAESOR Ltract example', function() {
       nfens: geom.nfens(),
       ebcs: ebcs
     });
+    return 0;
 
     var elementMatrices = feb.stiffness(geom, u);
     var neqns = u.neqns();

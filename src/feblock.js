@@ -14,6 +14,8 @@ var dot = numeric.dot;
 var add = numeric.add;
 var mul = numeric.mul;
 var inv = numeric.inv;
+var ixUpdate = numeric.ixUpdate;
+var colon = numeric.colon;
 var Material = require('./material').Material;
 var GCellSet = require('./gcellset').GCellSet;
 var IntegrationRule = require('./integrationrule').IntegrationRule;
@@ -55,6 +57,12 @@ function DeforSS(options) {
   case 1:
     this.hBlmat = this._blmat1;
     break;
+  case 2:
+    if (this._gcells.axisSymm())
+      throw new Error('DeforSS::hBlmat() for axixSymm, dim = ' + dim + ' is not implemented.');
+    else
+      this.hBlmat = this._blmat2;
+    break;
   default:
     throw new Error('DeforSS::hBlmat() for dim ' + dim + ' is not implemented.');
   }
@@ -91,6 +99,27 @@ DeforSS.prototype._blmat1 = function(N, Ndersp, c, Rm) {
   }
   return B;
 
+};
+
+
+DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
+  var nfn = size(Ndersp, 1);
+  var dim = size(c, 2);
+  var B = array2d(3, nfn*dim, 0);
+  var i, cols, vals;
+
+  if (Rm) {
+    for (i = 1; i <= nfn; ++i) {
+      cols = colon(dim*(i-1)+1, dim*i);
+      vals = [
+        [ Ndersp[i-1][0], 0 ],
+        [ 0, Ndersp[i-1][1] ],
+        [ Ndersp[i-1][1], Ndersp[i-1,0] ]
+      ];
+      B = ixUpdate(B, ':', cols, vals);
+    }
+  } else
+    throw new Error('_blmat1: not implmented when !Rm');
 };
 
 // In:
