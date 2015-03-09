@@ -556,6 +556,7 @@ function eye(n) {
     return 0;
   });
 }
+exports.eye = eye;
 
 
 exports.SparseVector = SparseVector;

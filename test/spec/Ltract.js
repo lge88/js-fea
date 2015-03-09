@@ -91,12 +91,12 @@ describe('FAESOR Ltract example', function() {
       nfens: geom.nfens(),
       ebcs: ebcs
     });
-    return 0;
 
     var elementMatrices = feb.stiffness(geom, u);
     var neqns = u.neqns();
     var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
     console.log("K = ", K.toFull());
+    return 0;
 
     var elementVectors = feb.noneZeroEBCLoads(geom, u);
 

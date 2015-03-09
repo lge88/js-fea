@@ -477,6 +477,7 @@ Manifold2GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
       jac = dot(jac, nthColumn(J, 2));
       jac = norm(jac);
     }
+  } else {
     throw new Error('Manifold2GCellSet::jacobianSurface(): is not implemented when ntan is not 2');
   }
   return jac;
@@ -603,7 +604,7 @@ Q4.prototype.bfun = function(paramCoords) {
 
 // paramCoords: vec:2
 // return: mat:4,1
-Q4.prototype.bfunpar = function(paramCoords) {
+Q4.prototype.bfundpar = function(paramCoords) {
   var xi = paramCoords[0], eta = paramCoords[1];
   var val = [
     [-(1. - eta) * 0.25, -(1. - xi) * 0.25],

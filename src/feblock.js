@@ -120,6 +120,7 @@ DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
     }
   } else
     throw new Error('_blmat1: not implmented when !Rm');
+  return B;
 };
 
 // In:
@@ -176,8 +177,8 @@ DeforSS.prototype.stiffness = function(geom, u) {
     for (j = 0; j < npts; ++j) {
       c = dot(transpose(Ns[j]), x);
       J = dot(transpose(x), Nders[j]);
-      // console.log("c = ", c);
-      // console.log("J = ", J);
+      console.log("c = ", c);
+      console.log("J = ", J);
       if (rmh)
         rm = rmh(c, J);
 
