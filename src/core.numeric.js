@@ -29,6 +29,20 @@ function nthColumn(A, i) {
 }
 exports.nthColumn = nthColumn;
 
+function ix(A, rows, cols) {
+  var m = rows.length, n = cols.length;
+  var out = array2d(m, n, 0);
+  rows.forEach(function(row, i) {
+    var rowIndx = row - 1;
+    cols.forEach(function(col, j) {
+      var colIndx = col - 1;
+      out[i][j] = A[rowIndx][colIndx];
+    });
+  });
+  return out;
+}
+exports.ix = ix;
+
 // pre: mat is a matrix;
 function size(mat, dim) {
   if (dim === 1)

@@ -727,4 +727,45 @@ describe('core.numeric', function() {
     });
   });
 
+  describe('ix', function() {
+    var A = [
+      [1,2,3,4],
+      [5,6,7,8],
+      [8,6,4,2],
+      [9,7,5,3]
+    ];
+
+    var dataset = [
+      {
+        A: A,
+        rows: [1,2,3,4],
+        cols: [2,4],
+        desc: '',
+        expected: [
+          [2,4],
+          [6,8],
+          [6,2],
+          [7,3]
+        ]
+      },
+      {
+        A: A,
+        rows: [1,2],
+        cols: [1],
+        desc: '',
+        expected: [
+          [1],
+          [5]
+        ]
+      }
+    ];
+    dataDriven(dataset, function() {
+      it('should work {desc}', function(ctx) {
+        var expected = ctx.expected;
+        var computed = numeric.ix(ctx.A, ctx.rows, ctx.cols);
+        expect(expected).to.eql(computed);
+      });
+    });
+  });
+
 });
