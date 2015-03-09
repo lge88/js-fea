@@ -8,6 +8,13 @@ var numeric = require('./core.numeric');
 var mldivide = numeric.mldivide;
 var DokSparseMatrix = numeric.DokSparseMatrix;
 
+function ElementMatrix(mat, eqnums) {
+  // TODO: input check
+  this.matrix = mat;
+  this.eqnums = eqnums;
+}
+exports.ElementMatrix = ElementMatrix;
+
 function assemble_(dest, sources) {
   // TODO: ensure sources of made of ElementMatrix;
   if (!isIterator(sources)) {

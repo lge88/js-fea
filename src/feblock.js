@@ -14,19 +14,14 @@ var dot = numeric.dot;
 var add = numeric.add;
 var mul = numeric.mul;
 var inv = numeric.inv;
+var norm = numeric.norm;
 var ixUpdate = numeric.ixUpdate;
 var colon = numeric.colon;
 var Material = require('./material').Material;
 var GCellSet = require('./gcellset').GCellSet;
 var IntegrationRule = require('./integrationrule').IntegrationRule;
-
-
-function ElementMatrix(mat, eqnums) {
-  // TODO: input check
-  this.matrix = mat;
-  this.eqnums = eqnums;
-}
-exports.ElementMatrix = ElementMatrix;
+var ElementMatrix = require('./system.matrix').ElementMatrix;
+var ElementVector = require('./system.vector').ElementVector;
 
 function Feblock() {}
 
@@ -222,14 +217,36 @@ DeforSS.prototype.stiffness = function(geom, u) {
   });
 
   return elementMatrix;
-
-  // var res = {
-  //   matrices: Ke,
-  //   eqnums: eqnums
-  // };
-  // return res;
 };
 
 
+DeforSS.prototype.noneZeroEBCLoads = function(geom, u) {
+  var gcells = this._gcells;
+  var ncells = gcells.count();
+  var conns = gcells.conn();
+
+  var evs = [];
+
+  var i, conn, pu, feb, ems, Ke, f, eqnums;
+  for (i = 0; i < ncells; ++i) {
+    conn = conns[i];
+    pu = u.gatherPrescirbedValues(conn);
+    if (norm(pu) !== 0) {
+      feb = new DeforSS({
+        material: this._mater,
+        gcells: this._gcells.subset(i),
+        ir: this._ir,
+        rm: this._rm
+      });
+      ems = feb.stiffness(geom, u);
+      Ke = ems[0].matrix;
+
+      f = mul(-1, dot(Ke, pu));
+      eqnums = u.gatherEqnumsVector(conn);
+      evs.push(new ElementVector(f, eqnums));
+    }
+  }
+  return evs;
+};
 
 exports.DeforSS = DeforSS;

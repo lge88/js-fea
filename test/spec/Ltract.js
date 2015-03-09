@@ -96,8 +96,8 @@ describe('FAESOR Ltract example', function() {
     var neqns = u.neqns();
     var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
     console.log("K = ", K.toFull());
-    return 0;
 
+    return 0;
     var elementVectors = feb.noneZeroEBCLoads(geom, u);
 
     var F = new SparseSystemVector(neqns, elementVectors);

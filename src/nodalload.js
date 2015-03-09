@@ -2,11 +2,7 @@
 // nodalload
 var _  = require('./core.utils');
 var check = _.check;
-
-function ElementLoad(value, eqnum) {
-  this.value = value;
-  this.eqnum = eqnum;
-}
+var ElementVector = require('./system.vector').ElementVector;
 
 function NodalLoad(options) {
   var ids = options.ids || options.id;
@@ -26,17 +22,18 @@ NodalLoad.prototype.loads = function(u) {
   var id, dir;
   var val;
   var nids = this._ids.length, ndirs = this._dirs.length;
-  var loads = [];
+  var vec = [], eqnums = [];
   for (i = 0; i < nids; ++i) {
     id = this._ids[i];
     for (j = 0; j < ndirs; ++j) {
       dir = this._dirs[j];
       en = u.eqnum(id, dir);
       val = this._magns[j];
-      loads.push(new ElementLoad(val, en));
+      vec.push(val);
+      eqnums.push(en);
     }
   }
-  return loads;
+  return new ElementVector(vec, eqnums);
 };
 
 exports.NodalLoad = NodalLoad;

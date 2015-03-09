@@ -8,6 +8,13 @@ var numeric = require('./core.numeric');
 var SparseVector = numeric.SparseVector;
 // var mldivide = numeric.mldivide;
 
+function ElementVector(vec, eqnums) {
+  // TODO: input check
+  this.vector = vec;
+  this.eqnums = eqnums;
+}
+exports.ElementVector = ElementVector;
+
 function SparseSystemVector(dim, elementVectors) {
   // console.log("elementVectors = ", elementVectors);
   this._dim = dim;
@@ -27,16 +34,18 @@ SparseSystemVector.prototype._assemble_ = function() {
       throw new Error('SparseSystemVector::_assemble_: evs must be a iterator or array.');
   }
 
-  var ev, val, en, idx, was;
+  var ev, vec, ens;
   while (sources.hasNext()) {
     ev = sources.next();
 
-    val = ev.value;
-    en = ev.eqnum;
-    idx = en - 1;
-    was = dest.at(idx);
-
-    dest.set_(idx, was + val);
+    vec = ev.vector;
+    ens = ev.eqnums;
+    ens.forEach(function(en, i) {
+      var val = vec[i];
+      var idx = en - 1;
+      var was = dest.at(idx);
+      dest.set_(idx, was + val);
+    });
   }
   this._sparseVector = dest;
 };
