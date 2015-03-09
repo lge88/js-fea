@@ -24,3 +24,4 @@ exports.system = require('./system');
 exports.nodalload = require('./nodalload');
 exports.integrationrule = require('./integrationrule');
 exports.ebc = require('./ebc');
+exports.mesh = require('./mesh');
