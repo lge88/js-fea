@@ -103,14 +103,10 @@ describe('FAESOR Ltract example', function() {
     var F = new SparseSystemVector(neqns, elementVectors);
     // console.log("F = ", F.toFull());
 
-    var x1 = mldivide(K, F);
-    // console.log("x1 = ", x1);
+    var x = mldivide(K, F);
+    // console.log("x = ", x);
 
-    var x2 = mldivide(K, F.sparseVector().toList());
-    // console.log("x2 = ", x2);
-
-
-    u.scatterSystemVector_(x1);
+    u.scatterSystemVector_(x);
     var values = u.values();
     // console.log("values = ", values);
 
@@ -126,7 +122,7 @@ describe('FAESOR Ltract example', function() {
     ];
     // console.log("expected = ", expected);
 
-    expect(matrixEquals(values, expected, 1e-2)).to.be(true);
+    expect(matrixEquals(values, expected, 1e-4)).to.be(true);
     return 0;
   });
 
