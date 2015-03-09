@@ -95,6 +95,27 @@ describe('fens', function() {
           ],
           verify: 'iter'
         }
+      ],
+      boxSelect: [
+        {
+          input: [
+            {
+              bounds: [0, 0, -Infinity, +Infinity],
+              inflate: 1e-4
+            }
+          ],
+          output: [1, 2],
+          verify: 'eql'
+        },
+        {
+          input: [
+            {
+              bounds: [80-2, 80+2, 40-2, 40+2]
+            }
+          ],
+          output: [6],
+          verify: 'eql'
+        }
       ]
     }
   ];

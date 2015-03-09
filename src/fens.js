@@ -2,6 +2,7 @@
 // fens
 
 var _ = require('./core.utils');
+var cloneDeep = _.cloneDeep;
 var embed = _.embed;
 var check = _.check;
 var assert = _.assert;
@@ -30,6 +31,10 @@ function FeNodeSet(options) {
     this._xyz = new PointSet(options.xyz);
   }
 }
+
+FeNodeSet.prototype.dim = function() {
+  return this._xyz.getRn();
+};
 
 FeNodeSet.prototype.xyz = function() {
   return this._xyz.toList();
@@ -67,6 +72,46 @@ FeNodeSet.prototype.xyz3Iter = function() {
 
 FeNodeSet.prototype.count = function() {
   return this._xyz.getSize();
+};
+
+FeNodeSet.prototype.boxSelect = function(options) {
+  if (!options || !options.bounds || options.bounds.length !== 2*this.dim())
+    throw new Error('FeNodeSet::boxSelect() invalid options.bounds');
+
+  var bounds = cloneDeep(options.bounds);
+  var i, len = bounds.length;
+  var inflate;
+
+  if (typeof options.inflate === 'number') {
+    inflate = Math.abs(options.inflate);
+    for (i = 0; i < len; ++i) {
+      if (i % 2 == 0) bounds[i] -= inflate;
+      else bounds[i] += inflate;
+    }
+  }
+
+  var dim = this.dim(), nfens = this.nfens();
+  var id, xyz, out = [];
+  for (id = 1; id <= nfens; ++id) {
+    xyz = this.xyzById(id);
+    if (isInside(xyz, bounds)) {
+      out.push(id);
+    }
+  }
+
+  function isInside(xyz, bounds) {
+    var i, dim = xyz.length, res = true;
+    var val, left, right;
+    for (i = 0; i < dim; ++i) {
+      val = xyz[i];
+      left = bounds[2*i];
+      right = bounds[2*i+1];
+      if (val < left || val > right) return false;
+    }
+    return res;
+  }
+
+  return out;
 };
 
 FeNodeSet.prototype.nfens = FeNodeSet.prototype.count;
