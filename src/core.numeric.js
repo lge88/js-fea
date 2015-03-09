@@ -12,6 +12,23 @@ var ccsFull = numeric.ccsFull;
 var ccsLUP = numeric.ccsLUP;
 var ccsLUPSolve = numeric.ccsLUPSolve;
 
+function norm(x) {
+  return Math.sqrt(numeric.sum(numeric.pow(x, 2)));
+}
+exports.norm = norm;
+
+// A(i, :), i starts from 1;
+function nthRow(A, i) { return A[i-1]; }
+exports.nthRow = nthRow;
+
+// A(:, i), i starts from 1;
+function nthColumn(A, i) {
+  return A.map(function(x) {
+    return [x[i-1]];
+  });
+}
+exports.nthColumn = nthColumn;
+
 // pre: mat is a matrix;
 function size(mat, dim) {
   if (dim === 1)

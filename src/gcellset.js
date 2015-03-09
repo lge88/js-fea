@@ -63,6 +63,13 @@ var matrixOfDimension = _.contracts.matrixOfDimension;
 var vectorOfDimension = _.contracts.vectorOfDimension;
 
 var numeric = require('./core.numeric');
+var size = numeric.size;
+var norm = numeric.norm;
+var nthColumn = numeric.nthColumn;
+var dot = numeric.dot;
+var transpose = numeric.transpose;
+var feutils = require('./feutils');
+var skewmat = feutils.skewmat;
 var hypercube = require('./geometry.topology').hypercube;
 
 // Supposed to be private
@@ -264,10 +271,6 @@ function Manifold1GCellSet(topology, otherDimension, axisSymm) {
   GCellSet.call(this, topology);
 }
 
-
-
-
-
 Manifold1GCellSet.prototype = Object.create(GCellSet.prototype);
 Manifold1GCellSet.prototype.constructor = Manifold1GCellSet;
 
@@ -428,6 +431,68 @@ Manifold1GCellSet.prototype.jacobianInDim = function(conn, N, J, x, dim) {
   return jac;
 };
 
+function Manifold2GCellSet(topology, otherDimension, axisSymm) {
+  this._otherDimension = (typeof otherDimension === 'number' || typeof otherDimension === 'function') ?
+    otherDimension : 1.0;
+  this._axisSymm = typeof axisSymm !== 'undefined' ? (!!axisSymm) : false;
+  GCellSet.call(this, topology);
+}
+exports.Manifold2GCellSet = Manifold2GCellSet;
+Manifold2GCellSet.prototype = Object.create(GCellSet.prototype);
+Manifold2GCellSet.prototype.constructor = Manifold2GCellSet;
+
+Manifold2GCellSet.prototype.dim = function() { return 2; };
+
+Manifold2GCellSet.prototype.otherDimension = function(conn, N, x) {
+  if (typeof this._otherDimension === 'function')
+    return this._otherDimension(conn, N, x);
+  return this._otherDimension;
+};
+
+Manifold2GCellSet.prototype.axisSymm = function() { return this._axisSymm; };
+
+Manifold2GCellSet.prototype.jacobian = function(conn, N, J, x) {
+  return this.jacobianSurface(conn, N, J, x);
+};
+
+Manifold2GCellSet.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+  switch (dim) {
+  case 3:
+    return this.jacobianVolumn(conn, N, J, x);
+  case 2:
+    return this.jacobianSurface(conn, N, J, x);
+  default:
+    throw new Error('Manifold2GCellSet::jacobianInDim(): unsupported dim ' + dim);
+  }
+};
+
+Manifold2GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
+  var tmp = size(J), sdim = tmp[0], ntan = tmp[1];
+  var jac;
+  if (ntan === 2) {
+    if (sdim === ntan) {
+      jac = J[0][0]*J[1][1] - J[1][0]*J[0][1];
+    } else {
+      jac = skewmat(nthColumn(J, 1));
+      jac = dot(jac, nthColumn(J, 2));
+      jac = norm(jac);
+    }
+    throw new Error('Manifold2GCellSet::jacobianSurface(): is not implemented when ntan is not 2');
+  }
+  return jac;
+};
+
+Manifold2GCellSet.prototype.jacobianVolumn = function(conn, N, J, x) {
+  var xyz, jac;
+  if (this.axisSymm()) {
+    xyz = dot(transpose(N), x);
+    jac = this.jacobianSurface(conn, N, J, x)*2*Math.PI*xyz[0];
+  } else {
+    jac = this.jacobianSurface(conn, N, J, x)*this.otherDimension(conn, N, x);
+  }
+  return jac;
+};
+
 var _input_contract_gcellset_ = defineContract(function(options) {
   assert.object(options);
   assert.assigned(options.conn);
@@ -462,10 +527,10 @@ function L2(options) {
 
 L2.prototype = Object.create(Manifold1GCellSet.prototype);
 L2.prototype.constructor = L2;
-// TODO:
-// L2.prototype.boundaryGCellSetConstructor = function() {
-//   return P1;
-// };
+L2.prototype.boundaryGCellSetConstructor = function() {
+  // TODO:
+  return P1;
+};
 
 L2.prototype.cellSize = function() { return 2; };
 
@@ -496,3 +561,55 @@ L2.prototype.bfundpar = function(paramCoords) {
 };
 
 exports.L2 = L2;
+
+function Q4(options) {
+  var conn = options.conn;
+  var otherDimension = check.assigned(options.otherDimension) ?
+        options.otherDimension : 1.0;
+  var axisSymm = check.assigned(options.axisSymm) ?
+        options.axisSymm : false;
+
+  var topology = hypercube(conn, 2);
+  Manifold2GCellSet.call(this, topology, otherDimension, axisSymm);
+}
+exports.Q4 = Q4;
+Q4.prototype = Object.create(Manifold2GCellSet.prototype);
+Q4.prototype.constructor = Q4;
+
+Q4.prototype.cellSize = function() { return 4; };
+
+Q4.prototype.type = function() { return 'Q4'; };
+
+Q4.prototype.boundaryGCellSetConstructor = function() {
+  return L2;
+};
+
+// paramCoords: vec:2
+// return: mat:4,1
+Q4.prototype.bfun = function(paramCoords) {
+  var one_minus_xi = (1 - paramCoords[0]);
+  var one_plus_xi  = (1 + paramCoords[0]);
+  var one_minus_eta = (1 - paramCoords[1]);
+  var one_plus_eta  = (1 + paramCoords[1]);
+
+  var val = [
+    [0.25 * one_minus_xi * one_minus_eta],
+    [0.25 * one_plus_xi  * one_minus_eta],
+    [0.25 * one_plus_xi  * one_plus_eta],
+    [0.25 * one_minus_xi * one_plus_eta]
+  ];
+  return val;
+};
+
+// paramCoords: vec:2
+// return: mat:4,1
+Q4.prototype.bfunpar = function(paramCoords) {
+  var xi = paramCoords[0], eta = paramCoords[1];
+  var val = [
+    [-(1. - eta) * 0.25, -(1. - xi) * 0.25],
+    [(1. - eta) * 0.25, -(1. + xi) * 0.25],
+    [(1. + eta) * 0.25, (1. + xi) * 0.25],
+    [-(1. + eta) * 0.25, (1. - xi) * 0.25]
+  ];
+  return val;
+};

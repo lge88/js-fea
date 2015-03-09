@@ -5,7 +5,7 @@ var expect = require('expect.js');
 var fe = require(SRC);
 
 var FeNodeSet = fe.fens.FeNodeSet;
-var L2x2 = fe.mesh.L2x2;//
+var L2x2 = fe.mesh.L2x2;
 var L2 = fe.gcellset.L2;
 var LinElIso = fe.property.LinElIso;
 var DeforSSLinElBiax = fe.material.DeforSSLinElBiax;//
@@ -32,11 +32,15 @@ describe('FAESOR Ltract example', function() {
     var feb, ir, fens, gcells, mater, prop, ebcs, geom, u;
 
     var mesh = L2x2();
+          // .refineQ4().refineQ4();
     fens = mesh.fens;
+    console.log("fens = ", fens);
     gcells = mesh.gcells;
+    console.log("gcells = ", gcells);
 
     prop = new LinElIso({ E: E, nu: nu });
 
+    return 0;
     mater = new DeforSSLinElBiax({
       property: prop
     });

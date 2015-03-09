@@ -32,3 +32,22 @@ function genISORm(xyz, tangents) {
 }
 
 exports.genISORm = genISORm;
+
+// theta is a vector.
+function skewmat(theta) {
+  var n = theta.length, s;
+  if (n === 3) {
+    s = [
+      [0, -theta[2], theta[1] ],
+      [theta[3], 0, -theta[0] ],
+      [-theta[1], theta[0], 0 ]
+    ];
+  } else if (n === 2) {
+    s = [-theta[1], theta[0]];
+  } else {
+    throw new Error('skewmat(theta): theta must be a vector of 2 or 3.');
+  }
+  return s;
+}
+
+exports.skewmat = skewmat;
