@@ -40,7 +40,6 @@ describe('FAESOR Ltract example', function() {
 
     prop = new LinElIso({ E: E, nu: nu });
 
-    return 0;
     mater = new DeforSSLinElBiax({
       property: prop
     });
@@ -59,6 +58,7 @@ describe('FAESOR Ltract example', function() {
       fens: fens
     });
 
+    return 0;
     ebcs = [
       {
         id: fens.boxSelect({
