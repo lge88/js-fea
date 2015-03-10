@@ -13,7 +13,7 @@ body {
 .toolbar button {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 100;
-  font-size: 28px;
+  font-size: 24px;
   color: #9400d3;
   background-color: #fff;
   padding-left: 10px;
@@ -48,11 +48,16 @@ body {
   flex-direction: row;
 }
 
-.js-fea-editor {
+.js-fea-editor,.logger {
   width: 50%;
+}
+
+.js-fea-editor {
+  border-top: 1px solid #9400d3;
+  border-right: 1px solid #9400d3;
 }
 
 .logger {
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
-  width: 50%;
+  border-top: 1px solid #9400d3;
 }
