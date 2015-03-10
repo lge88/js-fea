@@ -87,8 +87,8 @@ function clearLog() {
 
 function loadExample(idx) {
   var examples = [
-    'js/ex1.js',
-    'js/ex2.js'
+    'editor/examples/ex1.js',
+    'editor/examples/ex2.js'
   ];
 
   var url = examples[idx];
