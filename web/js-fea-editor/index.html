@@ -6,11 +6,18 @@
     <link href="css/main.css" rel="stylesheet"/>
   </head>
   <body>
-    <div id="js-fea-editor" class="js-fea-editor">var m = new fea.FeModel();</div>
+    <div class="toolbar">
+      <button class="btn sexy-border" onclick="runScript();">Run</button>
+    </div>
+    <div class="main">
+      <div id="js-fea-editor" class="js-fea-editor"></div>
+      <div class="logger"><pre id="logger"><pre></div>
+    </div>
 
-    <script src="../../build/fea.js"></script>
     <script src="https://rawgit.com/ajaxorg/ace-builds/master/src-noconflict/ace.js"></script>
     <script src="https://rawgit.com/ajaxorg/ace-builds/master/src-noconflict/ext-language_tools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.js"></script>
+    <script src="../../build/fe.js"></script>
     <script src="js/main.js"></script>
   </body>
 </html>

@@ -59,7 +59,7 @@ gulp.task('lib:dev', function() {
 gulp.task('lib:dist', function() {
   return gulp
     .src(config.paths.src)
-    .pipe($.concat('fea.min.js'))
+    .pipe($.concat('fe.min.js'))
     .pipe($.uglify())
     .pipe(gulp.dest('build'));
 });
