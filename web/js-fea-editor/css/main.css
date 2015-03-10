@@ -20,13 +20,14 @@ body {
   padding-right: 10px;
   padding-top: 5px;
   padding-bottom:5px;
-  width: 120px;
+  width: 220px;
   cursor: pointer;
   outline: none;
   border-style: solid;
   border-width: 1px;
   border-color: #9400d3;
   border-radius: 2px;
+  margin-right: 10px;
 }
 
 .toolbar button:hover {

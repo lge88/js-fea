@@ -1,4 +1,4 @@
-var fe = window.fe;
+/* global: fe */
 var FeNodeSet = fe.fens.FeNodeSet;
 var L2 = fe.gcellset.L2;
 var LinElIso = fe.property.LinElIso;

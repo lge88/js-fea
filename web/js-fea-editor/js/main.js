@@ -71,15 +71,31 @@ function initEditor() {
   session.setMode('ace/mode/javascript');
   editor.$blockScrolling = Infinity;
 
-  getUrl('js/ex1.js', function(req) {
-    var code = req.response;
-    editor.setValue(code);
-  });
+  loadExample(0);
 }
 
 function runScript() {
   var code = editor.getValue();
+  code = '(function(fe){' + code + '})(window.fe);';
   eval(code);
+}
+
+function clearLog() {
+  var logger = document.getElementById('logger');
+  logger.textContent = '';
+}
+
+function loadExample(idx) {
+  var examples = [
+    'js/ex1.js',
+    'js/ex2.js'
+  ];
+
+  var url = examples[idx];
+  getUrl(url, function(req) {
+    var code = req.response;
+    editor.setValue(code);
+  });
 }
 
 initEditor();
