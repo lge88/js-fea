@@ -2,9 +2,10 @@ var editor;
 
 function augmentFeContext(fe) {
   var logger = document.getElementById('logger');
+  var loggerContainer = document.getElementById('logger-container');
   function log(msg) {
     logger.textContent += msg + '\n';
-    logger.scrollTop = logger.scrollHeight;
+    loggerContainer.scrollTop = loggerContainer.scrollHeight;
   }
   function clear() {
     logger.textContent = '';

@@ -48,7 +48,7 @@ body {
   flex-direction: row;
 }
 
-.js-fea-editor,.logger {
+.js-fea-editor,.logger-container {
   width: 50%;
 }
 
@@ -57,7 +57,8 @@ body {
   border-right: 1px solid #9400d3;
 }
 
-.logger {
+.logger-container {
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
   border-top: 1px solid #9400d3;
+  overflow: scroll;
 }
