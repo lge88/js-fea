@@ -67,6 +67,8 @@ function initEditor() {
     enableLiveAutocompletion: true
   });
 
+  editor.setTheme('ace/theme/katzenmilch');
+
   var session = editor.getSession();
   session.setMode('ace/mode/javascript');
   editor.$blockScrolling = Infinity;
