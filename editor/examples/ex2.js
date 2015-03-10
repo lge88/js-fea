@@ -1,19 +1,15 @@
 /*global fe */
-var FeNodeSet = fe.fens.FeNodeSet;
 var L2x2 = fe.mesh.L2x2;
-var L2 = fe.gcellset.L2;
+var DeforSS = fe.feblock.DeforSS;
 var LinElIso = fe.property.LinElIso;
-var DeforSSLinElBiax = fe.material.DeforSSLinElBiax;//
+var DeforSSLinElBiax = fe.material.DeforSSLinElBiax;
+var Field = fe.field.Field;
+var EBC = fe.ebc.EBC;
 var GaussRule = fe.integrationrule.GaussRule;
+var genISORm = fe.feutils.genISORm;
 var SparseSystemMatrix = fe.system.matrix.SparseSystemMatrix;
 var SparseSystemVector = fe.system.vector.SparseSystemVector;
 var mldivide = fe.system.mldivide;
-var Field = fe.field.Field;
-var EBC = fe.ebc.EBC;
-var DeforSS = fe.feblock.DeforSS;
-var NodalLoad = fe.nodalload.NodalLoad;
-var genISORm = fe.feutils.genISORm;
-var matrixEquals = fe.numeric.matrixEquals;
 
 // parameters:
 var E = 1e7;

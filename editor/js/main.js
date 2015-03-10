@@ -102,3 +102,4 @@ function loadExample(idx) {
 
 initEditor();
 augmentFeContext(window.fe);
+clearLog();

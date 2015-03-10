@@ -4,7 +4,7 @@ var expect = require('expect.js');
 require(SRC + '/mesh.js');
 
 describe('mesh', function() {
-  it('should fail', function() {
+  xit('should fail', function() {
     expect(false).to.be(true);
   });
 });

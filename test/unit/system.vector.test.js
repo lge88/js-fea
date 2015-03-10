@@ -4,7 +4,7 @@ var expect = require('expect.js');
 require(SRC + '/system.vector.js');
 
 describe('system.vector', function() {
-  it('should fail', function() {
+  xit('should fail', function() {
     expect(false).to.be(true);
   });
 });
