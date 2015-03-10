@@ -13,12 +13,11 @@
   "author": "Li Ge",
   "license": "MIT",
   "dependencies": {
-    "highland": "^2.3.0",
     "lodash": "^2.4.1",
+    "check-types": "^2.2.0",
     "numeric": "^1.2.6"
   },
   "devDependencies": {
-    "check-types": "^2.2.0",
     "data-driven": "^1.1.0",
     "del": "^1.1.1",
     "expect.js": "^0.3.1",

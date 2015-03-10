@@ -2,6 +2,7 @@ var config = {
   paths: {
     entry: 'src/index.js',
     src: ['src/**/*.js'],
+    build: 'build/',
     unit: ['test/unit/*.js'],
     spec: ['test/spec/*.js']
   },
@@ -36,7 +37,7 @@ gulp.task('unit', function(cb) {
     });
 });
 
-gulp.task('spec', ['lib:dev'], function() {
+gulp.task('spec', function() {
   gulp
     .src(config.paths.spec, {read: false})
     .pipe($.mocha(config.mocha));
@@ -56,11 +57,11 @@ gulp.task('lib:dev', function() {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('lib:dist', function() {
+gulp.task('lib:dist', ['lib:dev'], function() {
   return gulp
-    .src(config.paths.src)
-    .pipe($.concat('fe.min.js'))
+    .src(config.paths.build + 'fe.js')
     .pipe($.uglify())
+    .pipe($.rename('fe.min.js'))
     .pipe(gulp.dest('build'));
 });
 
