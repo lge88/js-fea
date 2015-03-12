@@ -95,14 +95,14 @@ Field.prototype.map = function(fn) {
   });
   var id = function(x) { return x; };
   newField._neqns = this._neqns;
-  newField._eqnums = this._eqnums.map(id);
-  newField._prescribed = this._prescribed.map(id);
-  newField._prescribedValues = this._prescribedValues.map(function(x, i) {
+  newField._eqnums = this._eqnums ? this._eqnums.map(id) : this._eqnums;
+  newField._prescribed = this._prescribed ? this._prescribed.map(id) : this._prescribed;
+  newField._prescribedValues = this._prescribedValues ? this._prescribedValues.map(function(x, i) {
     if (newField._prescribed[i])
       return fn(x, i);
     else
       return x;
-  });
+  }) : this.prescribedValues;
   return newField;
 };
 
