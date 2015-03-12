@@ -88,6 +88,23 @@ Field.prototype.values = function() {
   return this._values.toList();
 };
 
+Field.prototype.map = function(fn) {
+  var newValues = this._values.toList().map(fn);
+  var newField = new Field({
+    values: newValues
+  });
+  var id = function(x) { return x; };
+  newField._neqns = this._neqns;
+  newField._eqnums = this._eqnums.map(id);
+  newField._prescribed = this._prescribed.map(id);
+  newField._prescribedValues = this._prescribedValues.map(function(x, i) {
+    if (newField._prescribed[i])
+      return fn(x, i);
+    else
+      return x;
+  });
+};
+
 // Get value vector by Id
 // Return: vec:this.dim()
 Field.prototype.get = function(id) {
