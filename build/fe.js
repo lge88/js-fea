@@ -4678,6 +4678,7 @@ var fe =
 	    else
 	      return x;
 	  });
+	  return newField;
 	};
 
 	// Get value vector by Id

@@ -103,6 +103,7 @@ Field.prototype.map = function(fn) {
     else
       return x;
   });
+  return newField;
 };
 
 // Get value vector by Id
