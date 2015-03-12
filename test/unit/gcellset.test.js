@@ -1,7 +1,7 @@
 /*global __dirname describe it require*/
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var ModuleTester = require(ROOT + '/test/lib/module-tester').ModuleTester;
-// var expect = require('expect.js');
+var expect = require('expect.js');
 // var dataDriven = require('data-driven');
 
 var _ = require(SRC + '/core.utils');
@@ -10,6 +10,8 @@ var check = _.check;
 // var defineContract = _.defineContract;
 var matrixOfDimension = _.contracts.matrixOfDimension;
 // var vectorOfDimension = _.contracts.vectorOfDimension;
+var normalizedCell = _.normalizedCell;
+var byLexical = _.byLexical;
 
 var gcellset = require(SRC + '/gcellset.js');
 
@@ -24,6 +26,19 @@ var VERIFIES = {
   },
   'L2::jacbianMatrix': function(computed, expected) {
     matrixOfDimension(1, 1, 'jacbianMatrix is not of dimension 1 x 1')(computed);
+  },
+  'sortEql': function(computed, expected) {
+    computed = computed.slice().sort();
+    expect(computed).to.eql(expected);
+  },
+  'normalizeEql': function(computed, expected) {
+    computed = computed.slice().map(function(cell) {
+      return normalizedCell(cell);
+    }).sort(byLexical);
+    expected = expected.slice().map(function(cell) {
+      return normalizedCell(cell);
+    }).sort(byLexical);
+    expect(computed).to.eql(expected);
   }
 };
 
@@ -97,6 +112,30 @@ describe('gcellset', function() {
           ],
           verify: 'eql'
         }
+      ],
+      edges: [
+        {
+          output: [
+            [ 1, 3 ],
+            [ 1, 4 ],
+            [ 2, 4 ],
+            [ 3, 4 ],
+            [ 3, 5 ],
+            [ 5, 4 ],
+            [ 6, 4 ],
+            [ 5, 6 ]
+          ],
+          verify: 'normalizeEql'
+        }
+      ],
+      vertices: [
+        {
+          output: [1,2,3,4,5,6],
+          verify: 'sortEql'
+        }
+      ],
+      triangles: [
+        { output: [], verify: 'eql' }
       ],
       count: [
         { output: 8 }
@@ -178,8 +217,42 @@ describe('gcellset', function() {
       //     output: 1.0
       //   }
       // ]
-
-    }
+    },
+    {
+      _type: 'Q4',
+      _init_params: [
+        {
+          conn: [
+            [ 1, 2, 3, 4 ]
+          ],
+          otherDimension: 1.0,
+          axisSymm: false
+        }
+      ],
+      vertices: [
+        { output: [1, 2, 3, 4], verify: 'sortEql' }
+      ],
+      edges: [
+        {
+          output: [
+            [1, 2],
+            [2, 3],
+            [3, 4],
+            [4, 1]
+          ],
+          verify: 'normalizeEql'
+        }
+      ],
+      triangles: [
+        {
+          output: [
+            [1, 2, 3],
+            [3, 4, 1]
+          ],
+          verify: 'normalizeEql'
+        }
+      ]
+    },
   ];
 
   var tester = new ModuleTester(gcellset, fixtures, VERIFIES);

@@ -25,6 +25,14 @@ var ElementVector = require('./system.vector').ElementVector;
 
 function Feblock() {}
 
+Feblock.prototype.gcells = function() {
+  return this._gcells;
+};
+
+Feblock.prototype.topology = function() {
+  return this._gcells.topology();
+};
+
 var _input_contract_deforss_option = defineContract(function(o) {
   assert.object(o);
   if (!check.instance(o.material, Material))

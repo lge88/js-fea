@@ -88,6 +88,18 @@ Field.prototype.values = function() {
   return this._values.toList();
 };
 
+// Get value vector by Id
+// Return: vec:this.dim()
+Field.prototype.get = function(id) {
+  var idx = id - 1;
+  return this._values.get(idx);
+};
+
+// For visualization.
+Field.prototype.pointset = function() {
+  return this._values;
+};
+
 Field.prototype.isPrescribed = function(id, direction) {
   if (!this._prescribed) return false;
   return this._prescribed[id][direction];

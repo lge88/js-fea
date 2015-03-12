@@ -90,6 +90,26 @@ function GCellSet(topology) {
 }
 exports.GCellSet = GCellSet;
 
+// For visualization.
+GCellSet.prototype.topology = function() {
+  return this._topology;
+};
+
+// For visualization.
+GCellSet.prototype.vertices = function() {
+  return this._topology.getPointIndices();
+};
+
+// For visualization.
+GCellSet.prototype.edges = function() {
+  return this._topology.getCellsInDim(1);
+};
+
+// For visualization.
+GCellSet.prototype.triangles = function() {
+  return this._topology.getCellsInDim(2);
+};
+
 GCellSet.prototype.type = function() {
   throw new Error('GCellSet::type(): is not implemented.');
 };
@@ -550,6 +570,8 @@ L2.prototype.subset = function(indices) {
   });
 };
 
+L2.prototype.triangles = function() { return []; };
+
 L2.prototype.cellSize = function() { return 2; };
 
 L2.prototype.type = function() { return 'L2'; };
@@ -609,6 +631,19 @@ Q4.prototype.type = function() { return 'Q4'; };
 
 Q4.prototype.boundaryGCellSetConstructor = function() {
   return L2;
+};
+
+Q4.prototype.triangles = function() {
+  var quads = this._topology.getCellsInDim(2);
+  var triangles = [];
+
+  quads.forEach(function(quad) {
+    var t1 = [quad[0], quad[1], quad[2]];
+    var t2 = [quad[2], quad[3], quad[0]];
+    triangles.push(t1, t2);
+  });
+
+  return triangles;
 };
 
 // paramCoords: vec:2

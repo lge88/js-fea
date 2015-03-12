@@ -36,6 +36,8 @@ describe('geometry.topology', function() {
       expect(t.getDim()).to.be(0);
       expect(t.getNumOfCellsInDim(0)).to.be(3);
       expect(t.getCellSizeInDim(0)).to.be(1);
+      expect(t.getPointIndices()).to.eql([0, 1, 2]);
+
     });
 
     it('should create 2 line segments', function() {

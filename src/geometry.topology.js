@@ -165,26 +165,6 @@ Topology.prototype.equals = function(other) {
       return false;
   }
 
-
-  // var complexes1 = this._complexes;
-  // var complexes2 = other._complexes;
-  // complexes1 = complexes1.map(function(x, i) {
-  //   complexes1[i].map(function(y, j) {
-
-  //   });
-  //   // complexes1[i].s
-  // });
-
-
-  // _(_complexes).each(function(x, i) {
-  //   _(_complexes[i]).each(function(y, j) {
-  //     _complexes[i][j] = normalizedCell(y);
-  //     // var offset = _.minIndex(y);
-  //     // _complexes[i][j] = _.rotateLeft(y, offset);
-  //   });
-  //   _complexes[i].sort(_.byLexical);
-  // });
-
   var j, ncells;
   for (i = 0; i <= dim; ++i) {
     ncells = this.getNumOfCellsInDim(i);
@@ -203,6 +183,10 @@ Topology.prototype.getCellsInDim = function(dim) {
 
 Topology.prototype.getMaxCells = function() {
   return this.getCellsInDim(this.getDim());
+};
+
+Topology.prototype.getPointIndices = function() {
+  return this._complexes[0].map(function(x) { return x[0]; });
 };
 
 // Topology.prototype.remap = function(mapping) {
