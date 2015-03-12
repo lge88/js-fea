@@ -3163,26 +3163,6 @@ var fe =
 	      return false;
 	  }
 
-
-	  // var complexes1 = this._complexes;
-	  // var complexes2 = other._complexes;
-	  // complexes1 = complexes1.map(function(x, i) {
-	  //   complexes1[i].map(function(y, j) {
-
-	  //   });
-	  //   // complexes1[i].s
-	  // });
-
-
-	  // _(_complexes).each(function(x, i) {
-	  //   _(_complexes[i]).each(function(y, j) {
-	  //     _complexes[i][j] = normalizedCell(y);
-	  //     // var offset = _.minIndex(y);
-	  //     // _complexes[i][j] = _.rotateLeft(y, offset);
-	  //   });
-	  //   _complexes[i].sort(_.byLexical);
-	  // });
-
 	  var j, ncells;
 	  for (i = 0; i <= dim; ++i) {
 	    ncells = this.getNumOfCellsInDim(i);
@@ -3201,6 +3181,10 @@ var fe =
 
 	Topology.prototype.getMaxCells = function() {
 	  return this.getCellsInDim(this.getDim());
+	};
+
+	Topology.prototype.getPointIndices = function() {
+	  return this._complexes[0].map(function(x) { return x[0]; });
 	};
 
 	// Topology.prototype.remap = function(mapping) {
@@ -3998,6 +3982,26 @@ var fe =
 	}
 	exports.GCellSet = GCellSet;
 
+	// For visualization.
+	GCellSet.prototype.topology = function() {
+	  return this._topology;
+	};
+
+	// For visualization.
+	GCellSet.prototype.vertices = function() {
+	  return this._topology.getPointIndices();
+	};
+
+	// For visualization.
+	GCellSet.prototype.edges = function() {
+	  return this._topology.getCellsInDim(1);
+	};
+
+	// For visualization.
+	GCellSet.prototype.triangles = function() {
+	  return this._topology.getCellsInDim(2);
+	};
+
 	GCellSet.prototype.type = function() {
 	  throw new Error('GCellSet::type(): is not implemented.');
 	};
@@ -4458,6 +4462,8 @@ var fe =
 	  });
 	};
 
+	L2.prototype.triangles = function() { return []; };
+
 	L2.prototype.cellSize = function() { return 2; };
 
 	L2.prototype.type = function() { return 'L2'; };
@@ -4517,6 +4523,19 @@ var fe =
 
 	Q4.prototype.boundaryGCellSetConstructor = function() {
 	  return L2;
+	};
+
+	Q4.prototype.triangles = function() {
+	  var quads = this._topology.getCellsInDim(2);
+	  var triangles = [];
+
+	  quads.forEach(function(quad) {
+	    var t1 = [quad[0], quad[1], quad[2]];
+	    var t2 = [quad[2], quad[3], quad[0]];
+	    triangles.push(t1, t2);
+	  });
+
+	  return triangles;
 	};
 
 	// paramCoords: vec:2
@@ -4642,6 +4661,18 @@ var fe =
 
 	Field.prototype.values = function() {
 	  return this._values.toList();
+	};
+
+	// Get value vector by Id
+	// Return: vec:this.dim()
+	Field.prototype.get = function(id) {
+	  var idx = id - 1;
+	  return this._values.get(idx);
+	};
+
+	// For visualization.
+	Field.prototype.pointset = function() {
+	  return this._values;
 	};
 
 	Field.prototype.isPrescribed = function(id, direction) {
@@ -4947,6 +4978,14 @@ var fe =
 	var ElementVector = __webpack_require__(22).ElementVector;
 
 	function Feblock() {}
+
+	Feblock.prototype.gcells = function() {
+	  return this._gcells;
+	};
+
+	Feblock.prototype.topology = function() {
+	  return this._gcells.topology();
+	};
 
 	var _input_contract_deforss_option = defineContract(function(o) {
 	  assert.object(o);
@@ -5693,7 +5732,7 @@ var fe =
 	// when used in node, this will actually load the util module we depend on
 	// versus loading the builtin util module as happens otherwise
 	// this is a bug in node module loading as far as I am concerned
-	var util = __webpack_require__(27);
+	var util = __webpack_require__(28);
 
 	var pSlice = Array.prototype.slice;
 	var hasOwn = Object.prototype.hasOwnProperty;
@@ -13189,7 +13228,7 @@ var fe =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)(module), (function() { return this; }())))
 
 /***/ },
 /* 25 */
@@ -18228,6 +18267,22 @@ var fe =
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
 	//
 	// Permission is hereby granted, free of charge, to any person obtaining a
@@ -18816,22 +18871,6 @@ var fe =
 	}
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(30)))
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
 
 /***/ },
 /* 29 */
