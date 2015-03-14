@@ -1,4 +1,59 @@
-/*global require*/
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>js-fea Source: /Users/lige/projects/js-fea/src/field.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">js-fea</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="Field.html">Field</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: /Users/lige/projects/js-fea/src/field.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">/*global require*/
 // field
 
 var _ = require('./core.utils');
@@ -17,11 +72,11 @@ var _input_contract_field_option_ = defineContract(function(o) {
   assert.object(o);
   if (check.assigned(o.values)) {
     matrixOfDimension('*', '*', 'values is not a valid matrix.')(o.values);
-  } else if (check.assigned(o.nfens) && check.assigned(o.dim)) {
+  } else if (check.assigned(o.nfens) &amp;&amp; check.assigned(o.dim)) {
     assert.integer(o.nfens);
     assert.integer(o.dim);
-    if (o.nfens < 0) throw new Error('nfens must > 0.');
-    if (o.dim < 0) throw new Error('dim must > 0');
+    if (o.nfens &lt; 0) throw new Error('nfens must > 0.');
+    if (o.dim &lt; 0) throw new Error('dim must > 0');
   } else if (check.assigned(o.fens)) {
     assert.instance(o.fens, FeNodeSet);
   } else if (check.assigned(o.pointset)) {
@@ -66,7 +121,7 @@ function Field(options) {
     this._values = options.pointset.clone();
   } else if (check.assigned(options.fens)) {
     this._values = new PointSet(options.fens.xyz());
-  } else if (check.assigned(options.nfens) && check.assigned(options.dim)) {
+  } else if (check.assigned(options.nfens) &amp;&amp; check.assigned(options.dim)) {
     this._values = new PointSet(options.nfens, options.dim);
   }
 
@@ -178,15 +233,15 @@ Field.prototype._bop = function(other, bopFn, bopName) {
         return bopFn(x, other);
       });
     });
-  } else if (check.instance(other, Field) &&
-             other.dim() === this.dim() &&
+  } else if (check.instance(other, Field) &amp;&amp;
+             other.dim() === this.dim() &amp;&amp;
              other.nfens() === this.nfens()) {
     return this.map(function(vec, i) {
       return vec.map(function(x, j) {
         return bopFn(x, other.at(i)[j]);
       });
     });
-  } else if (check.array(other) && other.length === this.dim()) {
+  } else if (check.array(other) &amp;&amp; other.length === this.dim()) {
     return this.map(function(vec) {
       return vec.map(function(x, j) {
         return bopFn(x, other[j]);
@@ -325,8 +380,8 @@ Field.prototype._numberEqnums_ = function() {
 
   var count = 0, nfens = this.nfens(), dim = this.dim();
   var i, j;
-  for (i = 1; i <= nfens; ++i) {
-    for (j = 1; j <= dim; ++j) {
+  for (i = 1; i &lt;= nfens; ++i) {
+    for (j = 1; j &lt;= dim; ++j) {
       if (!this.isPrescribed(i, j)) {
         count++;
         eqnums[i][j] = count;
@@ -347,8 +402,8 @@ Field.prototype._numberEqnums_ = function() {
  */
 Field.prototype.eqnum = function(id, direction) {
   if (!this._eqnums) this._numberEqnums_();
-  if (id < 1 || id > this.nfens()) throw new Error('Field::eqnum(): id out of range.');
-  if (direction < 1 || direction > this.dim()) throw new Error('Field::eqnum(): direction out of range.');
+  if (id &lt; 1 || id > this.nfens()) throw new Error('Field::eqnum(): id out of range.');
+  if (direction &lt; 1 || direction > this.dim()) throw new Error('Field::eqnum(): direction out of range.');
   return this._eqnums[id][direction];
 };
 
@@ -362,7 +417,7 @@ Field.prototype.gatherEqnumsVector = function(conn) {
   var vec = [], dim = this.dim();
   conn.forEach(function(fenid) {
     var i, eqnum;
-    for (i = 1; i <= dim; ++i) {
+    for (i = 1; i &lt;= dim; ++i) {
       vec.push(this.eqnum(fenid, i));
     }
   }, this);
@@ -395,7 +450,7 @@ Field.prototype.gatherPrescirbedValues = function(conn) {
   var vec = [], dim = this.dim();
   conn.forEach(function(id) {
     var dir;
-    for (dir = 1; dir <= dim; ++dir) {
+    for (dir = 1; dir &lt;= dim; ++dir) {
       vec.push(this.prescribedValue(id, dir));
     }
   }, this);
@@ -422,8 +477,8 @@ Field.prototype.scatterSystemVector_ = function(vec) {
   var values = this._values;
   var i, j, en, val;
 
-  for (i = 1; i <= nfens; ++i) {
-    for (j = 1; j <= dim; ++j) {
+  for (i = 1; i &lt;= nfens; ++i) {
+    for (j = 1; j &lt;= dim; ++j) {
       en = eqnums[i][j];
       if (en !== 0) {
         val = vec[en - 1];
@@ -434,3 +489,65 @@ Field.prototype.scatterSystemVector_ = function(vec) {
 };
 
 exports.Field = Field;
+</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Li Ge Copyright 2015
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
+		on Sat Mar 14 2015 16:57:20 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>

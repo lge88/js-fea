@@ -209,7 +209,7 @@ describe('field', function() {
         }
       ],
 
-      scale: [
+      mul: [
         {
           input: [ 10 ],
           output: [
@@ -291,8 +291,36 @@ describe('field', function() {
         }
 
 
-      ]
+      ],
+      sub: [
+        {
+          input: [ 10 ],
+          output: [
+            [-10, -10],
+            [-10, -10],
+            [30, -10],
+            [30, 30],
+            [70, -10],
+            [70, 30]
+          ],
+          verify: 'fieldValuesEqual'
+        }
+      ],
 
+      div: [
+        {
+          input: [ 10 ],
+          output: [
+            [0, 0],
+            [0, 0],
+            [4, 0],
+            [4, 4],
+            [8, 0],
+            [8, 4]
+          ],
+          verify: 'fieldValuesEqual'
+        }
+      ]
     },
 
   ];

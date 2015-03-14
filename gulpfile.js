@@ -4,8 +4,14 @@ var config = {
     src: ['src/**/*.js'],
     build: 'build/',
     unit: ['test/unit/*.js'],
-    spec: ['test/spec/*.js']
+    spec: ['test/spec/*.js'],
+    docs: 'docs/',
+    readme: 'README.md',
+    pkg: 'package.json'
   },
+  libFile: 'fe.js',
+  libMinifiedFile: 'fe.min.js',
+  libGlobalVar: 'fe',
   mocha: {
     reporter: 'progress'
   }
@@ -13,14 +19,15 @@ var config = {
 
 var gulp = require('gulp'), $ = require('gulp-load-plugins')();
 var del = require('del');
+var jsdoc = require("gulp-jsdoc");
 
 require('./tools');
 
 gulp.task('help', $.taskListing);
 
-gulp.task('default', ['lib']);
+gulp.task('default', ['lib', 'docs']);
 
-gulp.task('clean', del.bind(null, ['build', '**/*tmp*', '**/*.log', 'coverage'], {dot: true}));
+gulp.task('clean', del.bind(null, ['build', 'docs', '**/*tmp', '**/*.log', 'coverage'], {dot: true}));
 
 gulp.task('test', ['unit', 'spec']);
 
@@ -49,9 +56,9 @@ gulp.task('lib:dev', function() {
   return gulp.src(config.paths.entry)
     .pipe($.webpack({
       output: {
-        filename: 'fe.js',
+        filename: config.libFile,
         libraryTarget: 'var',
-        library: 'fe'
+        library: config.libGlobalVar
       }
     }))
     .pipe(gulp.dest('build'));
@@ -59,10 +66,53 @@ gulp.task('lib:dev', function() {
 
 gulp.task('lib:dist', ['lib:dev'], function() {
   return gulp
-    .src(config.paths.build + 'fe.js')
+    .src(config.paths.build + config.libFile)
     .pipe($.uglify())
-    .pipe($.rename('fe.min.js'))
+    .pipe($.rename(config.libMinifiedFile))
     .pipe(gulp.dest('build'));
+});
+
+function loadConfig(fname) {
+  return JSON.parse(require('fs').readFileSync(fname));
+}
+
+gulp.task('docs', function() {
+  var pkgConf = loadConfig(config.paths.pkg);
+
+  var files = config.paths.src.concat([
+    config.paths.readme
+  ]);
+
+  var infos = {
+    name: pkgConf.name,
+    description: pkgConf.description,
+    version: pkgConf.version,
+    licenses: [ pkgConf.license ]
+  };
+
+  var templates = {
+    path: 'ink-docstrap',
+    systemName: infos.name,
+    footer: '',
+    copyright: 'Li Ge Copyright 2015',
+    navType: 'vertical',
+    theme: 'cerulean',
+    linenums: true,
+    collapseSymbols: false,
+    inverseNav: true
+  };
+
+  var options =   {
+    private: false,
+    monospaceLinks: true,
+    cleverLinks: true,
+    outputSourceFiles: true
+  };
+
+  // FIXME: the docs exposes local file system :(
+  return gulp.src(files)
+    .pipe(jsdoc.parser(infos))
+    .pipe(jsdoc.generator(config.paths.docs, templates, options));
 });
 
 gulp.task('bump:patch', function() {

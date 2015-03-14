@@ -2241,6 +2241,7 @@ var fe =
 	};
 	vecEquals.TOLERANCE = 1e-4;
 	exports.vecEquals = vecEquals;
+	exports.vecEql = vecEquals;
 	exports.array1dEquals = vecEquals;
 
 	// both a and b are 2d array
@@ -2266,6 +2267,7 @@ var fe =
 	array2dEquals.TOLERANCE = 1e-4;
 	exports.array2dEquals = array2dEquals;
 	exports.matrixEquals = array2dEquals;
+	exports.matEql = array2dEquals;
 
 	// input: ccs representation
 	// output: iterator that emits a sequence of (i, j, value) tuple.
@@ -4577,6 +4579,7 @@ var fe =
 	// field
 
 	var _ = __webpack_require__(1);
+	var cloneDeep = _.cloneDeep;
 	var check = _.check;
 	var assert = _.assert;
 	var isVectorOfDimension = _.isVectorOfDimension;
@@ -4610,8 +4613,29 @@ var fe =
 
 	}, 'Input is not a valid Field option.');
 
+	/**
+	 * Field init option.
+	 * @typedef {Object} Field~FieldInitOption
+	 * @property {Matrix|undefined} values
+	 * @property {PointSet|undefined} pointset
+	 * @property {FeNodeSet|undefined} fens
+	 * @property {Number|undefined} nfens
+	 * @property {Number|undefined} dim
+	 */
+
+	/**
+	 * Field
+	 * @class
+	 * @param {Field~FieldInitOption}
+	 */
 	function Field(options) {
 	  _input_contract_field_option_(options);
+
+	  this._values = null;
+	  this._prescribed = null;
+	  this._prescribedValues = null;
+	  this._eqnums = null;
+	  this._neqns = -1;
 
 	  if (check.assigned(options.values)) {
 	    this._values = new PointSet(options.values);
@@ -4633,77 +4657,236 @@ var fe =
 
 	    options.ebcs.forEach(function(ebc) {
 	      // TODO: make sure ebc object is valid;
-	      // ebc.fenids.forEach(function(fenid, i) {
-	      //   var comp = ebc.component[i];
-	      //   prescribed[fenid][comp] = !!(ebc.prescribed[i]);
-	      //   prescribedValues[fenid][comp] = ebc.value[i];
-	      // });
 	      ebc.applyToField_(this);
 	    }, this);
 	  }
 
-	  this._eqnums = null;
-	  this._neqns = -1;
 	}
 
+	/**
+	 * Returns number of nodes in the field.
+	 * @returns {}
+	 */
 	Field.prototype.nfens = function() {
 	  return this._values.getSize();
 	};
 
+	/**
+	 * Returns number of equations
+	 * @returns {Number}
+	 */
 	Field.prototype.neqns = function() {
 	  if (!this._eqnums) this._numberEqnums_();
 	  return this._neqns;
 	};
 
+
+	/**
+	 * Returns dimension of the field.
+	 * @returns {Number}
+	 */
 	Field.prototype.dim = function() {
 	  return this._values.getRn();
 	};
 
+	/**
+	 * Returns the values as 2d js array.
+	 * @returns {Array}
+	 */
 	Field.prototype.values = function() {
 	  return this._values.toList();
 	};
 
+
+	/**
+	 * @callback Field~mapCallback
+	 * @param {Array} vec - the vector value at node.
+	 * @param {Number} i - index of the node.
+	 * @returns {Array} transformed vector value.
+	 */
+
+	/**
+	 * Returns a new transformed field by given mapping. No boudary
+	 * conditions are preserved.
+	 * @param {Field~mapCallback} fn - The mapping function that maps a
+	 * vector to another vector.
+	 * @returns {Field}
+	 */
 	Field.prototype.map = function(fn) {
-	  var newValues = this._values.toList().map(fn);
-	  var newField = new Field({
-	    values: newValues
-	  });
-	  var id = function(x) { return x; };
-	  newField._neqns = this._neqns;
-	  newField._eqnums = this._eqnums ? this._eqnums.map(id) : this._eqnums;
-	  newField._prescribed = this._prescribed ? this._prescribed.map(id) : this._prescribed;
-	  newField._prescribedValues = this._prescribedValues ? this._prescribedValues.map(function(x, i) {
-	    if (newField._prescribed[i])
-	      return fn(x, i);
-	    else
-	      return x;
-	  }) : this.prescribedValues;
+	  var newPointset = this._values.map(fn);
+	  var newField = new Field({ pointset: newPointset });
 	  return newField;
+	};
+
+	/**
+	 * Returns an identical copy, preserves boundary conditions.
+	 * @returns {Feild}
+	 */
+	Field.prototype.clone = function() {
+	  var newPointset = this._values.clone();
+	  var newField = new Field({ pointset: newPointset });
+	  newField._neqns = this._neqns;
+	  newField._eqnums = cloneDeep(this._eqnums);
+	  newField._prescribed = cloneDeep(this._prescribed);
+	  newField._prescribedValues = cloneDeep(this._prescribedValues);
+	  return newField;
+	};
+
+	/**
+	 * @callback Field~bopFn
+	 * @param {Array} vec - the vector value at node.
+	 * @param {Number} i - index of the node.
+	 * @returns {Array} transformed vector value.
+	 */
+
+	/**
+	 * Returns a new field that holds the result of binary operation.
+	 * @param {Number|Field|Array} other - A number, a field of same nfens
+	 and dim or an array of length this.dim().
+	 * @param {Field~bopFn} bopFn - binary operation function.
+	 * @param {String} bopName - binary operation name, which will make
+	 * better error message.
+	 * @returns {Field} Result field.
+	 */
+	Field.prototype._bop = function(other, bopFn, bopName) {
+	  if (check.number(other)) {
+	    return this.map(function(vec) {
+	      return vec.map(function(x) {
+	        return bopFn(x, other);
+	      });
+	    });
+	  } else if (check.instance(other, Field) &&
+	             other.dim() === this.dim() &&
+	             other.nfens() === this.nfens()) {
+	    return this.map(function(vec, i) {
+	      return vec.map(function(x, j) {
+	        return bopFn(x, other.at(i)[j]);
+	      });
+	    });
+	  } else if (check.array(other) && other.length === this.dim()) {
+	    return this.map(function(vec) {
+	      return vec.map(function(x, j) {
+	        return bopFn(x, other[j]);
+	      });
+	    });
+	  } else
+	    throw new Error('Field::' + bopName +
+	                    '(other, bopFn): other must be a number' +
+	                    ' , a field of same this.nfens() and this.dim() or' +
+	                    ' an array of length this.dim().');
+	};
+
+	/**
+	 * Returns a new field that holds the result of binary operation.
+	 * @param {Number|Field|Array} other - A number, a field of same nfens
+	 and dim or an array of length this.dim().
+	 * @param {Field~bopFn} bopFn - binary operation function.
+	 * @returns {Field} Result field.
+	 */
+	Field.prototype.bop = function(other, bopFn) {
+	  return this._bop(other, bopFn, bopFn.name || 'custom binary function');
+	};
+
+	/**
+	 * Returns a new field of the point-wise multiplication. No boudary
+	 * conditions are preserved.
+	 * @param {Number|Field|Array} other - A number, a field of same nfens
+	 and dim or an array of length this.dim().
+	 * @returns {Field} - muliplication of this and other.
+	 */
+	Field.prototype.mul = function(other) {
+	  return this._bop(other, function(a,b) { return a * b; }, 'mul');
+	};
+	Field.prototype.scale = Field.prototype.mul;
+
+	/**
+	 * Returns a new field of the point-wise sumation. No boudary
+	 * conditions are preserved.
+	 * @param {Number|Field|Array} other - A number, a field of same nfens
+	 and dim or an array of length this.dim().
+	 * @returns {Field} - Sum of this and other.
+	 */
+	Field.prototype.add = function(other) {
+	  return this._bop(other, function(a,b) { return a + b; }, 'add');
+	};
+
+	/**
+	 * Returns a new field of the point-wise substraction. No boudary
+	 * conditions are preserved.
+	 * @param {Number|Field|Array} other - A number, a field of same nfens
+	 and dim or an array of length this.dim().
+	 * @returns {Field} - substraction of this and other.
+	 */
+	Field.prototype.sub = function(other) {
+	  return this._bop(other, function(a,b) { return a - b; }, 'sub');
+	};
+
+	/**
+	 * Returns a new field of the point-wise division. No boudary
+	 * conditions are preserved.
+	 * @param {Number|Field|Array} other - A number, a field of same nfens
+	 and dim or an array of length this.dim().
+	 * @returns {Field} - division of this and other.
+	 */
+	Field.prototype.div = function(other) {
+	  return this._bop(other, function(a,b) { return a / b; }, 'div');
 	};
 
 	// Get value vector by Id
 	// Return: vec:this.dim()
-	Field.prototype.get = function(id) {
+	Field.prototype.getById = function(id) {
 	  var idx = id - 1;
 	  return this._values.get(idx);
 	};
 
-	// For visualization.
+	/**
+	 * Get value at index.
+	 * @param {Number} idx - index
+	 * @return {Vector:this.dim()}
+	 */
+	Field.prototype.at = function(idx) {
+	  return this._values.get(idx);
+	};
+
+	/**
+	 * Returns pointset object for visualization.
+	 * @returns {PointSet}
+	 */
 	Field.prototype.pointset = function() {
 	  return this._values;
 	};
 
+	/**
+	 * Returns whether node at given direction is prescribed.
+	 * @param {Number} id - integer ID of the node. Index start from 1.
+	 * @param {Number} direction - dimension index. Index start from 1.
+	 * @returns {Boolean}
+	 */
 	Field.prototype.isPrescribed = function(id, direction) {
 	  if (!this._prescribed) return false;
 	  return this._prescribed[id][direction];
 	};
 
+	/**
+	 * Returns prescribed value of the node at given direction. Return 0
+	 * if the dof is not prescribed.
+	 * @param {Number} id - integer ID of the node. Index start from 1.
+	 * @param {Number} direction - dimension index. Index start from 1.
+	 * @returns {Number}
+	 */
 	Field.prototype.prescribedValue = function(id, direction) {
 	  if (this.isPrescribed(id, direction))
 	    return this._prescribedValues[id][direction];
 	  return 0;
 	};
 
+	/**
+	 * Set prescribed value of the node at given direction.
+	 * if the dof is not prescribed.
+	 * @param {Number} id - integer ID of the node. Index start from 1.
+	 * @param {Number} dir - dimension index. Index start from 1.
+	 * @param {Number} val - value.
+	 */
 	Field.prototype.setPrescribedValue_ = function(id, dir, val) {
 	  // console.log("val = ", val);
 	  // console.log("dir = ", dir);
@@ -4733,6 +4916,12 @@ var fe =
 	  this._neqns = count;
 	};
 
+	/**
+	 * Returns the eqnum number at node with given direction.
+	 * @param {Number} id - integer ID of the node. Index start from 1.
+	 * @param {Number} direction - dimension index. Index start from 1.
+	 * @returns {Number} - equation number.
+	 */
 	Field.prototype.eqnum = function(id, direction) {
 	  if (!this._eqnums) this._numberEqnums_();
 	  if (id < 1 || id > this.nfens()) throw new Error('Field::eqnum(): id out of range.');
@@ -4740,6 +4929,12 @@ var fe =
 	  return this._eqnums[id][direction];
 	};
 
+	/**
+	 * Returns gathered eqnum numbers in an js array.
+	 * @param {Array} conn - connectiviy vector.
+	 * @returns {Array} - an array of equation numbers of length
+	 * this.dim()*conn.length.
+	 */
 	Field.prototype.gatherEqnumsVector = function(conn) {
 	  var vec = [], dim = this.dim();
 	  conn.forEach(function(fenid) {
@@ -4751,6 +4946,12 @@ var fe =
 	  return vec;
 	};
 
+	/**
+	 * Returns gathered values in an 2d js array.
+	 * @param {Array} conn - connectiviy vector.
+	 * @returns {Array} - a 2d js array of values of dimension conn.length
+	 * by this.dim().
+	 */
 	Field.prototype.gatherValuesMatrix = function(conn) {
 	  var len = conn.length, dim = this.dim();
 	  var mat = array1d(len, null);
@@ -4761,7 +4962,12 @@ var fe =
 	  return mat;
 	};
 
-	// return: vec(conn.length)
+	/**
+	 * Returns gathered values in an 2d js array.
+	 * @param {Array} conn - connectiviy vector.
+	 * @returns {Array} - a 2d js array of values of dimension conn.length
+	 * by this.dim().
+	 */
 	Field.prototype.gatherPrescirbedValues = function(conn) {
 	  var vec = [], dim = this.dim();
 	  conn.forEach(function(id) {
@@ -4773,6 +4979,12 @@ var fe =
 	  return vec;
 	};
 
+
+	/**
+	 * Scatter values to field. Returns updated field.
+	 * @param {Array} vec - js array of length this.neqns();
+	 * @returns {Field} - updated field.
+	 */
 	Field.prototype.scatterSystemVector_ = function(vec) {
 	  var neqns = this.neqns();
 	  if (!isVectorOfDimension(vec, neqns))
@@ -5750,7 +5962,7 @@ var fe =
 	// when used in node, this will actually load the util module we depend on
 	// versus loading the builtin util module as happens otherwise
 	// this is a bug in node module loading as far as I am concerned
-	var util = __webpack_require__(27);
+	var util = __webpack_require__(28);
 
 	var pSlice = Array.prototype.slice;
 	var hasOwn = Object.prototype.hasOwnProperty;
@@ -13246,7 +13458,7 @@ var fe =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)(module), (function() { return this; }())))
 
 /***/ },
 /* 25 */
@@ -18285,6 +18497,22 @@ var fe =
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
 	//
 	// Permission is hereby granted, free of charge, to any person obtaining a
@@ -18873,22 +19101,6 @@ var fe =
 	}
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(30)))
-
-/***/ },
-/* 28 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
 
 /***/ },
 /* 29 */
