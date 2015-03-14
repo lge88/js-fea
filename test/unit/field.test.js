@@ -6,6 +6,9 @@ var FeNodeSet = require(SRC + '/fens').FeNodeSet;
 var PointSet = require(SRC + '/geometry.pointset').PointSet;
 var EBC = require(SRC + '/ebc').EBC;
 var field = require(SRC + '/field.js');
+var Field = field.Field;
+var numeric = require(SRC + '/core.numeric');
+var matEql = numeric.matEql;
 
 describe('field', function() {
   var dataset = [
@@ -96,13 +99,21 @@ describe('field', function() {
         }
       ],
       _desc: 'construct from pointset.',
-      get: [
+      getById: [
         { input: 1, output: [0, 0], verify: 'eql' },
         { input: 2, output: [0, 0], verify: 'eql' },
         { input: 3, output: [40, 0], verify: 'eql' },
         { input: 4, output: [40, 40], verify: 'eql' },
         { input: 5, output: [80, 0], verify: 'eql' },
         { input: 6, output: [80, 40], verify: 'eql' }
+      ],
+      at: [
+        { input: 0, output: [0, 0], verify: 'eql' },
+        { input: 1, output: [0, 0], verify: 'eql' },
+        { input: 2, output: [40, 0], verify: 'eql' },
+        { input: 3, output: [40, 40], verify: 'eql' },
+        { input: 4, output: [80, 0], verify: 'eql' },
+        { input: 5, output: [80, 40], verify: 'eql' }
       ],
       dim: [ { output: 2 } ],
       nfens: [ { output: 6 } ],
@@ -167,12 +178,132 @@ describe('field', function() {
           ],
           verify: 'eql'
         }
+      ],
+
+      map: [
+        {
+          input: [ function(xyz) { return xyz.map(function(x) { return x*2; }); } ],
+          output: [
+            [0, 0],
+            [0, 0],
+            [80, 0],
+            [80, 80],
+            [160, 0],
+            [160, 80]
+          ],
+          verify: 'fieldValuesEqual'
+        }
+      ],
+
+      clone: [
+        {
+          output: [
+            [0, 0],
+            [0, 0],
+            [40, 0],
+            [40, 40],
+            [80, 0],
+            [80, 40]
+          ],
+          verify: 'fieldValuesEqual'
+        }
+      ],
+
+      scale: [
+        {
+          input: [ 10 ],
+          output: [
+            [0, 0],
+            [0, 0],
+            [400, 0],
+            [400, 400],
+            [800, 0],
+            [800, 400]
+          ],
+          verify: 'fieldValuesEqual'
+        }
+      ],
+
+      add: [
+        {
+          input: [ 10 ],
+          output: [
+            [10, 10],
+            [10, 10],
+            [50, 10],
+            [50, 50],
+            [90, 10],
+            [90, 50]
+          ],
+          verify: 'fieldValuesEqual'
+        },
+        {
+          input: [ [10, 20] ],
+          output: [
+            [10, 20],
+            [10, 20],
+            [50, 20],
+            [50, 60],
+            [90, 20],
+            [90, 60]
+          ],
+          verify: 'fieldValuesEqual'
+        },
+        {
+          input: [
+            new Field({
+              values: [
+                [10,0],
+                [10,0],
+                [10,0],
+                [0,20],
+                [0,20],
+                [0,20]
+              ]
+            })
+          ],
+          output: [
+            [10, 0],
+            [10, 0],
+            [50, 0],
+            [40, 60],
+            [80, 20],
+            [80, 60]
+          ],
+          verify: 'fieldValuesEqual'
+        },
+
+        {
+          input: [
+            new Field({
+              values: [
+                [10],
+                [10],
+                [10],
+                [0],
+                [0],
+                [0]
+              ]
+            })
+          ],
+          exception: true,
+          desc: 'other dimension dismatch.'
+        }
+
+
       ]
 
     },
 
   ];
 
-  var tester = new ModuleTester(field, dataset, {});
+  var verifies = {
+    fieldValuesEqual: function(computed, expected) {
+      var vals = computed.values();
+      expect(matEql(vals, expected, 1e-8)).to.be(true);
+    }
+  };
+
+  var tester = new ModuleTester(field, dataset, verifies);
   tester.run();
 });

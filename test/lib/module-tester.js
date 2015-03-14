@@ -102,6 +102,9 @@ function ModuleTester(mod, testDatasetOrFile, verifyMethods, options) {
           }
 
           var fn = cleaned.instance[method];
+          if (!check.assigned(fn))
+            throw new Error(type + ':' + method + '() is not found.');
+
           cleaned.fn = fn.bind.apply(fn, [ins].concat(cleaned.input));
 
           return cleaned;

@@ -125,6 +125,7 @@ function vecEquals(a, b, aTolerance) {
 };
 vecEquals.TOLERANCE = 1e-4;
 exports.vecEquals = vecEquals;
+exports.vecEql = vecEquals;
 exports.array1dEquals = vecEquals;
 
 // both a and b are 2d array
@@ -150,6 +151,7 @@ function array2dEquals(a, b, aTolerance) {
 array2dEquals.TOLERANCE = 1e-4;
 exports.array2dEquals = array2dEquals;
 exports.matrixEquals = array2dEquals;
+exports.matEql = array2dEquals;
 
 // input: ccs representation
 // output: iterator that emits a sequence of (i, j, value) tuple.

@@ -58,11 +58,6 @@ function Field(options) {
 
     options.ebcs.forEach(function(ebc) {
       // TODO: make sure ebc object is valid;
-      // ebc.fenids.forEach(function(fenid, i) {
-      //   var comp = ebc.component[i];
-      //   prescribed[fenid][comp] = !!(ebc.prescribed[i]);
-      //   prescribedValues[fenid][comp] = ebc.value[i];
-      // });
       ebc.applyToField_(this);
     }, this);
   }
@@ -88,28 +83,87 @@ Field.prototype.values = function() {
   return this._values.toList();
 };
 
+// Probably should not preserve bcs?
 Field.prototype.map = function(fn) {
-  var newValues = this._values.toList().map(fn);
+  var newPointset = this._values.map(fn);
   var newField = new Field({
-    values: newValues
+    pointset: newPointset
   });
   var id = function(x) { return x; };
   newField._neqns = this._neqns;
   newField._eqnums = this._eqnums ? this._eqnums.map(id) : this._eqnums;
   newField._prescribed = this._prescribed ? this._prescribed.map(id) : this._prescribed;
   newField._prescribedValues = this._prescribedValues ? this._prescribedValues.map(function(x, i) {
+    var xCopy = x.slice();
     if (newField._prescribed[i])
-      return fn(x, i);
+      return fn(xCopy, i);
     else
-      return x;
+      return xCopy;
   }) : this.prescribedValues;
   return newField;
 };
 
+Field.prototype.scale = function(s) {
+  return this.map(function(vec) {
+    return vec.map(function(x) {
+      return x*s;
+    });
+  });
+};
+
+Field.prototype.clone = function() {
+  return this.map(function(x) { return x.slice(); });
+};
+
+/**
+ * Returns a new field of the sum
+ * @param {Number|Field|Array} other - A number, a field of
+ same nfens and dim or an array of length this.dim().
+ * @returns {Field} - Sum of this and other.
+ */
+
+Field.prototype.add = function(other) {
+  var newPointset;
+  if (typeof other === 'number') {
+    newPointset = this._values.map(function(xyz) {
+      return xyz.map(function(x) { return x + other; });
+    });
+  } else if (other instanceof Field &&
+             this.nfens() === other.nfens() &&
+             this.dim() === other.dim()) {
+    newPointset = this._values.map(function(xyz, i) {
+      return xyz.map(function(x, j) {
+        return x + other.at(i)[j];
+      });
+    });
+  } else if (Array.isArray(other) && other.length === this.dim()) {
+    newPointset = this._values.map(function(xyz) {
+      return xyz.map(function(x, j) {
+        return x + other[j];
+      });
+    });
+  } else {
+    throw new Error('Field::add(other): invalid `other`. `other` should be number,' +
+                    ' a field of same dimension or' +
+                    ' an array of length this.dim().');
+  }
+
+  return new Field({ pointset: newPointset });
+};
+
 // Get value vector by Id
 // Return: vec:this.dim()
-Field.prototype.get = function(id) {
+Field.prototype.getById = function(id) {
   var idx = id - 1;
+  return this._values.get(idx);
+};
+
+/**
+ * Get value at index.
+ * @param {Number} idx - index
+ * @return {Vector:this.dim()}
+ */
+Field.prototype.at = function(idx) {
   return this._values.get(idx);
 };
 
