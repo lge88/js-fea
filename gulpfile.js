@@ -19,7 +19,8 @@ var config = {
 
 var gulp = require('gulp'), $ = require('gulp-load-plugins')();
 var del = require('del');
-var jsdoc = require("gulp-jsdoc");
+var jsdoc = require('gulp-jsdoc');
+var ghPages = require('gulp-gh-pages');
 
 require('./tools');
 
@@ -113,6 +114,15 @@ gulp.task('docs', function() {
   return gulp.src(files)
     .pipe(jsdoc.parser(infos))
     .pipe(jsdoc.generator(config.paths.docs, templates, options));
+});
+
+gulp.task('ghpages', function() {
+  var pkgConf = loadConfig(config.paths.pkg);
+  var path = require('path');
+  var files = path.join(config.paths.docs, pkgConf.name, pkgConf.version, '**/*');
+
+  return gulp.src(files)
+    .pipe(ghPages());
 });
 
 gulp.task('bump:patch', function() {

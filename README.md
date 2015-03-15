@@ -1,5 +1,11 @@
-js-fea
-======
+Finite Element Analysis in Javascript.
+
+Install
+-------
+
+```
+npm install js-fea
+```
 
 TODO
 ----
