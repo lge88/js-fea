@@ -1,9 +1,0 @@
-#! /bin/sh
-pushd `dirname $0` > /dev/null
-__dirname=`pwd`
-popd > /dev/null
-
-saved_dir=`pwd`
-cd ${__dirname}/..
-find . -type f -name '*js' -not \( -path "./node_modules/*" -o -path "./build/*" -o -path "./coverage/*" -o -path "*.tmp*" \) -exec cat {} \; | wc -l
-cd ${saved_dir}
