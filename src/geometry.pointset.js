@@ -32,6 +32,9 @@
 //   PointSet::prod(other)
 
 var _ = require('./core.utils');
+var numeric = require('./core.numeric');
+var norm2 = numeric.norm2;
+var sub = numeric.sub;
 
 // Importance to understand the dimension of the pointset (rn) and
 // the size of the point set is different concept.
@@ -208,7 +211,7 @@ PointSet.prototype.contains = function(point, aPrecision) {
   var precision = aPrecision || PointSet.DEFAULT_PRECISION;
   if (_.isArray(point) && point.length === this.rn) {
     return null !== this.findOne(function(p) {
-      return _.norm2(_.sub(p, point)) < precision;
+      return norm2(sub(p, point)) < precision;
     });
   }
   return false;
@@ -219,7 +222,7 @@ PointSet.prototype.merged = function(aPrecision) {
   var precision = aPrecision || PointSet.DEFAULT_PRECISION;
   var lst = [];
   this.forEach(function(p0) {
-    var tooClose = _.any(lst, function(p1) { return _.norm2(p0, p1) < precision; });
+    var tooClose = _.any(lst, function(p1) { return norm2(p0, p1) < precision; });
     if (!tooClose) lst.push(p0);
   });
   return new PointSet(lst, this.rn);

@@ -2,6 +2,9 @@
 var ROOT = __dirname + '/../..', SRC = ROOT + '/src';
 var expect = require('expect.js');
 var _ = require(SRC + '/core.utils.js');
+var numeric = require(SRC + '/core.numeric');
+var norm2 = numeric.norm2;
+var sub = numeric.sub;
 var PointSet = require(SRC + '/geometry.pointset.js').PointSet;
 
 describe('geometry.pointset.js', function() {
@@ -311,10 +314,10 @@ describe('geometry.pointset.js', function() {
     it('should work with non-empty set', function() {
       var ps = new PointSet([[1, 0], [2, 3]], 2);
       var p1 = function(p, i) {
-        var d = _.norm2(_.sub(p, [2, 2.9]));
+        var d = norm2(sub(p, [2, 2.9]));
         return d < 0.5;
       };
-      var p2 = function(p, i) { return _.norm2(p, [12, 2.9]) < 0.5; };
+      var p2 = function(p, i) { return norm2(p, [12, 2.9]) < 0.5; };
       expect(ps.findOne(p1)).to.eql([2, 3]);
       expect(ps.findOne(p2)).to.be(null);
     });

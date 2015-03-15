@@ -13,6 +13,8 @@ var ccsFull = numeric.ccsFull;
 var ccsLUP = numeric.ccsLUP;
 var ccsLUPSolve = numeric.ccsLUPSolve;
 
+_.assign(exports, numeric);
+
 function norm(x) {
   return Math.sqrt(numeric.sum(numeric.pow(x, 2)));
 }
@@ -49,7 +51,7 @@ function ix(A, rows, cols) {
 }
 exports.ix = ix;
 
-function ixUpdate(A, rows, cols, val) {
+function ixUpdate_(A, rows, cols, val) {
   // check A, rows, cols
   var mA = size(A, 1), nA = size(A, 2);
   if (rows === ':') rows = array1d(mA, function(i) { return i+1; });
@@ -59,7 +61,7 @@ function ixUpdate(A, rows, cols, val) {
   if (typeof val === 'number')
     val = array2d(m, n, val);
 
-  var out = cloneDeep(A);
+  var out = A;
   rows.forEach(function(row, i) {
     var rowIndx = row - 1;
     cols.forEach(function(col, j) {
@@ -69,6 +71,13 @@ function ixUpdate(A, rows, cols, val) {
   });
   return out;
 }
+exports.ixUpdate_ = ixUpdate_;
+
+function ixUpdate(A, rows, cols, val) {
+  var copy = cloneDeep(A);
+  return ixUpdate_(copy, rows, cols, val);
+}
+
 exports.ixUpdate = ixUpdate;
 
 function colon(from, to, step) {
@@ -560,6 +569,4 @@ function eye(n) {
 }
 exports.eye = eye;
 
-
 exports.SparseVector = SparseVector;
-_.assign(exports, numeric);

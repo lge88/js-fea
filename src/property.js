@@ -6,11 +6,12 @@ var assert = _.assert;
 var check = _.check;
 var matrixOfDimension = _.contracts.matrixOfDimension;
 var mat6x6 = matrixOfDimension(6, 6);
-var diag = _.numeric.diag;
-var transpose = _.numeric.transpose;
-var add = _.numeric.add;
-var dot = _.numeric.dot;
-var mul = _.numeric.mul;
+var numeric = require('./core.numeric');
+var diag = numeric.diag;
+var transpose = numeric.transpose;
+var add = numeric.add;
+var dot = numeric.dot;
+var mul = numeric.mul;
 
 function MaterialProperty(props) {
   this._rho = (props && typeof props.rho === 'number') ? props.rho : 1.0;

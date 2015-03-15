@@ -2,34 +2,47 @@
 
 // var _ = require('highland');
 var _ = require('lodash');
-var numeric = require('numeric');
+// var numeric = require('numeric');
 
-var conflicts = [
-  'all',
-  'any',
-  'clone',
-  'identity',
-  'isFinite',
-  'isNaN',
-  'max',
-  'min',
-  'random'
-];
+// var conflicts = [
+//   'all',
+//   'any',
+//   'clone',
+//   'identity',
+//   'isFinite',
+//   'isNaN',
+//   'max',
+//   'min',
+//   'random'
+// ];
 
-// TODO: do not mount numeric directly under _ namespace.
-_(numeric)
-  .keys()
-  .difference(conflicts)
-  .forEach(function(method) {
-    _[method] = numeric[method];
-  });
+// // TODO: do not mount numeric directly under _ namespace.
+// _(numeric)
+//   .keys()
+//   .difference(conflicts)
+//   .forEach(function(method) {
+//     _[method] = numeric[method];
+//   });
 
-_.numeric = numeric;
+// _.numeric = numeric;
 
 _.Bimap = require('./core.bimap').Bimap;
 _.Bipartite= require('./core.bipartite').Bipartite;
 _.SetStore = require('./core.setstore').SetStore;
 
+
+/**
+ * @callback array1d~Generator
+ * @param {Number} i - index, starts from 0.
+ * @returns {Any}
+ */
+
+/**
+ * Returns a 1d js array by given dimension and generating function.
+ * @param {Number} m - length.
+ * @param {array1d~Generator|Any} fn - Generation function or constant value.
+ * @returns {Array}
+ */
 function array1d(m, fn) {
   if (typeof fn === 'function') {
     return Array.apply(null, Array(m)).map(function(x, i) { return fn(i); });
@@ -39,6 +52,20 @@ function array1d(m, fn) {
 }
 _.array1d = array1d;
 
+/**
+ * @callback array2d~Generator
+ * @param {Number} i - row index, starts from 0.
+ * @param {Number} j - column index, starts from 1.
+ * @returns {Any}
+ */
+
+/**
+ * Returns a 2d js array by given dimension and generating function.
+ * @param {Number} m - number of rows.
+ * @param {Number} n - number of columns.
+ * @param {array2d~Generator|Any} fn - Generation function or constant value.
+ * @returns {Array}
+ */
 function array2d(m, n, fn) {
   if (typeof fn === 'function') {
     return array1d(m, function(i) {
@@ -54,6 +81,14 @@ function array2d(m, n, fn) {
 }
 _.array2d = array2d;
 
+/**
+ * Return a new vector that embeded in new dimension.
+ * @example [1,2], 3 -> [1,2,0]
+ * @example [0], 3 -> [0,0,0]
+ * @param {Array} vec
+ * @param {Number} dim
+ * @returns {Array}
+ */
 function embed(vec, dim) {
   var i, len, out;
   if (_.isArray(vec) && typeof dim === 'number') {
@@ -66,7 +101,12 @@ function embed(vec, dim) {
 _.embed = embed;
 
 
-// a and b are array of numbers in same dimension.
+/**
+ * Compare two array lexically.
+ * @param {Array} a - first array.
+ * @param {Array} b - second array.
+ * @returns {Number}
+ */
 function byLexical(a, b) {
   var i = 0, l = a.length, res;
   while (i < l) {
@@ -78,6 +118,12 @@ function byLexical(a, b) {
 }
 _.byLexical = byLexical;
 
+/**
+ * Returns a new array that roated by towards left by given offset.
+ * @param {Array} arr
+ * @param {Integer} offset
+ * @returns {Array} - new rotated array.
+ */
 function rotateLeft(arr, offset) {
   if (typeof offset === 'undefined')
     throw new Error('rotateLeft(): no offset specified.');
@@ -91,27 +137,59 @@ function rotateLeft(arr, offset) {
   }
   return out;
 }
+
+/**
+ * Returns a new array that roated by towards right by given offset.
+ * @param {Array} arr
+ * @param {Integer} offset
+ * @returns {Array} - new rotated array.
+ */
 function rotateRight(arr, offset) { return rotateLeft(arr, -offset); }
 _.rotateLeft = rotateLeft;
 _.rotateRight = rotateRight;
 
-function minIndex(vec) {
-  return _.reduce(vec, function(sofar, x, i) {
-    if (x < sofar.value) {
-      sofar.value = x;
-      sofar.index = i;
-    }
-    return sofar;
-  }, {
-    value: Infinity,
-    index: -1
-  }).index;
+/**
+ * Returns the index of the smallest value.
+ * @param {Array} vec
+ * @param {CompareFn|undefined} cmp
+ * @returns {Index}
+ */
+function minIndex(vec, cmp) {
+  if (typeof cmp === 'function') {
+    return _.reduce(vec, function(sofar, x, i) {
+      if (cmp(x, sofar.value) < 0) {
+        sofar.value = x;
+        sofar.index = i;
+      }
+      return sofar;
+    }, {
+      value: Infinity,
+      index: -1
+    }).index;
+  } else {
+    return _.reduce(vec, function(sofar, x, i) {
+      if (x < sofar.value) {
+        sofar.value = x;
+        sofar.index = i;
+      }
+      return sofar;
+    }, {
+      value: Infinity,
+      index: -1
+    }).index;
+  }
 }
 _.minIndex = minIndex;
 
-function isIterator(iter) {
-  return iter && typeof iter.hasNext === 'function' &&
-    typeof iter.next === 'function';
+/**
+ * Check whether an object is an iterator. An iterator must implement
+ * both hasNext() and next() method.
+ * @param {Any} obj
+ * @returns {Boolean}
+ */
+function isIterator(obj) {
+  return obj && typeof obj.hasNext === 'function' &&
+    typeof obj.next === 'function';
 }
 _.isIterator = isIterator;
 
@@ -120,6 +198,11 @@ _.noopIterator = {
   next: function() { return null; }
 };
 
+/**
+ * Construct an js array from iterator.
+ * @param {Iterator} iter
+ * @returns {Array}
+ */
 function listFromIterator(iter) {
   var out = [];
   while (iter.hasNext()) out.push(iter.next());
@@ -127,6 +210,11 @@ function listFromIterator(iter) {
 }
 _.listFromIterator = listFromIterator;
 
+/**
+ * Return a iterator of the list.
+ * @param {Array} lst
+ * @returns {Iterator}
+ */
 function iteratorFromList(lst) {
   if (!_.isArray(lst)) {
     throw new Error('iteratorFromList(lst): lst must be an array.');
@@ -140,6 +228,10 @@ function iteratorFromList(lst) {
 }
 _.iteratorFromList = iteratorFromList;
 
+/**
+ * Returns a unique identifier.
+ * @returns {String}
+ */
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -148,10 +240,16 @@ function uuid() {
 }
 _.uuid = uuid;
 
-
-function normalizedCell(cell) {
-  var offset = minIndex(cell);
-  return rotateLeft(cell, offset);
+/**
+ * Return a normalized connectivity list by rotating the original one
+ * so that the smallest index is the first element. Useful when check
+ * whether two cells are the same.
+ * @param {ConnectivityList} conn - Connectivity list of cell.
+ * @returns {ConnectivityList}
+ */
+function normalizedCell(conn) {
+  var offset = minIndex(conn);
+  return rotateLeft(conn, offset);
 }
 _.normalizedCell = normalizedCell;
 
@@ -237,6 +335,7 @@ function matrixOfDimension(m, n, msg) {
     }
   }, msg);
 };
+assert.matrixOfDimension = matrixOfDimension;
 
 _.contracts.matrixOfDimension = matrixOfDimension;
 
@@ -249,6 +348,7 @@ function isMatrixOfDimension(mat, m, n) {
   return true;
 }
 _.isMatrixOfDimension = isMatrixOfDimension;
+check.matrixOfDimension = isMatrixOfDimension;
 
 function vectorOfDimension(n, msg) {
   if (n !== '*') assert.positive(n);
@@ -265,7 +365,7 @@ function vectorOfDimension(n, msg) {
   }, msg);
 
 }
-
+assert.vectorOfDimension = vectorOfDimension;
 _.contracts.vectorOfDimension = vectorOfDimension;
 
 
@@ -278,6 +378,7 @@ function isVectorOfDimension(vector, n) {
   return true;
 }
 _.isVectorOfDimension = isVectorOfDimension;
+check.vectorOfDimension = vectorOfDimension;
 
 
 module.exports = exports = _;
