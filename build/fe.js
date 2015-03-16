@@ -80,36 +80,32 @@ var fe =
 
 	/*global require*/
 
+	/** @module utils */
+	/** @namespace utils */
+
 	// var _ = require('highland');
 	var _ = __webpack_require__(24);
-	var numeric = __webpack_require__(25);
+	_.assign(exports, _);
 
-	var conflicts = [
-	  'all',
-	  'any',
-	  'clone',
-	  'identity',
-	  'isFinite',
-	  'isNaN',
-	  'max',
-	  'min',
-	  'random'
-	];
+	exports.Bimap = __webpack_require__(2).Bimap;
 
-	// TODO: do not mount numeric directly under _ namespace.
-	_(numeric)
-	  .keys()
-	  .difference(conflicts)
-	  .forEach(function(method) {
-	    _[method] = numeric[method];
-	  });
+	exports.Bipartite= __webpack_require__(3).Bipartite;
 
-	_.numeric = numeric;
+	exports.SetStore = __webpack_require__(4).SetStore;
 
-	_.Bimap = __webpack_require__(2).Bimap;
-	_.Bipartite= __webpack_require__(3).Bipartite;
-	_.SetStore = __webpack_require__(4).SetStore;
+	/**
+	 * @callback array1d~Generator
+	 * @param {Number} i - index, starts from 0.
+	 * @returns {Any}
+	 */
 
+	/**
+	 * Returns a 1d js array by given dimension and generating function.
+	 * @function
+	 * @param {Number} m - length.
+	 * @param {array1d~Generator|Any} fn - Generation function or constant value.
+	 * @returns {Array}
+	 */
 	function array1d(m, fn) {
 	  if (typeof fn === 'function') {
 	    return Array.apply(null, Array(m)).map(function(x, i) { return fn(i); });
@@ -117,8 +113,23 @@ var fe =
 	    return Array.apply(null, Array(m)).map(function() { return fn; });
 	  }
 	}
-	_.array1d = array1d;
+	exports.array1d = array1d;
 
+	/**
+	 * @callback array2d~Generator
+	 * @param {Number} i - row index, starts from 0.
+	 * @param {Number} j - column index, starts from 1.
+	 * @returns {Any}
+	 */
+
+	/**
+	 * Returns a 2d js array by given dimension and generating function.
+	 * @static
+	 * @param {Number} m - number of rows.
+	 * @param {Number} n - number of columns.
+	 * @param {array2d~Generator|Any} fn - Generation function or constant value.
+	 * @returns {Array}
+	 */
 	function array2d(m, n, fn) {
 	  if (typeof fn === 'function') {
 	    return array1d(m, function(i) {
@@ -132,8 +143,16 @@ var fe =
 	    });
 	  }
 	}
-	_.array2d = array2d;
+	exports.array2d = array2d;
 
+	/**
+	 * Return a new vector that embeded in new dimension.
+	 * @example [1,2], 3 -> [1,2,0]
+	 * @example [0], 3 -> [0,0,0]
+	 * @param {Array} vec
+	 * @param {Number} dim
+	 * @returns {Array}
+	 */
 	function embed(vec, dim) {
 	  var i, len, out;
 	  if (_.isArray(vec) && typeof dim === 'number') {
@@ -143,10 +162,15 @@ var fe =
 	  }
 	  throw new Error('embed(vec, dim): vec must be a Javascript array.');
 	}
-	_.embed = embed;
+	exports.embed = embed;
 
 
-	// a and b are array of numbers in same dimension.
+	/**
+	 * Compare two array lexically.
+	 * @param {Array} a - first array.
+	 * @param {Array} b - second array.
+	 * @returns {Number}
+	 */
 	function byLexical(a, b) {
 	  var i = 0, l = a.length, res;
 	  while (i < l) {
@@ -156,8 +180,14 @@ var fe =
 	  }
 	  return res;
 	}
-	_.byLexical = byLexical;
+	exports.byLexical = byLexical;
 
+	/**
+	 * Returns a new array that roated by towards left by given offset.
+	 * @param {Array} arr
+	 * @param {Integer} offset
+	 * @returns {Array} - new rotated array.
+	 */
 	function rotateLeft(arr, offset) {
 	  if (typeof offset === 'undefined')
 	    throw new Error('rotateLeft(): no offset specified.');
@@ -171,42 +201,84 @@ var fe =
 	  }
 	  return out;
 	}
+
+	/**
+	 * Returns a new array that roated by towards right by given offset.
+	 * @param {Array} arr
+	 * @param {Integer} offset
+	 * @returns {Array} - new rotated array.
+	 */
 	function rotateRight(arr, offset) { return rotateLeft(arr, -offset); }
-	_.rotateLeft = rotateLeft;
-	_.rotateRight = rotateRight;
+	exports.rotateLeft = rotateLeft;
+	exports.rotateRight = rotateRight;
 
-	function minIndex(vec) {
-	  return _.reduce(vec, function(sofar, x, i) {
-	    if (x < sofar.value) {
-	      sofar.value = x;
-	      sofar.index = i;
-	    }
-	    return sofar;
-	  }, {
-	    value: Infinity,
-	    index: -1
-	  }).index;
+	/**
+	 * Returns the index of the smallest value.
+	 * @param {Array} vec
+	 * @param {CompareFn|undefined} cmp
+	 * @returns {Index}
+	 */
+	function minIndex(vec, cmp) {
+	  if (typeof cmp === 'function') {
+	    return _.reduce(vec, function(sofar, x, i) {
+	      if (cmp(x, sofar.value) < 0) {
+	        sofar.value = x;
+	        sofar.index = i;
+	      }
+	      return sofar;
+	    }, {
+	      value: Infinity,
+	      index: -1
+	    }).index;
+	  } else {
+	    return _.reduce(vec, function(sofar, x, i) {
+	      if (x < sofar.value) {
+	        sofar.value = x;
+	        sofar.index = i;
+	      }
+	      return sofar;
+	    }, {
+	      value: Infinity,
+	      index: -1
+	    }).index;
+	  }
 	}
-	_.minIndex = minIndex;
+	exports.minIndex = minIndex;
 
-	function isIterator(iter) {
-	  return iter && typeof iter.hasNext === 'function' &&
-	    typeof iter.next === 'function';
+	/**
+	 * Check whether an object is an iterator. An iterator must implement
+	 * both hasNext() and next() method.
+	 * @param {Any} obj
+	 * @returns {Boolean}
+	 */
+	function isIterator(obj) {
+	  return obj && typeof obj.hasNext === 'function' &&
+	    typeof obj.next === 'function';
 	}
-	_.isIterator = isIterator;
+	exports.isIterator = isIterator;
 
-	_.noopIterator = {
+	exports.noopIterator = {
 	  hasNext: function() { return false; },
 	  next: function() { return null; }
 	};
 
+	/**
+	 * Construct an js array from iterator.
+	 * @param {Iterator} iter
+	 * @returns {Array}
+	 */
 	function listFromIterator(iter) {
 	  var out = [];
 	  while (iter.hasNext()) out.push(iter.next());
 	  return out;
 	}
-	_.listFromIterator = listFromIterator;
+	exports.listFromIterator = listFromIterator;
 
+	/**
+	 * Return a iterator of the list.
+	 * @param {Array} lst
+	 * @returns {Iterator}
+	 */
 	function iteratorFromList(lst) {
 	  if (!_.isArray(lst)) {
 	    throw new Error('iteratorFromList(lst): lst must be an array.');
@@ -218,35 +290,46 @@ var fe =
 	    next: function() { return lst[i++]; }
 	  };
 	}
-	_.iteratorFromList = iteratorFromList;
+	exports.iteratorFromList = iteratorFromList;
 
+	/**
+	 * Returns a unique identifier.
+	 * @returns {String}
+	 */
 	function uuid() {
 	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
 	    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
 	    return v.toString(16);
 	  });
 	}
-	_.uuid = uuid;
+	exports.uuid = uuid;
 
-
-	function normalizedCell(cell) {
-	  var offset = minIndex(cell);
-	  return rotateLeft(cell, offset);
+	/**
+	 * Return a normalized connectivity list by rotating the original one
+	 * so that the smallest index is the first element. Useful when check
+	 * whether two cells are the same.
+	 * @function utils.normalizedCell
+	 * @param {ConnectivityList} conn - Connectivity list of cell.
+	 * @returns {ConnectivityList}
+	 */
+	function normalizedCell(conn) {
+	  var offset = minIndex(conn);
+	  return rotateLeft(conn, offset);
 	}
-	_.normalizedCell = normalizedCell;
+	exports.normalizedCell = normalizedCell;
 
 
 	// Type checking & contracts:
-	var check = __webpack_require__(26);
+	var check = __webpack_require__(25);
 	var assert = __webpack_require__(23);
 
-	_._env = 'dev';
+	exports._env = 'dev';
 
 	function noop() {}
-	_.noop = noop;
+	exports.noop = noop;
 
 	function defineContract(c, whatsWrong) {
-	  if (_._env === 'dev') {
+	  if (exports._env === 'dev') {
 	    return function() {
 	      try {
 	        c.apply(null, arguments);
@@ -288,12 +371,19 @@ var fe =
 	assert.assigned = check.assert.assigned;
 	assert.boolean = check.assert.boolean;
 
-	_.check = check;
-	_.assert = assert;
-	_.defineContract = defineContract;
+	exports.check = check;
+	exports.assert = assert;
+	exports.defineContract = defineContract;
 
-	_.contracts = {};
+	exports.contracts = {};
 
+	/**
+	 * Returns a contract of m by n matrix.
+	 * @param {Number} m
+	 * @param {Number} n
+	 * @param {String} msg
+	 * @returns {Contract}
+	 */
 	function matrixOfDimension(m, n, msg) {
 	  if (m !== '*') assert.positive(m);
 	  if (n !== '*') assert.positive(n);
@@ -317,9 +407,18 @@ var fe =
 	    }
 	  }, msg);
 	};
+	assert.matrixOfDimension = matrixOfDimension;
 
-	_.contracts.matrixOfDimension = matrixOfDimension;
+	exports.contracts.matrixOfDimension = matrixOfDimension;
 
+
+	/**
+	 * Check whether an object is a matrix of m by n.
+	 * @param {Any} mat
+	 * @param {Number} m
+	 * @param {Number} n
+	 * @returns {Boolean}
+	 */
 	function isMatrixOfDimension(mat, m, n) {
 	  try {
 	    matrixOfDimension(m, n)(mat);
@@ -328,8 +427,16 @@ var fe =
 	  }
 	  return true;
 	}
-	_.isMatrixOfDimension = isMatrixOfDimension;
+	exports.isMatrixOfDimension = isMatrixOfDimension;
+	check.matrixOfDimension = isMatrixOfDimension;
 
+
+	/**
+	 * Returns a contract of m-D vector
+	 * @param {Number} m
+	 * @param {String} msg
+	 * @returns {Contract}
+	 */
 	function vectorOfDimension(n, msg) {
 	  if (n !== '*') assert.positive(n);
 	  if (!msg) msg = 'input is not a vector of ' + n + ' dimension.';
@@ -345,10 +452,15 @@ var fe =
 	  }, msg);
 
 	}
+	assert.vectorOfDimension = vectorOfDimension;
+	exports.contracts.vectorOfDimension = vectorOfDimension;
 
-	_.contracts.vectorOfDimension = vectorOfDimension;
-
-
+	/**
+	 * Check whether an object is a vector of length m.
+	 * @param {Any} vec
+	 * @param {Number} m
+	 * @returns {Boolean}
+	 */
 	function isVectorOfDimension(vector, n) {
 	  try {
 	    vectorOfDimension(n)(vector);
@@ -357,10 +469,8 @@ var fe =
 	  }
 	  return true;
 	}
-	_.isVectorOfDimension = isVectorOfDimension;
-
-
-	module.exports = exports = _;
+	exports.isVectorOfDimension = isVectorOfDimension;
+	check.vectorOfDimension = vectorOfDimension;
 
 
 /***/ },
@@ -2123,11 +2233,13 @@ var fe =
 	var array2d = _.array2d;
 	var listFromIterator = _.listFromIterator;
 
-	var numeric = __webpack_require__(25);
+	var numeric = __webpack_require__(26);
 	var ccsSparse = numeric.ccsSparse;
 	var ccsFull = numeric.ccsFull;
 	var ccsLUP = numeric.ccsLUP;
 	var ccsLUPSolve = numeric.ccsLUPSolve;
+
+	_.assign(exports, numeric);
 
 	function norm(x) {
 	  return Math.sqrt(numeric.sum(numeric.pow(x, 2)));
@@ -2165,7 +2277,7 @@ var fe =
 	}
 	exports.ix = ix;
 
-	function ixUpdate(A, rows, cols, val) {
+	function ixUpdate_(A, rows, cols, val) {
 	  // check A, rows, cols
 	  var mA = size(A, 1), nA = size(A, 2);
 	  if (rows === ':') rows = array1d(mA, function(i) { return i+1; });
@@ -2175,7 +2287,7 @@ var fe =
 	  if (typeof val === 'number')
 	    val = array2d(m, n, val);
 
-	  var out = cloneDeep(A);
+	  var out = A;
 	  rows.forEach(function(row, i) {
 	    var rowIndx = row - 1;
 	    cols.forEach(function(col, j) {
@@ -2185,6 +2297,13 @@ var fe =
 	  });
 	  return out;
 	}
+	exports.ixUpdate_ = ixUpdate_;
+
+	function ixUpdate(A, rows, cols, val) {
+	  var copy = cloneDeep(A);
+	  return ixUpdate_(copy, rows, cols, val);
+	}
+
 	exports.ixUpdate = ixUpdate;
 
 	function colon(from, to, step) {
@@ -2676,9 +2795,7 @@ var fe =
 	}
 	exports.eye = eye;
 
-
 	exports.SparseVector = SparseVector;
-	_.assign(exports, numeric);
 
 
 /***/ },
@@ -2719,6 +2836,9 @@ var fe =
 	//   PointSet::prod(other)
 
 	var _ = __webpack_require__(1);
+	var numeric = __webpack_require__(6);
+	var norm2 = numeric.norm2;
+	var sub = numeric.sub;
 
 	// Importance to understand the dimension of the pointset (rn) and
 	// the size of the point set is different concept.
@@ -2895,7 +3015,7 @@ var fe =
 	  var precision = aPrecision || PointSet.DEFAULT_PRECISION;
 	  if (_.isArray(point) && point.length === this.rn) {
 	    return null !== this.findOne(function(p) {
-	      return _.norm2(_.sub(p, point)) < precision;
+	      return norm2(sub(p, point)) < precision;
 	    });
 	  }
 	  return false;
@@ -2906,7 +3026,7 @@ var fe =
 	  var precision = aPrecision || PointSet.DEFAULT_PRECISION;
 	  var lst = [];
 	  this.forEach(function(p0) {
-	    var tooClose = _.any(lst, function(p1) { return _.norm2(p0, p1) < precision; });
+	    var tooClose = _.any(lst, function(p1) { return norm2(p0, p1) < precision; });
 	    if (!tooClose) lst.push(p0);
 	  });
 	  return new PointSet(lst, this.rn);
@@ -5025,11 +5145,12 @@ var fe =
 	var check = _.check;
 	var matrixOfDimension = _.contracts.matrixOfDimension;
 	var mat6x6 = matrixOfDimension(6, 6);
-	var diag = _.numeric.diag;
-	var transpose = _.numeric.transpose;
-	var add = _.numeric.add;
-	var dot = _.numeric.dot;
-	var mul = _.numeric.mul;
+	var numeric = __webpack_require__(6);
+	var diag = numeric.diag;
+	var transpose = numeric.transpose;
+	var add = numeric.add;
+	var dot = numeric.dot;
+	var mul = numeric.mul;
 
 	function MaterialProperty(props) {
 	  this._rho = (props && typeof props.rho === 'number') ? props.rho : 1.0;
@@ -13464,6 +13585,608 @@ var fe =
 /* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_RESULT__;/**
+	 * This module exports functions for checking types
+	 * and throwing exceptions.
+	 */
+
+	/*globals define, module */
+
+	(function (globals) {
+	    'use strict';
+
+	    var messages, predicates, functions, assert, not, maybe, either;
+
+	    messages = {
+	        like: 'Invalid type',
+	        instance: 'Invalid type',
+	        emptyObject: 'Invalid object',
+	        object: 'Invalid object',
+	        assigned: 'Invalid value',
+	        undefined: 'Invalid value',
+	        null: 'Invalid value',
+	        length: 'Invalid length',
+	        array: 'Invalid array',
+	        date: 'Invalid date',
+	        fn: 'Invalid function',
+	        webUrl: 'Invalid URL',
+	        unemptyString: 'Invalid string',
+	        string: 'Invalid string',
+	        odd: 'Invalid number',
+	        even: 'Invalid number',
+	        positive: 'Invalid number',
+	        negative: 'Invalid number',
+	        integer: 'Invalid number',
+	        number: 'Invalid number',
+	        boolean: 'Invalid boolean'
+	    };
+
+	    predicates = {
+	        like: like,
+	        instance: instance,
+	        emptyObject: emptyObject,
+	        object: object,
+	        assigned: assigned,
+	        undefined: isUndefined,
+	        null: isNull,
+	        length: length,
+	        array: array,
+	        date: date,
+	        function: isFunction,
+	        webUrl: webUrl,
+	        unemptyString: unemptyString,
+	        string: string,
+	        odd: odd,
+	        even: even,
+	        positive: positive,
+	        negative: negative,
+	        integer : integer,
+	        number: number,
+	        boolean: boolean
+	    };
+
+	    functions = {
+	        apply: apply,
+	        map: map,
+	        all: all,
+	        any: any
+	    };
+
+	    functions = mixin(functions, predicates);
+	    assert = createModifiedPredicates(assertModifier);
+	    not = createModifiedPredicates(notModifier);
+	    maybe = createModifiedPredicates(maybeModifier);
+	    either = createModifiedPredicates(eitherModifier);
+	    assert.not = createModifiedFunctions(assertModifier, not);
+	    assert.maybe = createModifiedFunctions(assertModifier, maybe);
+	    assert.either = createModifiedFunctions(assertEitherModifier, predicates);
+
+	    exportFunctions(mixin(functions, {
+	        assert: assert,
+	        not: not,
+	        maybe: maybe,
+	        either: either
+	    }));
+
+	    /**
+	     * Public function `like`.
+	     *
+	     * Tests whether an object 'quacks like a duck'.
+	     * Returns `true` if the first argument has all of
+	     * the properties of the second, archetypal argument
+	     * (the 'duck'). Returns `false` otherwise. If either
+	     * argument is not an object, an exception is thrown.
+	     *
+	     */
+	    function like (data, duck) {
+	        var name;
+
+	        assert.object(data);
+	        assert.object(duck);
+
+	        for (name in duck) {
+	            if (duck.hasOwnProperty(name)) {
+	                if (data.hasOwnProperty(name) === false || typeof data[name] !== typeof duck[name]) {
+	                    return false;
+	                }
+
+	                if (object(data[name]) && like(data[name], duck[name]) === false) {
+	                    return false;
+	                }
+	            }
+	        }
+
+	        return true;
+	    }
+
+	    /**
+	     * Public function `instance`.
+	     *
+	     * Returns `true` if an object is an instance of a prototype,
+	     * `false` otherwise.
+	     *
+	     */
+	    function instance (data, prototype) {
+	        if (data && isFunction(prototype) && data instanceof prototype) {
+	            return true;
+	        }
+
+	        return false;
+	    }
+
+	    /**
+	     * Public function `emptyObject`.
+	     *
+	     * Returns `true` if something is an empty object,
+	     * `false` otherwise.
+	     *
+	     */
+	    function emptyObject (data) {
+	        return object(data) && Object.keys(data).length === 0;
+	    }
+
+	    /**
+	     * Public function `object`.
+	     *
+	     * Returns `true` if something is a plain-old JS object,
+	     * `false` otherwise.
+	     *
+	     */
+	    function object (data) {
+	        return assigned(data) && Object.prototype.toString.call(data) === '[object Object]';
+	    }
+
+	    /**
+	     * Public function `assigned`.
+	     *
+	     * Returns `true` if something is not null or undefined,
+	     * `false` otherwise.
+	     *
+	     */
+	    function assigned (data) {
+	        return !isUndefined(data) && !isNull(data);
+	    }
+
+	    /**
+	     * Public function `undefined`.
+	     *
+	     * Returns `true` if something is undefined,
+	     * `false` otherwise.
+	     *
+	     */
+	    function isUndefined (data) {
+	        return data === undefined;
+	    }
+
+	    /**
+	     * Public function `null`.
+	     *
+	     * Returns `true` if something is null,
+	     * `false` otherwise.
+	     *
+	     */
+	    function isNull (data) {
+	        return data === null;
+	    }
+
+	    /**
+	     * Public function `length`.
+	     *
+	     * Returns `true` if something is has a length property
+	     * that equals `value`, `false` otherwise.
+	     *
+	     */
+	    function length (data, value) {
+	        assert.not.undefined(value);
+
+	        return assigned(data) && data.length === value;
+	    }
+
+	    /**
+	     * Public function `array`.
+	     *
+	     * Returns `true` something is an array,
+	     * `false` otherwise.
+	     *
+	     */
+	    function array (data) {
+	        return Array.isArray(data);
+	    }
+
+	    /**
+	     * Public function `date`.
+	     *
+	     * Returns `true` something is a valid date,
+	     * `false` otherwise.
+	     *
+	     */
+	    function date (data) {
+	        return Object.prototype.toString.call(data) === '[object Date]' &&
+	            !isNaN(data.getTime());
+	    }
+
+	    /**
+	     * Public function `function`.
+	     *
+	     * Returns `true` if something is function,
+	     * `false` otherwise.
+	     *
+	     */
+	    function isFunction (data) {
+	        return typeof data === 'function';
+	    }
+
+	    /**
+	     * Public function `webUrl`.
+	     *
+	     * Returns `true` if something is an HTTP or HTTPS URL,
+	     * `false` otherwise.
+	     *
+	     */
+	    function webUrl (data) {
+	        return unemptyString(data) && /^(https?:)?\/\/([\w-\.~:@]+)(\/[\w-\.~\/\?#\[\]&\(\)\*\+,;=%]*)?$/.test(data);
+	    }
+
+	    /**
+	     * Public function `unemptyString`.
+	     *
+	     * Returns `true` if something is a non-empty string, `false`
+	     * otherwise.
+	     *
+	     */
+	    function unemptyString (data) {
+	        return string(data) && data !== '';
+	    }
+
+	    /**
+	     * Public function `string`.
+	     *
+	     * Returns `true` if something is a string, `false` otherwise.
+	     *
+	     */
+	    function string (data) {
+	        return typeof data === 'string';
+	    }
+
+	    /**
+	     * Public function `odd`.
+	     *
+	     * Returns `true` if something is an odd number,
+	     * `false` otherwise.
+	     *
+	     */
+	    function odd (data) {
+	        return integer(data) && !even(data);
+	    }
+
+	    /**
+	     * Public function `even`.
+	     *
+	     * Returns `true` if something is an even number,
+	     * `false` otherwise.
+	     *
+	     */
+	    function even (data) {
+	        return number(data) && data % 2 === 0;
+	    }
+
+	    /**
+	     * Public function `integer`.
+	     *
+	     * Returns `true` if something is an integer,
+	     * `false` otherwise.
+	     *
+	     */
+	    function integer (data) {
+	        return number(data) && data % 1 === 0;
+	    }
+
+	    /**
+	     * Public function `positive`.
+	     *
+	     * Returns `true` if something is a positive number,
+	     * `false` otherwise.
+	     *
+	     */
+	    function positive (data) {
+	        return number(data) && data > 0;
+	    }
+
+	    /**
+	     * Public function `negative`.
+	     *
+	     * Returns `true` if something is a negative number,
+	     * `false` otherwise.
+	     *
+	     * @param data          The thing to test.
+	     */
+	    function negative (data) {
+	        return number(data) && data < 0;
+	    }
+
+	    /**
+	     * Public function `number`.
+	     *
+	     * Returns `true` if data is a number,
+	     * `false` otherwise.
+	     *
+	     */
+	    function number (data) {
+	        return typeof data === 'number' && isNaN(data) === false &&
+	               data !== Number.POSITIVE_INFINITY &&
+	               data !== Number.NEGATIVE_INFINITY;
+	    }
+
+	    /**
+	     * Public function `boolean`.
+	     *
+	     * Returns `true` if data is a boolean value,
+	     * `false` otherwise.
+	     *
+	     */
+	    function boolean (data) {
+	        return data === false || data === true;
+	    }
+
+	    /**
+	     * Public function `apply`.
+	     *
+	     * Maps each value from the data to the corresponding predicate and returns
+	     * the result array. If the same function is to be applied across all of the
+	     * data, a single predicate function may be passed in.
+	     *
+	     */
+	    function apply (data, predicates) {
+	        assert.array(data);
+
+	        if (isFunction(predicates)) {
+	            return data.map(function (value) {
+	                return predicates(value);
+	            });
+	        }
+
+	        assert.array(predicates);
+	        assert.length(data, predicates.length);
+
+	        return data.map(function (value, index) {
+	            return predicates[index](value);
+	        });
+	    }
+
+	    /**
+	     * Public function `map`.
+	     *
+	     * Maps each value from the data to the corresponding predicate and returns
+	     * the result object. Supports nested objects.
+	     *
+	     */
+	    function map (data, predicates) {
+	        var result = {}, keys;
+
+	        assert.object(data);
+	        assert.object(predicates);
+
+	        keys = Object.keys(predicates);
+	        assert.length(Object.keys(data), keys.length);
+
+	        keys.forEach(function (key) {
+	            var predicate = predicates[key];
+
+	            if (isFunction(predicate)) {
+	                result[key] = predicate(data[key]);
+	            } else if (object(predicate)) {
+	                result[key] = map(data[key], predicate);
+	            }
+	        });
+
+	        return result;
+	    }
+
+	    /**
+	     * Public function `all`
+	     *
+	     * Check that all boolean values are true
+	     * in an array (returned from `apply`)
+	     * or object (returned from `map`).
+	     *
+	     */
+	    function all (data) {
+	        if (array(data)) {
+	            return testArray(data, false);
+	        }
+
+	        assert.object(data);
+
+	        return testObject(data, false);
+	    }
+
+	    function testArray (data, result) {
+	        var i;
+
+	        for (i = 0; i < data.length; i += 1) {
+	            if (data[i] === result) {
+	                return result;
+	            }
+	        }
+
+	        return !result;
+	    }
+
+	    function testObject (data, result) {
+	        var key, value;
+
+	        for (key in data) {
+	            if (data.hasOwnProperty(key)) {
+	                value = data[key];
+
+	                if (object(value) && testObject(value, result) === result) {
+	                    return result;
+	                }
+
+	                if (value === result) {
+	                    return result;
+	                }
+	            }
+	        }
+
+	        return !result;
+	    }
+
+	    /**
+	     * Public function `any`
+	     *
+	     * Check that at least one boolean value is true
+	     * in an array (returned from `apply`)
+	     * or object (returned from `map`).
+	     *
+	     */
+	    function any (data) {
+	        if (array(data)) {
+	            return testArray(data, true);
+	        }
+
+	        assert.object(data);
+
+	        return testObject(data, true);
+	    }
+
+	    function mixin (target, source) {
+	        Object.keys(source).forEach(function (key) {
+	            target[key] = source[key];
+	        });
+
+	        return target;
+	    }
+
+	    /**
+	     * Public modifier `assert`.
+	     *
+	     * Throws if `predicate` returns `false`.
+	     */
+	    function assertModifier (predicate, defaultMessage) {
+	        return function () {
+	            assertPredicate(predicate, arguments, defaultMessage);
+	        };
+	    }
+
+	    function assertPredicate (predicate, args, defaultMessage) {
+	        var message;
+
+	        if (!predicate.apply(null, args)) {
+	            message = args[args.length - 1];
+	            throw new Error(unemptyString(message) ? message : defaultMessage);
+	        }
+	    }
+
+	    function assertEitherModifier (predicate, defaultMessage) {
+	        return function () {
+	            var error;
+
+	            try {
+	                assertPredicate(predicate, arguments, defaultMessage);
+	            } catch (e) {
+	                error = e;
+	            }
+
+	            return {
+	                or: Object.keys(predicates).reduce(delayedAssert, {})
+	            };
+
+	            function delayedAssert (result, key) {
+	                result[key] = function () {
+	                    if (error && !predicates[key].apply(null, arguments)) {
+	                        throw error;
+	                    }
+	                };
+
+	                return result;
+	            }
+	        };
+	    }
+
+	    /**
+	     * Public modifier `not`.
+	     *
+	     * Negates `predicate`.
+	     */
+	    function notModifier (predicate) {
+	        return function () {
+	            return !predicate.apply(null, arguments);
+	        };
+	    }
+
+	    /**
+	     * Public modifier `maybe`.
+	     *
+	     * Returns `true` if predicate argument is  `null` or `undefined`,
+	     * otherwise propagates the return value from `predicate`.
+	     */
+	    function maybeModifier (predicate) {
+	        return function () {
+	            if (!assigned(arguments[0])) {
+	                return true;
+	            }
+
+	            return predicate.apply(null, arguments);
+	        };
+	    }
+
+	    /**
+	     * Public modifier `either`.
+	     *
+	     * Returns `true` if either predicate is true.
+	     */
+	    function eitherModifier (predicate) {
+	        return function () {
+	            var shortcut = predicate.apply(null, arguments);
+
+	            return {
+	                or: Object.keys(predicates).reduce(nopOrPredicate, {})
+	            };
+
+	            function nopOrPredicate (result, key) {
+	                result[key] = shortcut ? nop : predicates[key];
+	                return result;
+	            }
+	        };
+
+	        function nop () {
+	            return true;
+	        }
+	    }
+
+	    function createModifiedPredicates (modifier) {
+	        return createModifiedFunctions(modifier, predicates);
+	    }
+
+	    function createModifiedFunctions (modifier, functions) {
+	        var result = {};
+
+	        Object.keys(functions).forEach(function (key) {
+	            result[key] = modifier(functions[key], messages[key]);
+	        });
+
+	        return result;
+	    }
+
+	    function exportFunctions (functions) {
+	        if (true) {
+	            !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
+	                return functions;
+	            }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	        } else if (typeof module !== 'undefined' && module !== null && module.exports) {
+	            module.exports = functions;
+	        } else {
+	            globals.check = functions;
+	        }
+	    }
+	}(this));
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
 
 	var numeric = (false)?(function numeric() {}):(exports);
@@ -17890,608 +18613,6 @@ var fe =
 
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_RESULT__;/**
-	 * This module exports functions for checking types
-	 * and throwing exceptions.
-	 */
-
-	/*globals define, module */
-
-	(function (globals) {
-	    'use strict';
-
-	    var messages, predicates, functions, assert, not, maybe, either;
-
-	    messages = {
-	        like: 'Invalid type',
-	        instance: 'Invalid type',
-	        emptyObject: 'Invalid object',
-	        object: 'Invalid object',
-	        assigned: 'Invalid value',
-	        undefined: 'Invalid value',
-	        null: 'Invalid value',
-	        length: 'Invalid length',
-	        array: 'Invalid array',
-	        date: 'Invalid date',
-	        fn: 'Invalid function',
-	        webUrl: 'Invalid URL',
-	        unemptyString: 'Invalid string',
-	        string: 'Invalid string',
-	        odd: 'Invalid number',
-	        even: 'Invalid number',
-	        positive: 'Invalid number',
-	        negative: 'Invalid number',
-	        integer: 'Invalid number',
-	        number: 'Invalid number',
-	        boolean: 'Invalid boolean'
-	    };
-
-	    predicates = {
-	        like: like,
-	        instance: instance,
-	        emptyObject: emptyObject,
-	        object: object,
-	        assigned: assigned,
-	        undefined: isUndefined,
-	        null: isNull,
-	        length: length,
-	        array: array,
-	        date: date,
-	        function: isFunction,
-	        webUrl: webUrl,
-	        unemptyString: unemptyString,
-	        string: string,
-	        odd: odd,
-	        even: even,
-	        positive: positive,
-	        negative: negative,
-	        integer : integer,
-	        number: number,
-	        boolean: boolean
-	    };
-
-	    functions = {
-	        apply: apply,
-	        map: map,
-	        all: all,
-	        any: any
-	    };
-
-	    functions = mixin(functions, predicates);
-	    assert = createModifiedPredicates(assertModifier);
-	    not = createModifiedPredicates(notModifier);
-	    maybe = createModifiedPredicates(maybeModifier);
-	    either = createModifiedPredicates(eitherModifier);
-	    assert.not = createModifiedFunctions(assertModifier, not);
-	    assert.maybe = createModifiedFunctions(assertModifier, maybe);
-	    assert.either = createModifiedFunctions(assertEitherModifier, predicates);
-
-	    exportFunctions(mixin(functions, {
-	        assert: assert,
-	        not: not,
-	        maybe: maybe,
-	        either: either
-	    }));
-
-	    /**
-	     * Public function `like`.
-	     *
-	     * Tests whether an object 'quacks like a duck'.
-	     * Returns `true` if the first argument has all of
-	     * the properties of the second, archetypal argument
-	     * (the 'duck'). Returns `false` otherwise. If either
-	     * argument is not an object, an exception is thrown.
-	     *
-	     */
-	    function like (data, duck) {
-	        var name;
-
-	        assert.object(data);
-	        assert.object(duck);
-
-	        for (name in duck) {
-	            if (duck.hasOwnProperty(name)) {
-	                if (data.hasOwnProperty(name) === false || typeof data[name] !== typeof duck[name]) {
-	                    return false;
-	                }
-
-	                if (object(data[name]) && like(data[name], duck[name]) === false) {
-	                    return false;
-	                }
-	            }
-	        }
-
-	        return true;
-	    }
-
-	    /**
-	     * Public function `instance`.
-	     *
-	     * Returns `true` if an object is an instance of a prototype,
-	     * `false` otherwise.
-	     *
-	     */
-	    function instance (data, prototype) {
-	        if (data && isFunction(prototype) && data instanceof prototype) {
-	            return true;
-	        }
-
-	        return false;
-	    }
-
-	    /**
-	     * Public function `emptyObject`.
-	     *
-	     * Returns `true` if something is an empty object,
-	     * `false` otherwise.
-	     *
-	     */
-	    function emptyObject (data) {
-	        return object(data) && Object.keys(data).length === 0;
-	    }
-
-	    /**
-	     * Public function `object`.
-	     *
-	     * Returns `true` if something is a plain-old JS object,
-	     * `false` otherwise.
-	     *
-	     */
-	    function object (data) {
-	        return assigned(data) && Object.prototype.toString.call(data) === '[object Object]';
-	    }
-
-	    /**
-	     * Public function `assigned`.
-	     *
-	     * Returns `true` if something is not null or undefined,
-	     * `false` otherwise.
-	     *
-	     */
-	    function assigned (data) {
-	        return !isUndefined(data) && !isNull(data);
-	    }
-
-	    /**
-	     * Public function `undefined`.
-	     *
-	     * Returns `true` if something is undefined,
-	     * `false` otherwise.
-	     *
-	     */
-	    function isUndefined (data) {
-	        return data === undefined;
-	    }
-
-	    /**
-	     * Public function `null`.
-	     *
-	     * Returns `true` if something is null,
-	     * `false` otherwise.
-	     *
-	     */
-	    function isNull (data) {
-	        return data === null;
-	    }
-
-	    /**
-	     * Public function `length`.
-	     *
-	     * Returns `true` if something is has a length property
-	     * that equals `value`, `false` otherwise.
-	     *
-	     */
-	    function length (data, value) {
-	        assert.not.undefined(value);
-
-	        return assigned(data) && data.length === value;
-	    }
-
-	    /**
-	     * Public function `array`.
-	     *
-	     * Returns `true` something is an array,
-	     * `false` otherwise.
-	     *
-	     */
-	    function array (data) {
-	        return Array.isArray(data);
-	    }
-
-	    /**
-	     * Public function `date`.
-	     *
-	     * Returns `true` something is a valid date,
-	     * `false` otherwise.
-	     *
-	     */
-	    function date (data) {
-	        return Object.prototype.toString.call(data) === '[object Date]' &&
-	            !isNaN(data.getTime());
-	    }
-
-	    /**
-	     * Public function `function`.
-	     *
-	     * Returns `true` if something is function,
-	     * `false` otherwise.
-	     *
-	     */
-	    function isFunction (data) {
-	        return typeof data === 'function';
-	    }
-
-	    /**
-	     * Public function `webUrl`.
-	     *
-	     * Returns `true` if something is an HTTP or HTTPS URL,
-	     * `false` otherwise.
-	     *
-	     */
-	    function webUrl (data) {
-	        return unemptyString(data) && /^(https?:)?\/\/([\w-\.~:@]+)(\/[\w-\.~\/\?#\[\]&\(\)\*\+,;=%]*)?$/.test(data);
-	    }
-
-	    /**
-	     * Public function `unemptyString`.
-	     *
-	     * Returns `true` if something is a non-empty string, `false`
-	     * otherwise.
-	     *
-	     */
-	    function unemptyString (data) {
-	        return string(data) && data !== '';
-	    }
-
-	    /**
-	     * Public function `string`.
-	     *
-	     * Returns `true` if something is a string, `false` otherwise.
-	     *
-	     */
-	    function string (data) {
-	        return typeof data === 'string';
-	    }
-
-	    /**
-	     * Public function `odd`.
-	     *
-	     * Returns `true` if something is an odd number,
-	     * `false` otherwise.
-	     *
-	     */
-	    function odd (data) {
-	        return integer(data) && !even(data);
-	    }
-
-	    /**
-	     * Public function `even`.
-	     *
-	     * Returns `true` if something is an even number,
-	     * `false` otherwise.
-	     *
-	     */
-	    function even (data) {
-	        return number(data) && data % 2 === 0;
-	    }
-
-	    /**
-	     * Public function `integer`.
-	     *
-	     * Returns `true` if something is an integer,
-	     * `false` otherwise.
-	     *
-	     */
-	    function integer (data) {
-	        return number(data) && data % 1 === 0;
-	    }
-
-	    /**
-	     * Public function `positive`.
-	     *
-	     * Returns `true` if something is a positive number,
-	     * `false` otherwise.
-	     *
-	     */
-	    function positive (data) {
-	        return number(data) && data > 0;
-	    }
-
-	    /**
-	     * Public function `negative`.
-	     *
-	     * Returns `true` if something is a negative number,
-	     * `false` otherwise.
-	     *
-	     * @param data          The thing to test.
-	     */
-	    function negative (data) {
-	        return number(data) && data < 0;
-	    }
-
-	    /**
-	     * Public function `number`.
-	     *
-	     * Returns `true` if data is a number,
-	     * `false` otherwise.
-	     *
-	     */
-	    function number (data) {
-	        return typeof data === 'number' && isNaN(data) === false &&
-	               data !== Number.POSITIVE_INFINITY &&
-	               data !== Number.NEGATIVE_INFINITY;
-	    }
-
-	    /**
-	     * Public function `boolean`.
-	     *
-	     * Returns `true` if data is a boolean value,
-	     * `false` otherwise.
-	     *
-	     */
-	    function boolean (data) {
-	        return data === false || data === true;
-	    }
-
-	    /**
-	     * Public function `apply`.
-	     *
-	     * Maps each value from the data to the corresponding predicate and returns
-	     * the result array. If the same function is to be applied across all of the
-	     * data, a single predicate function may be passed in.
-	     *
-	     */
-	    function apply (data, predicates) {
-	        assert.array(data);
-
-	        if (isFunction(predicates)) {
-	            return data.map(function (value) {
-	                return predicates(value);
-	            });
-	        }
-
-	        assert.array(predicates);
-	        assert.length(data, predicates.length);
-
-	        return data.map(function (value, index) {
-	            return predicates[index](value);
-	        });
-	    }
-
-	    /**
-	     * Public function `map`.
-	     *
-	     * Maps each value from the data to the corresponding predicate and returns
-	     * the result object. Supports nested objects.
-	     *
-	     */
-	    function map (data, predicates) {
-	        var result = {}, keys;
-
-	        assert.object(data);
-	        assert.object(predicates);
-
-	        keys = Object.keys(predicates);
-	        assert.length(Object.keys(data), keys.length);
-
-	        keys.forEach(function (key) {
-	            var predicate = predicates[key];
-
-	            if (isFunction(predicate)) {
-	                result[key] = predicate(data[key]);
-	            } else if (object(predicate)) {
-	                result[key] = map(data[key], predicate);
-	            }
-	        });
-
-	        return result;
-	    }
-
-	    /**
-	     * Public function `all`
-	     *
-	     * Check that all boolean values are true
-	     * in an array (returned from `apply`)
-	     * or object (returned from `map`).
-	     *
-	     */
-	    function all (data) {
-	        if (array(data)) {
-	            return testArray(data, false);
-	        }
-
-	        assert.object(data);
-
-	        return testObject(data, false);
-	    }
-
-	    function testArray (data, result) {
-	        var i;
-
-	        for (i = 0; i < data.length; i += 1) {
-	            if (data[i] === result) {
-	                return result;
-	            }
-	        }
-
-	        return !result;
-	    }
-
-	    function testObject (data, result) {
-	        var key, value;
-
-	        for (key in data) {
-	            if (data.hasOwnProperty(key)) {
-	                value = data[key];
-
-	                if (object(value) && testObject(value, result) === result) {
-	                    return result;
-	                }
-
-	                if (value === result) {
-	                    return result;
-	                }
-	            }
-	        }
-
-	        return !result;
-	    }
-
-	    /**
-	     * Public function `any`
-	     *
-	     * Check that at least one boolean value is true
-	     * in an array (returned from `apply`)
-	     * or object (returned from `map`).
-	     *
-	     */
-	    function any (data) {
-	        if (array(data)) {
-	            return testArray(data, true);
-	        }
-
-	        assert.object(data);
-
-	        return testObject(data, true);
-	    }
-
-	    function mixin (target, source) {
-	        Object.keys(source).forEach(function (key) {
-	            target[key] = source[key];
-	        });
-
-	        return target;
-	    }
-
-	    /**
-	     * Public modifier `assert`.
-	     *
-	     * Throws if `predicate` returns `false`.
-	     */
-	    function assertModifier (predicate, defaultMessage) {
-	        return function () {
-	            assertPredicate(predicate, arguments, defaultMessage);
-	        };
-	    }
-
-	    function assertPredicate (predicate, args, defaultMessage) {
-	        var message;
-
-	        if (!predicate.apply(null, args)) {
-	            message = args[args.length - 1];
-	            throw new Error(unemptyString(message) ? message : defaultMessage);
-	        }
-	    }
-
-	    function assertEitherModifier (predicate, defaultMessage) {
-	        return function () {
-	            var error;
-
-	            try {
-	                assertPredicate(predicate, arguments, defaultMessage);
-	            } catch (e) {
-	                error = e;
-	            }
-
-	            return {
-	                or: Object.keys(predicates).reduce(delayedAssert, {})
-	            };
-
-	            function delayedAssert (result, key) {
-	                result[key] = function () {
-	                    if (error && !predicates[key].apply(null, arguments)) {
-	                        throw error;
-	                    }
-	                };
-
-	                return result;
-	            }
-	        };
-	    }
-
-	    /**
-	     * Public modifier `not`.
-	     *
-	     * Negates `predicate`.
-	     */
-	    function notModifier (predicate) {
-	        return function () {
-	            return !predicate.apply(null, arguments);
-	        };
-	    }
-
-	    /**
-	     * Public modifier `maybe`.
-	     *
-	     * Returns `true` if predicate argument is  `null` or `undefined`,
-	     * otherwise propagates the return value from `predicate`.
-	     */
-	    function maybeModifier (predicate) {
-	        return function () {
-	            if (!assigned(arguments[0])) {
-	                return true;
-	            }
-
-	            return predicate.apply(null, arguments);
-	        };
-	    }
-
-	    /**
-	     * Public modifier `either`.
-	     *
-	     * Returns `true` if either predicate is true.
-	     */
-	    function eitherModifier (predicate) {
-	        return function () {
-	            var shortcut = predicate.apply(null, arguments);
-
-	            return {
-	                or: Object.keys(predicates).reduce(nopOrPredicate, {})
-	            };
-
-	            function nopOrPredicate (result, key) {
-	                result[key] = shortcut ? nop : predicates[key];
-	                return result;
-	            }
-	        };
-
-	        function nop () {
-	            return true;
-	        }
-	    }
-
-	    function createModifiedPredicates (modifier) {
-	        return createModifiedFunctions(modifier, predicates);
-	    }
-
-	    function createModifiedFunctions (modifier, functions) {
-	        var result = {};
-
-	        Object.keys(functions).forEach(function (key) {
-	            result[key] = modifier(functions[key], messages[key]);
-	        });
-
-	        return result;
-	    }
-
-	    function exportFunctions (functions) {
-	        if (true) {
-	            !(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
-	                return functions;
-	            }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	        } else if (typeof module !== 'undefined' && module !== null && module.exports) {
-	            module.exports = functions;
-	        } else {
-	            globals.check = functions;
-	        }
-	    }
-	}(this));
-
 
 /***/ },
 /* 27 */

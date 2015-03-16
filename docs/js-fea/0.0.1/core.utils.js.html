@@ -1,4 +1,87 @@
-/*global require*/
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>js-fea Source: core.utils.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+	
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<a class="brand" href="index.html">js-fea</a>
+			<ul class="nav">
+				
+				<li class="dropdown">
+					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="utils.html">utils</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="module-utils.html">utils</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+				<li class="dropdown">
+					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
+						class="caret"></b></a>
+
+					<ul class="dropdown-menu ">
+						
+						<li>
+							<a href="Field.html">Field</a>
+						</li>
+						
+
+					</ul>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+
+		
+			<div class="span12">
+				
+				<div id="main">
+					
+
+
+		<h1 class="page-title">Source: core.utils.js</h1>
+    
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">/*global require*/
 
 /** @module utils */
 /** @namespace utils */
@@ -75,9 +158,9 @@ exports.array2d = array2d;
  */
 function embed(vec, dim) {
   var i, len, out;
-  if (_.isArray(vec) && typeof dim === 'number') {
+  if (_.isArray(vec) &amp;&amp; typeof dim === 'number') {
     out = array1d(dim, 0.0);
-    for (i = 0, len = vec.length < dim ? vec.length : dim; i < len; ++i) out[i] = vec[i];
+    for (i = 0, len = vec.length &lt; dim ? vec.length : dim; i &lt; len; ++i) out[i] = vec[i];
     return out;
   }
   throw new Error('embed(vec, dim): vec must be a Javascript array.');
@@ -93,7 +176,7 @@ exports.embed = embed;
  */
 function byLexical(a, b) {
   var i = 0, l = a.length, res;
-  while (i < l) {
+  while (i &lt; l) {
     res = a[i] - b[i];
     if (res !== 0) return res;
     ++i;
@@ -115,7 +198,7 @@ function rotateLeft(arr, offset) {
   var len = arr.length;
   var out = new Array(len);
   var i = (len + (offset % len)) % len, j = 0;
-  while (j < len) {
+  while (j &lt; len) {
     out[j] = arr[(i+j) % len];
     ++j;
   }
@@ -141,7 +224,7 @@ exports.rotateRight = rotateRight;
 function minIndex(vec, cmp) {
   if (typeof cmp === 'function') {
     return _.reduce(vec, function(sofar, x, i) {
-      if (cmp(x, sofar.value) < 0) {
+      if (cmp(x, sofar.value) &lt; 0) {
         sofar.value = x;
         sofar.index = i;
       }
@@ -152,7 +235,7 @@ function minIndex(vec, cmp) {
     }).index;
   } else {
     return _.reduce(vec, function(sofar, x, i) {
-      if (x < sofar.value) {
+      if (x &lt; sofar.value) {
         sofar.value = x;
         sofar.index = i;
       }
@@ -172,7 +255,7 @@ exports.minIndex = minIndex;
  * @returns {Boolean}
  */
 function isIterator(obj) {
-  return obj && typeof obj.hasNext === 'function' &&
+  return obj &amp;&amp; typeof obj.hasNext === 'function' &amp;&amp;
     typeof obj.next === 'function';
 }
 exports.isIterator = isIterator;
@@ -206,7 +289,7 @@ function iteratorFromList(lst) {
 
   var i = 0, len = lst.length;
   return {
-    hasNext: function() { return i < len; },
+    hasNext: function() { return i &lt; len; },
     next: function() { return lst[i++]; }
   };
 }
@@ -218,7 +301,7 @@ exports.iteratorFromList = iteratorFromList;
  */
 function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+    var r = Math.random()*16|0, v = c == 'x' ? r : (r&amp;0x3|0x8);
     return v.toString(16);
   });
 }
@@ -239,7 +322,7 @@ function normalizedCell(conn) {
 exports.normalizedCell = normalizedCell;
 
 
-// Type checking & contracts:
+// Type checking &amp; contracts:
 var check = require('check-types');
 var assert = require('assert');
 
@@ -316,12 +399,12 @@ function matrixOfDimension(m, n, msg) {
     assert(mat.length === m, 'mat length ' + mat.length + ' is not '+ m);
 
     var i, j;
-    for (i = 0; i < m; ++i) {
+    for (i = 0; i &lt; m; ++i) {
       assert.array(mat[i], 'row ' + i + ' is not a JS array');
       if (n === '*') n = mat[i].length;
       assert(mat[i].length === n, 'row ' + i + ' has ' + mat[i].length + ' elements' +
              ' instead of ' + n);
-      for (j = 0; j < n; ++j) {
+      for (j = 0; j &lt; n; ++j) {
         assert.number(mat[i][j], 'mat(' + [i,j] + ') is not a number.');
       }
     }
@@ -366,7 +449,7 @@ function vectorOfDimension(n, msg) {
     assert(vec.length === n, 'vec length ' + vec.length + ' is not ' + n);
 
     var i;
-    for (i = 0; i < n; ++i)
+    for (i = 0; i &lt; n; ++i)
       assert.number(vec[i], 'vec(' + i + '): ' + vec[i] + ' is not a number.');
 
   }, msg);
@@ -391,3 +474,65 @@ function isVectorOfDimension(vector, n) {
 }
 exports.isVectorOfDimension = isVectorOfDimension;
 check.vectorOfDimension = vectorOfDimension;
+</pre>
+        </article>
+    </section>
+
+
+
+
+
+				</div>
+
+				<div class="clearfix"></div>
+				<footer>
+					
+					
+		<span class="copyright">
+		Li Ge Copyright 2015
+		</span>
+					<br />
+					
+		<span class="jsdoc-message">
+		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
+		on Sun Mar 15 2015 22:13:53 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		</span>
+				</footer>
+			</div>
+
+			
+			<br clear="both">
+		</div>
+
+	</div>
+	<script src="scripts/sunlight.js"></script>
+	<script src="scripts/sunlight.javascript.js"></script>
+	<script src="scripts/sunlight-plugin.doclinks.js"></script>
+	<script src="scripts/sunlight-plugin.linenumbers.js"></script>
+	<script src="scripts/sunlight-plugin.menu.js"></script>
+	<script src="scripts/jquery.min.js"></script>
+	<script src="scripts/jquery.scrollTo.js"></script>
+	<script src="scripts/jquery.localScroll.js"></script>
+	<script src="scripts/bootstrap-dropdown.js"></script>
+	<script src="scripts/toc.js"></script>
+
+
+	<script>  Sunlight.highlightAll({lineNumbers:true,  showMenu: true, enableDoclinks :true}); </script>
+
+	<script>
+		$( function () {
+			$( "#toc" ).toc( {
+				selectors   : "h1,h2,h3,h4",
+				showAndHide : false,
+				scrollTo    : 60
+			} );
+			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+
+		} );
+	</script>
+
+	
+
+</body>
+</html>
