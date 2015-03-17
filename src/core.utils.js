@@ -1,7 +1,6 @@
 /*global require*/
 
 /** @module utils */
-/** @namespace utils */
 
 // var _ = require('highland');
 var _ = require('lodash');
