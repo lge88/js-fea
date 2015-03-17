@@ -22,6 +22,7 @@ var nthColumn = numeric.nthColumn;
 var dot = numeric.dot;
 var mul = numeric.mul;
 var inv = numeric.inv;
+var det = numeric.det;
 var transpose = numeric.transpose;
 
 var feutils = require('./feutils');
@@ -654,6 +655,76 @@ exports.GCellSetManifold2.prototype.jacobianInDim = function(conn, N, J, x, dim)
   }
 };
 
+
+/**
+ * Geometry cell set of mainfold 3.
+ * @class
+ * @extends module:gcellset.GCellSet
+ */
+exports.GCellSetManifold3 = function GCellSetManifold3(options) {
+  GCellSet.call(this, options);
+};
+var GCellSetManifold3 = exports.GCellSetManifold3;
+GCellSetManifold3.prototype = Object.create(GCellSet.prototype);
+GCellSetManifold3.prototype.constructor = GCellSetManifold3;
+
+/**
+ * @override
+ * @returns {Int}
+ */
+exports.GCellSetManifold3.prototype.dim = function() { return 3; };
+
+/**
+ * Evaluate the manifold Jacobian.
+ * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+ * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {module:types.Matrix} J - Jacobian matrix.
+ * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @returns {Number}
+ */
+exports.GCellSetManifold3.prototype.jacobian = function(conn, N, J, x) {
+  var jac = this.jacobianVolumn(conn, N, J, x);
+  return jac;
+};
+
+/**
+ * Evaluate the volumn Jacobian.
+ * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+ * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {module:types.Matrix} J - Jacobian matrix.
+ * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @returns {Number}
+ */
+exports.GCellSetManifold3.prototype.jacobianVolumn = function(conn, N, J, x) {
+  var tmp = size(J), sdim = tmp[0], ntan = tmp[0];
+  var jac;
+  if (ntan === 3) {
+    jac = det(J);
+  } else {
+    throw new Error('GCellSetManifold3#jacobianVolumn(): incorrect' +
+                    ' size of tangents.');
+  }
+  return jac;
+};
+
+/**
+ * A convinient wrapper for jacobianVolumn.
+ * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+ * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {module:types.Matrix} J - Jacobian matrix.
+ * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @param {Int} dim - 3 (volumn).
+ * @returns {Number}
+ */
+exports.GCellSetManifold3.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+  switch (dim) {
+  case 3:
+    return this.jacobianVolumn(conn, N, J, x);
+  default:
+    throw new Error('GCellSetManifold3::jacobianInDim(): unsupported dim ' + dim);
+  }
+};
+
 /**
  * One-node point geometric cell set.
  * @class
@@ -880,5 +951,161 @@ exports.Q4.prototype.bfundpar = function(paramCoords) {
     [(1. + eta) * 0.25, (1. + xi) * 0.25],
     [-(1. + eta) * 0.25, (1. - xi) * 0.25]
   ];
+  return val;
+};
+
+
+/**
+ * Eight-node brick geometric cell set.
+ * @class
+ * @extends module:gcellset.GCellSetManifold3
+ * @param {module:types.H8InitOption} options
+ */
+exports.H8 = function H8(options) {
+  if (!options || !(options.conn || options.topology))
+    throw new Error('H8#constructor(options): options is not a valid' +
+                    ' H8InitOption');
+
+  if (options.conn) options.topology = hypercube(options.conn, 3);
+  GCellSetManifold3.call(this, options);
+};
+
+var H8 = exports.H8;
+H8.prototype = Object.create(GCellSetManifold3.prototype);
+H8.prototype.constructor = H8;
+
+/**
+ * {@link module:gcellset.GCellSet#cellSize}
+ * @override
+ */
+exports.H8.prototype.cellSize = function() { return 8; };
+
+/**
+ * {@link module:gcellset.GCellSet#type}
+ * @override
+ */
+exports.H8.prototype.type = function() { return 'H8'; };
+
+/**
+ * {@link module:gcellset.GCellSet#boundaryGCellSetConstructor}
+ * @override
+ */
+exports.H8.prototype.boundaryGCellSetConstructor = function() { return Q4; };
+
+/**
+ * {@link module:gcellset.GCellSet#triangles}
+ * @override
+ */
+exports.H8.prototype.triangles = function() {
+  var bricks = this._topology.getCellsInDim(3);
+  var triangles = [];
+
+  bricks.forEach(function(brick) {
+    // quad 0 1 2 3
+    var t1 = [brick[0], brick[3], brick[1]];
+    var t2 = [brick[1], brick[3], brick[2]];
+
+    // quad 0 1 5 4
+    var t3 = [brick[0], brick[1], brick[4]];
+    var t4 = [brick[1], brick[5], brick[4]];
+
+    // quad 1 2 6 5
+    var t5 = [brick[1], brick[2], brick[5]];
+    var t6 = [brick[6], brick[5], brick[2]];
+
+    // quad 2 3 7 6
+    var t7 = [brick[2], brick[3], brick[7]];
+    var t8 = [brick[7], brick[6], brick[2]];
+
+    // quad 0 4 7 3
+    var t9 = [brick[0], brick[4], brick[7]];
+    var t10 = [brick[4], brick[7], brick[3]];
+
+    // quad 4 5 6 7
+    var t11 = [brick[4], brick[5], brick[6]];
+    var t12 = [brick[6], brick[7], brick[4]];
+
+    triangles.push(t1, t2, t3, t4, t5, t6);
+    triangles.push(t7, t8, t9, t10, t11, t12);
+  });
+
+  return triangles;
+};
+
+/**
+ * Basis function evaluate to a 8 by 1 matrix.
+ * {@link module:gcellset.GCellSet#bfun}
+ * @override
+ */
+exports.H8.prototype.bfun = function(paramCoords) {
+  var one_minus_xi = (1 - paramCoords[0]);
+  var one_minus_eta = (1 - paramCoords[1]);
+  var one_minus_theta = (1 - paramCoords[2]);
+
+  var one_plus_xi  = (1 + paramCoords[0]);
+  var one_plus_eta  = (1 + paramCoords[1]);
+  var one_plus_theta = (1 + paramCoords[2]);
+
+  var val = [
+    [ 0.125 * one_minus_xi * one_minus_eta * one_minus_theta ],
+    [ 0.125 * one_plus_xi * one_minus_eta * one_minus_theta ],
+    [ 0.125 * one_plus_xi * one_plus_eta * one_minus_theta ],
+    [ 0.125 * one_minus_xi * one_plus_eta * one_minus_theta ],
+    [ 0.125 * one_minus_xi * one_minus_eta * one_plus_theta ],
+    [ 0.125 * one_plus_xi * one_minus_eta * one_plus_theta ],
+    [ 0.125 * one_plus_xi * one_plus_eta * one_plus_theta ],
+    [ 0.125 * one_minus_xi * one_plus_eta * one_plus_theta ]
+  ];
+  return val;
+};
+
+/**
+ * Basis function derivatives evaluate to a 8 by 3 matrix.
+ * {@link module:gcellset.GCellSet#bfundpar}
+ * @override
+ */
+exports.H8.prototype.bfundpar = function(paramCoords) {
+  var one_minus_xi = (1 - paramCoords[0]);
+  var one_minus_eta = (1 - paramCoords[1]);
+  var one_minus_theta = (1 - paramCoords[2]);
+
+  var one_plus_xi  = (1 + paramCoords[0]);
+  var one_plus_eta  = (1 + paramCoords[1]);
+  var one_plus_theta = (1 + paramCoords[2]);
+
+  var val = [
+    [
+        -one_minus_eta*one_minus_theta,
+      one_minus_eta*one_minus_theta,
+      one_plus_eta*one_minus_theta,
+        -one_plus_eta*one_minus_theta,
+        -one_minus_eta*one_plus_theta,
+      one_minus_eta*one_plus_theta,
+      one_plus_eta*one_plus_theta,
+        -one_plus_eta*one_plus_theta
+    ],
+    [
+        -one_minus_xi*one_minus_theta,
+        -one_plus_xi*one_minus_theta,
+      one_plus_xi*one_minus_theta,
+      one_minus_xi*one_minus_theta,
+        -one_minus_xi*one_plus_theta,
+        -one_plus_xi*one_plus_theta,
+      one_plus_xi*one_plus_theta,
+      one_minus_xi*one_plus_theta
+    ],
+    [
+        -one_minus_xi*one_minus_eta,
+        -one_plus_xi*one_minus_eta,
+        -one_plus_xi*one_plus_eta,
+        -one_minus_xi*one_plus_eta,
+      one_minus_xi*one_minus_eta,
+      one_plus_xi*one_minus_eta,
+      one_plus_xi*one_plus_eta,
+      one_minus_xi*one_plus_eta
+    ]
+  ];
+
+  val = mul(transpose(val), 0.125);
   return val;
 };
