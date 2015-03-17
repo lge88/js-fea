@@ -4888,8 +4888,19 @@ var fe =
 	}, 'Input is not a valid Field option.');
 
 	/**
+	 * @module field
+	 */
+
+	/**
+	 * Test
+	 * @param {Number} x
+	 * @returns {Number}
+	 */
+	function test() {}
+
+	/**
 	 * Field init option.
-	 * @typedef {Object} Field~FieldInitOption
+	 * @typedef {Object} module:field.FieldInitOption
 	 * @property {Matrix|undefined} values
 	 * @property {PointSet|undefined} pointset
 	 * @property {FeNodeSet|undefined} fens
@@ -4900,9 +4911,9 @@ var fe =
 	/**
 	 * Field
 	 * @class
-	 * @param {Field~FieldInitOption}
+	 * @param {module:field.FieldInitOption}
 	 */
-	function Field(options) {
+	exports.Field = function Field(options) {
 	  _input_contract_field_option_(options);
 
 	  this._values = null;
@@ -4935,13 +4946,14 @@ var fe =
 	    }, this);
 	  }
 
-	}
+	};
+	var Field = exports.Field;
 
 	/**
 	 * Returns number of nodes in the field.
 	 * @returns {}
 	 */
-	Field.prototype.nfens = function() {
+	exports.Field.prototype.nfens = function() {
 	  return this._values.getSize();
 	};
 
@@ -4949,7 +4961,7 @@ var fe =
 	 * Returns number of equations
 	 * @returns {Number}
 	 */
-	Field.prototype.neqns = function() {
+	exports.Field.prototype.neqns = function() {
 	  if (!this._eqnums) this._numberEqnums_();
 	  return this._neqns;
 	};
@@ -4959,7 +4971,7 @@ var fe =
 	 * Returns dimension of the field.
 	 * @returns {Number}
 	 */
-	Field.prototype.dim = function() {
+	exports.Field.prototype.dim = function() {
 	  return this._values.getRn();
 	};
 
@@ -4967,7 +4979,7 @@ var fe =
 	 * Returns the values as 2d js array.
 	 * @returns {Array}
 	 */
-	Field.prototype.values = function() {
+	exports.Field.prototype.values = function() {
 	  return this._values.toList();
 	};
 
@@ -4986,7 +4998,7 @@ var fe =
 	 * vector to another vector.
 	 * @returns {Field}
 	 */
-	Field.prototype.map = function(fn) {
+	exports.Field.prototype.map = function(fn) {
 	  var newPointset = this._values.map(fn);
 	  var newField = new Field({ pointset: newPointset });
 	  return newField;
@@ -4996,7 +5008,7 @@ var fe =
 	 * Returns an identical copy, preserves boundary conditions.
 	 * @returns {Feild}
 	 */
-	Field.prototype.clone = function() {
+	exports.Field.prototype.clone = function() {
 	  var newPointset = this._values.clone();
 	  var newField = new Field({ pointset: newPointset });
 	  newField._neqns = this._neqns;
@@ -5022,7 +5034,7 @@ var fe =
 	 * better error message.
 	 * @returns {Field} Result field.
 	 */
-	Field.prototype._bop = function(other, bopFn, bopName) {
+	exports.Field.prototype._bop = function(other, bopFn, bopName) {
 	  if (check.number(other)) {
 	    return this.map(function(vec) {
 	      return vec.map(function(x) {
@@ -5057,7 +5069,7 @@ var fe =
 	 * @param {Field~bopFn} bopFn - binary operation function.
 	 * @returns {Field} Result field.
 	 */
-	Field.prototype.bop = function(other, bopFn) {
+	exports.Field.prototype.bop = function(other, bopFn) {
 	  return this._bop(other, bopFn, bopFn.name || 'custom binary function');
 	};
 
@@ -5068,10 +5080,10 @@ var fe =
 	 and dim or an array of length this.dim().
 	 * @returns {Field} - muliplication of this and other.
 	 */
-	Field.prototype.mul = function(other) {
+	exports.Field.prototype.mul = function(other) {
 	  return this._bop(other, function(a,b) { return a * b; }, 'mul');
 	};
-	Field.prototype.scale = Field.prototype.mul;
+	exports.Field.prototype.scale = exports.Field.prototype.mul;
 
 	/**
 	 * Returns a new field of the point-wise sumation. No boudary
@@ -5080,7 +5092,7 @@ var fe =
 	 and dim or an array of length this.dim().
 	 * @returns {Field} - Sum of this and other.
 	 */
-	Field.prototype.add = function(other) {
+	exports.Field.prototype.add = function(other) {
 	  return this._bop(other, function(a,b) { return a + b; }, 'add');
 	};
 
@@ -5091,7 +5103,7 @@ var fe =
 	 and dim or an array of length this.dim().
 	 * @returns {Field} - substraction of this and other.
 	 */
-	Field.prototype.sub = function(other) {
+	exports.Field.prototype.sub = function(other) {
 	  return this._bop(other, function(a,b) { return a - b; }, 'sub');
 	};
 
@@ -5102,13 +5114,13 @@ var fe =
 	 and dim or an array of length this.dim().
 	 * @returns {Field} - division of this and other.
 	 */
-	Field.prototype.div = function(other) {
+	exports.Field.prototype.div = function(other) {
 	  return this._bop(other, function(a,b) { return a / b; }, 'div');
 	};
 
 	// Get value vector by Id
 	// Return: vec:this.dim()
-	Field.prototype.getById = function(id) {
+	exports.Field.prototype.getById = function(id) {
 	  var idx = id - 1;
 	  return this._values.get(idx);
 	};
@@ -5118,7 +5130,7 @@ var fe =
 	 * @param {Number} idx - index
 	 * @return {Vector:this.dim()}
 	 */
-	Field.prototype.at = function(idx) {
+	exports.Field.prototype.at = function(idx) {
 	  return this._values.get(idx);
 	};
 
@@ -5126,7 +5138,7 @@ var fe =
 	 * Returns pointset object for visualization.
 	 * @returns {PointSet}
 	 */
-	Field.prototype.pointset = function() {
+	exports.Field.prototype.pointset = function() {
 	  return this._values;
 	};
 
@@ -5136,7 +5148,7 @@ var fe =
 	 * @param {Number} direction - dimension index. Index start from 1.
 	 * @returns {Boolean}
 	 */
-	Field.prototype.isPrescribed = function(id, direction) {
+	exports.Field.prototype.isPrescribed = function(id, direction) {
 	  if (!this._prescribed) return false;
 	  return this._prescribed[id][direction];
 	};
@@ -5148,7 +5160,7 @@ var fe =
 	 * @param {Number} direction - dimension index. Index start from 1.
 	 * @returns {Number}
 	 */
-	Field.prototype.prescribedValue = function(id, direction) {
+	exports.Field.prototype.prescribedValue = function(id, direction) {
 	  if (this.isPrescribed(id, direction))
 	    return this._prescribedValues[id][direction];
 	  return 0;
@@ -5161,7 +5173,7 @@ var fe =
 	 * @param {Number} dir - dimension index. Index start from 1.
 	 * @param {Number} val - value.
 	 */
-	Field.prototype.setPrescribedValue_ = function(id, dir, val) {
+	exports.Field.prototype.setPrescribedValue_ = function(id, dir, val) {
 	  // console.log("val = ", val);
 	  // console.log("dir = ", dir);
 	  // console.log("id = ", id);
@@ -5171,7 +5183,7 @@ var fe =
 	  this._values.setAtDir_(id-1, dir-1, val);
 	};
 
-	Field.prototype._numberEqnums_ = function() {
+	exports.Field.prototype._numberEqnums_ = function() {
 	  var eqnums = array2d(this.nfens() + 1, this.dim() + 1, 0);
 
 	  var count = 0, nfens = this.nfens(), dim = this.dim();
@@ -5196,7 +5208,7 @@ var fe =
 	 * @param {Number} direction - dimension index. Index start from 1.
 	 * @returns {Number} - equation number.
 	 */
-	Field.prototype.eqnum = function(id, direction) {
+	exports.Field.prototype.eqnum = function(id, direction) {
 	  if (!this._eqnums) this._numberEqnums_();
 	  if (id < 1 || id > this.nfens()) throw new Error('Field::eqnum(): id out of range.');
 	  if (direction < 1 || direction > this.dim()) throw new Error('Field::eqnum(): direction out of range.');
@@ -5209,7 +5221,7 @@ var fe =
 	 * @returns {Array} - an array of equation numbers of length
 	 * this.dim()*conn.length.
 	 */
-	Field.prototype.gatherEqnumsVector = function(conn) {
+	exports.Field.prototype.gatherEqnumsVector = function(conn) {
 	  var vec = [], dim = this.dim();
 	  conn.forEach(function(fenid) {
 	    var i, eqnum;
@@ -5226,7 +5238,7 @@ var fe =
 	 * @returns {Array} - a 2d js array of values of dimension conn.length
 	 * by this.dim().
 	 */
-	Field.prototype.gatherValuesMatrix = function(conn) {
+	exports.Field.prototype.gatherValuesMatrix = function(conn) {
 	  var len = conn.length, dim = this.dim();
 	  var mat = array1d(len, null);
 	  conn.forEach(function(fenid, i) {
@@ -5242,7 +5254,7 @@ var fe =
 	 * @returns {Array} - a 2d js array of values of dimension conn.length
 	 * by this.dim().
 	 */
-	Field.prototype.gatherPrescirbedValues = function(conn) {
+	exports.Field.prototype.gatherPrescirbedValues = function(conn) {
 	  var vec = [], dim = this.dim();
 	  conn.forEach(function(id) {
 	    var dir;
@@ -5253,13 +5265,12 @@ var fe =
 	  return vec;
 	};
 
-
 	/**
 	 * Scatter values to field. Returns updated field.
 	 * @param {Array} vec - js array of length this.neqns();
 	 * @returns {Field} - updated field.
 	 */
-	Field.prototype.scatterSystemVector_ = function(vec) {
+	exports.Field.prototype.scatterSystemVector_ = function(vec) {
 	  var neqns = this.neqns();
 	  if (!isVectorOfDimension(vec, neqns))
 	    throw new Error('Field::scatterSystemVector(): vec is not a vector of ' +

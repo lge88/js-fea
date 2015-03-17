@@ -116,7 +116,7 @@ gulp.task('docs', function() {
     .pipe(jsdoc.generator(config.paths.docs, templates, options));
 });
 
-gulp.task('ghpages', function() {
+gulp.task('ghpages', ['docs'], function() {
   var pkgConf = loadConfig(config.paths.pkg);
   var path = require('path');
   var files = path.join(config.paths.docs, pkgConf.name, pkgConf.version, '**/*');
