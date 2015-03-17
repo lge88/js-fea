@@ -29,10 +29,6 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="module-gcellset.html">gcellset</a>
-						</li>
-						
-						<li>
 							<a href="module-utils.html">utils</a>
 						</li>
 						
@@ -51,27 +47,31 @@
 						</li>
 						
 						<li>
+							<a href="GCellSet.html">GCellSet</a>
+						</li>
+						
+						<li>
+							<a href="GCellSetManifold0.html">GCellSetManifold0</a>
+						</li>
+						
+						<li>
+							<a href="GCellSetManifold1.html">GCellSetManifold1</a>
+						</li>
+						
+						<li>
+							<a href="GCellSetManifold2.html">GCellSetManifold2</a>
+						</li>
+						
+						<li>
+							<a href="L2.html">L2</a>
+						</li>
+						
+						<li>
 							<a href="Mesh.html">Mesh</a>
 						</li>
 						
 						<li>
-							<a href="module-gcellset-GCellSet.html">GCellSet</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-L2.html">L2</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-Manifold1GCellSet.html">Manifold1GCellSet</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-Manifold2GCellSet.html">Manifold2GCellSet</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-Q4.html">Q4</a>
+							<a href="Q4.html">Q4</a>
 						</li>
 						
 
@@ -127,8 +127,6 @@ var skewmat = feutils.skewmat;
 var topology = require('./geometry.topology');
 var Topology = topology.Topology;
 var hypercube = topology.hypercube;
-
-/** @module gcellset */
 
 /**
  * A 1D js array of numbers that has non-zero length.
@@ -450,22 +448,22 @@ GCellSet.prototype.clone = function() {
 // };
 
 /**
- * Geometry cell set of mainfold 1.
+ * Geometry cell set of mainfold 0.
  * @class
  * @extends GCellSet
  */
-function Manifold1GCellSet(options) {
+function GCellSetManifold0(options) {
   GCellSet.call(this, options);
 }
 
-Manifold1GCellSet.prototype = Object.create(GCellSet.prototype);
-Manifold1GCellSet.prototype.constructor = Manifold1GCellSet;
+GCellSetManifold0.prototype = Object.create(GCellSet.prototype);
+GCellSetManifold0.prototype.constructor = GCellSetManifold0;
 
 /**
  * @override
  * @returns {Int}
  */
-Manifold1GCellSet.prototype.dim = function() { return 1; };
+GCellSetManifold0.prototype.dim = function() { return 0; };
 
 /**
  * Evaluate the manifold Jacobian.
@@ -475,8 +473,8 @@ Manifold1GCellSet.prototype.dim = function() { return 1; };
  * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
  * @returns {Number}
  */
-Manifold1GCellSet.prototype.jacobian = function(conn, N, J, x) {
-  var jac = this.jacobianCurve(conn, N, J, x);
+GCellSetManifold0.prototype.jacobian = function(conn, N, J, x) {
+  var jac = 1;
   return jac;
 };
 
@@ -488,9 +486,14 @@ Manifold1GCellSet.prototype.jacobian = function(conn, N, J, x) {
  * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
  * @returns {Number}
  */
-Manifold1GCellSet.prototype.jacobianCurve = function(conn, N, J, x) {
-  var vec = transpose(J)[0];
-  var jac = norm(vec);
+GCellSetManifold0.prototype.jacobianCurve = function(conn, N, J, x) {
+  var jac, xyz;
+  if (this.axisSymm()) {
+    xyz = dot(transpose(N), x)[0];
+    jac = 1*2*Math.PI*xyz[0];
+  } else {
+    jac = 1*this.otherDimension(conn, N, x);
+  }
   return jac;
 };
 
@@ -502,13 +505,13 @@ Manifold1GCellSet.prototype.jacobianCurve = function(conn, N, J, x) {
  * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
  * @returns {Number}
  */
-Manifold1GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
-  var jac;
+GCellSetManifold0.prototype.jacobianSurface = function(conn, N, J, x) {
+  var jac, xyz;
   if (this.axisSymm()) {
-    var xyz = mul(transpose(N), x)[0];
-    jac = this.jacobianCurve(conn, N, J, x) * 2 * Math.PI * xyz[0];
+    xyz = dot(transpose(N), x)[0];
+    jac = 1*2*Math.PI*xyz[0]*this.otherDimension(conn, N, x);
   } else {
-    jac = this.jacobianCurve(conn, N, J, x) * this.otherDimension(conn, N, x);
+    jac = 1*this.otherDimension(conn, N, x);
   }
   return jac;
 };
@@ -521,7 +524,7 @@ Manifold1GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
  * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
  * @returns {Number}
  */
-Manifold1GCellSet.prototype.jacobianVolumn = function(conn, N, J, x) {
+GCellSetManifold0.prototype.jacobianVolumn = function(conn, N, J, x) {
   var jac;
   if (this.axisSymm()) {
     var xyz = mul(transpose(N), x)[0];
@@ -542,7 +545,7 @@ Manifold1GCellSet.prototype.jacobianVolumn = function(conn, N, J, x) {
  * @param {Int} dim - 1 (curve), 2 (surface) or 3 (volumn).
  * @returns {Number}
  */
-Manifold1GCellSet.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+GCellSetManifold0.prototype.jacobianInDim = function(conn, N, J, x, dim) {
   var jac;
   switch (dim) {
   case 3:
@@ -555,29 +558,28 @@ Manifold1GCellSet.prototype.jacobianInDim = function(conn, N, J, x, dim) {
     jac = this.jacobianCurve(conn, N, J, x);
     break;
   default:
-    throw new Error('Manifold1GCellSet::jacobianInDim(): wrong dimension ' + dim);
+    throw new Error('GCellSetManifold0::jacobianInDim(): wrong dimension ' + dim);
   }
   return jac;
 };
 
 /**
- * Geometry cell set of mainfold 2.
+ * Geometry cell set of mainfold 1.
  * @class
  * @extends GCellSet
  */
-function Manifold2GCellSet(options) {
+function GCellSetManifold1(options) {
   GCellSet.call(this, options);
 }
 
-exports.Manifold2GCellSet = Manifold2GCellSet;
-Manifold2GCellSet.prototype = Object.create(GCellSet.prototype);
-Manifold2GCellSet.prototype.constructor = Manifold2GCellSet;
+GCellSetManifold1.prototype = Object.create(GCellSet.prototype);
+GCellSetManifold1.prototype.constructor = GCellSetManifold1;
 
 /**
  * @override
  * @returns {Int}
  */
-Manifold2GCellSet.prototype.dim = function() { return 2; };
+GCellSetManifold1.prototype.dim = function() { return 1; };
 
 /**
  * Evaluate the manifold Jacobian.
@@ -587,8 +589,23 @@ Manifold2GCellSet.prototype.dim = function() { return 2; };
  * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
  * @returns {Number}
  */
-Manifold2GCellSet.prototype.jacobian = function(conn, N, J, x) {
-  return this.jacobianSurface(conn, N, J, x);
+GCellSetManifold1.prototype.jacobian = function(conn, N, J, x) {
+  var jac = this.jacobianCurve(conn, N, J, x);
+  return jac;
+};
+
+/**
+ * Evaluate the curve Jacobian.
+ * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
+ * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {GCellSet~Matrix} J - Jacobian matrix.
+ * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @returns {Number}
+ */
+GCellSetManifold1.prototype.jacobianCurve = function(conn, N, J, x) {
+  var vec = transpose(J)[0];
+  var jac = norm(vec);
+  return jac;
 };
 
 /**
@@ -599,19 +616,13 @@ Manifold2GCellSet.prototype.jacobian = function(conn, N, J, x) {
  * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
  * @returns {Number}
  */
-Manifold2GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
-  var tmp = size(J), sdim = tmp[0], ntan = tmp[1];
-  var jac;
-  if (ntan === 2) {
-    if (sdim === ntan) {
-      jac = J[0][0]*J[1][1] - J[1][0]*J[0][1];
-    } else {
-      jac = skewmat(nthColumn(J, 1));
-      jac = dot(jac, nthColumn(J, 2));
-      jac = norm(jac);
-    }
+GCellSetManifold1.prototype.jacobianSurface = function(conn, N, J, x) {
+  var jac, xyz;
+  if (this.axisSymm()) {
+    xyz = dot(transpose(N), x)[0];
+    jac = this.jacobianCurve(conn, N, J, x) * 2 * Math.PI * xyz[0];
   } else {
-    throw new Error('Manifold2GCellSet::jacobianSurface(): is not implemented when ntan is not 2');
+    jac = this.jacobianCurve(conn, N, J, x) * this.otherDimension(conn, N, x);
   }
   return jac;
 };
@@ -624,10 +635,113 @@ Manifold2GCellSet.prototype.jacobianSurface = function(conn, N, J, x) {
  * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
  * @returns {Number}
  */
-Manifold2GCellSet.prototype.jacobianVolumn = function(conn, N, J, x) {
+GCellSetManifold1.prototype.jacobianVolumn = function(conn, N, J, x) {
+  var jac, xyz;
+  if (this.axisSymm()) {
+    xyz = dot(transpose(N), x)[0];
+    jac = this.jacobianCurve(conn, N, J, x) * 2 * Math.PI * xyz[0] * this.otherDimension(conn, N, x);
+  } else {
+    jac = this.jacobianCurve(conn, N, J, x) * this.otherDimension(conn, N, x);
+  }
+  return jac;
+};
+
+/**
+ * A convinient wrapper for jacobianCurve, jacobianSurface,
+ * jacobianVolumn
+ * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
+ * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {GCellSet~Matrix} J - Jacobian matrix.
+ * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @param {Int} dim - 1 (curve), 2 (surface) or 3 (volumn).
+ * @returns {Number}
+ */
+GCellSetManifold1.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+  var jac;
+  switch (dim) {
+  case 3:
+    jac = this.jacobianVolumn(conn, N, J, x);
+    break;
+  case 2:
+    jac = this.jacobianSurface(conn, N, J, x);
+    break;
+  case 1:
+    jac = this.jacobianCurve(conn, N, J, x);
+    break;
+  default:
+    throw new Error('GCellSetManifold1::jacobianInDim(): wrong dimension ' + dim);
+  }
+  return jac;
+};
+
+/**
+ * Geometry cell set of mainfold 2.
+ * @class
+ * @extends GCellSet
+ */
+function GCellSetManifold2(options) {
+  GCellSet.call(this, options);
+}
+
+exports.GCellSetManifold2 = GCellSetManifold2;
+GCellSetManifold2.prototype = Object.create(GCellSet.prototype);
+GCellSetManifold2.prototype.constructor = GCellSetManifold2;
+
+/**
+ * @override
+ * @returns {Int}
+ */
+GCellSetManifold2.prototype.dim = function() { return 2; };
+
+/**
+ * Evaluate the manifold Jacobian.
+ * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
+ * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {GCellSet~Matrix} J - Jacobian matrix.
+ * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @returns {Number}
+ */
+GCellSetManifold2.prototype.jacobian = function(conn, N, J, x) {
+  return this.jacobianSurface(conn, N, J, x);
+};
+
+/**
+ * Evaluate the surface Jacobian.
+ * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
+ * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {GCellSet~Matrix} J - Jacobian matrix.
+ * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @returns {Number}
+ */
+GCellSetManifold2.prototype.jacobianSurface = function(conn, N, J, x) {
+  var tmp = size(J), sdim = tmp[0], ntan = tmp[1];
+  var jac;
+  if (ntan === 2) {
+    if (sdim === ntan) {
+      jac = J[0][0]*J[1][1] - J[1][0]*J[0][1];
+    } else {
+      jac = skewmat(nthColumn(J, 1));
+      jac = dot(jac, nthColumn(J, 2));
+      jac = norm(jac);
+    }
+  } else {
+    throw new Error('GCellSetManifold2::jacobianSurface(): is not implemented when ntan is not 2');
+  }
+  return jac;
+};
+
+/**
+ * Evaluate the volumn Jacobian.
+ * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
+ * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
+ * @param {GCellSet~Matrix} J - Jacobian matrix.
+ * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+ * @returns {Number}
+ */
+GCellSetManifold2.prototype.jacobianVolumn = function(conn, N, J, x) {
   var xyz, jac;
   if (this.axisSymm()) {
-    xyz = dot(transpose(N), x);
+    xyz = dot(transpose(N), x)[0];
     jac = this.jacobianSurface(conn, N, J, x)*2*Math.PI*xyz[0];
   } else {
     jac = this.jacobianSurface(conn, N, J, x)*this.otherDimension(conn, N, x);
@@ -645,21 +759,21 @@ Manifold2GCellSet.prototype.jacobianVolumn = function(conn, N, J, x) {
  * @param {Int} dim - 2 (surface) or 3 (volumn).
  * @returns {Number}
  */
-Manifold2GCellSet.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+GCellSetManifold2.prototype.jacobianInDim = function(conn, N, J, x, dim) {
   switch (dim) {
   case 3:
     return this.jacobianVolumn(conn, N, J, x);
   case 2:
     return this.jacobianSurface(conn, N, J, x);
   default:
-    throw new Error('Manifold2GCellSet::jacobianInDim(): unsupported dim ' + dim);
+    throw new Error('GCellSetManifold2::jacobianInDim(): unsupported dim ' + dim);
   }
 };
 
 /**
  * Two-node curve geometric cell set.
  * @class
- * @extends Manifold1GCellSet
+ * @extends GCellSetManifold1
  * @param {L2~InitOption} options
  */
 function L2(options) {
@@ -669,11 +783,11 @@ function L2(options) {
 
   if (options.conn) options.topology = hypercube(options.conn, 1);
 
-  Manifold1GCellSet.call(this, options);
+  GCellSetManifold1.call(this, options);
 }
 exports.L2 = L2;
 
-L2.prototype = Object.create(Manifold1GCellSet.prototype);
+L2.prototype = Object.create(GCellSetManifold1.prototype);
 L2.prototype.constructor = L2;
 
 /**
@@ -730,7 +844,7 @@ L2.prototype.bfundpar = function(paramCoords) {
 /**
  * Four-node quad geometric cell set.
  * @class
- * @extends Manifold2GCellSet
+ * @extends GCellSetManifold2
  * @param {Q4~InitOption} options
  */
 function Q4(options) {
@@ -739,11 +853,11 @@ function Q4(options) {
                     ' Q4~InitOption');
 
   if (options.conn) options.topology = hypercube(options.conn, 2);
-  Manifold2GCellSet.call(this, options);
+  GCellSetManifold2.call(this, options);
 }
 
 exports.Q4 = Q4;
-Q4.prototype = Object.create(Manifold2GCellSet.prototype);
+Q4.prototype = Object.create(GCellSetManifold2.prototype);
 Q4.prototype.constructor = Q4;
 
 /**
@@ -780,7 +894,6 @@ Q4.prototype.triangles = function() {
 
   return triangles;
 };
-
 
 /**
  * {@link GCellSet#bfun}
@@ -836,7 +949,7 @@ Q4.prototype.bfundpar = function(paramCoords) {
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Tue Mar 17 2015 09:06:14 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Mar 17 2015 10:16:35 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Class: Mesh</title>
+	<title>js-fea Namespace: utils</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -23,13 +23,13 @@
 			<ul class="nav">
 				
 				<li class="dropdown">
-					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
+					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
 						class="caret"></b></a>
 
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="module-utils.html">utils</a>
+							<a href="utils.html">utils</a>
 						</li>
 						
 
@@ -91,12 +91,12 @@
 					
 
 
-	<h1 class="page-title">Class: Mesh</h1>
+	<h1 class="page-title">Namespace: utils</h1>
 <section>
 
 <header>
     <h2>
-    Mesh
+    utils
     </h2>
     
 </header>
@@ -107,8 +107,65 @@
 
     
         
+
+        
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
 <dt>
-    <h4 class="name" id="Mesh"><span class="type-signature"></span>new Mesh<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="array1d"><span class="type-signature">&lt;static> </span>array1d<span class="signature">(m, fn)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -116,7 +173,7 @@
     
     
     <div class="description">
-        Mesh class.
+        Returns a 1d js array by given dimension and generating function.
     </div>
     
 
@@ -150,13 +207,13 @@
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>m</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Mesh.html#InitOption">Mesh~InitOption</a></span>
+<span class="param-type">Number</span>
 
 
             
@@ -166,7 +223,33 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">length.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="array1d.html#Generator">array1d~Generator</a></span>
+|
+
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Generation function or constant value.</td>
         </tr>
 
 	
@@ -198,109 +281,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-38">line 38</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">var msh1 = new Mesh({
-  fens: new FeNodeSet(...),
-  gcells: new L2(...)
-});
-
-var msh2 = new Mesh({
-  xyz: [...],
-  gcellsType: 'L2',
-  conn: [...]
-});</pre>
-
-
-    
-</dd>
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
-<dt>
-    <h4 class="name" id="fens"><span class="type-signature"></span>fens<span class="signature">()</span><span class="type-signature"> &rarr; {FeNodeSet}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns finite element node set of the mesh.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-48">line 48</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-21">line 21</a>
     </li></ul></dd>
     
 
@@ -332,7 +313,7 @@ var msh2 = new Mesh({
 	</dt>
 	<dd>
 		
-<span class="param-type">FeNodeSet</span>
+<span class="param-type">Array</span>
 
 
 	</dd>
@@ -347,7 +328,7 @@ var msh2 = new Mesh({
         
             
 <dt>
-    <h4 class="name" id="gcells"><span class="type-signature"></span>gcells<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="GCellSet.html">GCellSet</a>}</span></h4>
+    <h4 class="name" id="array2d"><span class="type-signature">&lt;static> </span>array2d<span class="signature">(m, n, fn)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -355,7 +336,7 @@ var msh2 = new Mesh({
     
     
     <div class="description">
-        Returns geometry cell set of the mesh.
+        Returns a 2d js array by given dimension and generating function.
     </div>
     
 
@@ -364,101 +345,10 @@ var msh2 = new Mesh({
     
     
     
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-54">line 54</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="GCellSet.html">GCellSet</a></span>
-
-
-	</dd>
-</dl>
-
-
+        <h5>Parameters:</h5>
         
-    
-    
-</dd>
 
-        </dl>
-    
-
-    
-        <h3 class="subsection-title">Type Definitions</h3>
-
-        <dl>
-                
-<dt>
-    <h4 class="name" id="InitOption">InitOption</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-        <h5 class="subsection-title">Properties:</h5>
-
-        <dl>
-
-<table class="props table table-striped">
+<table class="params table table-striped">
     <thead>
 	<tr>
 		
@@ -480,13 +370,13 @@ var msh2 = new Mesh({
 
         <tr>
             
-                <td class="name"><code>fens</code></td>
+                <td class="name"><code>m</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">FeNodeSet</span>
+<span class="param-type">Number</span>
 
 
             
@@ -496,20 +386,20 @@ var msh2 = new Mesh({
 
             
 
-            <td class="description last">optional. finite element node set.</td>
+            <td class="description last">number of rows.</td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>xyz</code></td>
+                <td class="name"><code>n</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Number</span>
 
 
             
@@ -519,20 +409,23 @@ var msh2 = new Mesh({
 
             
 
-            <td class="description last">optional. 2D array of node coordinates.</td>
+            <td class="description last">number of columns.</td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>gcells</code></td>
+                <td class="name"><code>fn</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html">GCellSet</a></span>
+<span class="param-type">array2d~Generator</span>
+|
+
+<span class="param-type">Any</span>
 
 
             
@@ -542,60 +435,17 @@ var msh2 = new Mesh({
 
             
 
-            <td class="description last">optional. geometry cell set.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>gcellsType</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">optional. finite element node set.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>conn</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">optional. connectiviy list.</td>
+            <td class="description last">Generation function or constant value.</td>
         </tr>
 
 	
 	</tbody>
 </table>
-</dl>
 
+    
+    
+    
+<dl class="details">
     
 
     
@@ -617,7 +467,7 @@ var msh2 = new Mesh({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-11">line 11</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-44">line 44</a>
     </li></ul></dd>
     
 
@@ -630,9 +480,179 @@ var msh2 = new Mesh({
 
     
     
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
 </dd>
 
-            </dl>
+        
+            
+<dt>
+    <h4 class="name" id="normalizedCell"><span class="type-signature">&lt;static> </span>normalizedCell<span class="signature">(conn)</span><span class="type-signature"> &rarr; {ConnectivityList}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return a normalized connectivity list by rotating the original one
+so that the smallest index is the first element. Useful when check
+whether two cells are the same.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>conn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">ConnectivityList</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Connectivity list of cell.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-226">line 226</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">ConnectivityList</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        </dl>
+    
+
     
 
     
@@ -656,7 +676,7 @@ var msh2 = new Mesh({
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Tue Mar 17 2015 10:16:35 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Mar 17 2015 09:33:48 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>

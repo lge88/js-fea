@@ -29,10 +29,6 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="module-gcellset.html">gcellset</a>
-						</li>
-						
-						<li>
 							<a href="module-utils.html">utils</a>
 						</li>
 						
@@ -51,27 +47,31 @@
 						</li>
 						
 						<li>
+							<a href="GCellSet.html">GCellSet</a>
+						</li>
+						
+						<li>
+							<a href="GCellSetManifold0.html">GCellSetManifold0</a>
+						</li>
+						
+						<li>
+							<a href="GCellSetManifold1.html">GCellSetManifold1</a>
+						</li>
+						
+						<li>
+							<a href="GCellSetManifold2.html">GCellSetManifold2</a>
+						</li>
+						
+						<li>
+							<a href="L2.html">L2</a>
+						</li>
+						
+						<li>
 							<a href="Mesh.html">Mesh</a>
 						</li>
 						
 						<li>
-							<a href="module-gcellset-GCellSet.html">GCellSet</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-L2.html">L2</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-Manifold1GCellSet.html">Manifold1GCellSet</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-Manifold2GCellSet.html">Manifold2GCellSet</a>
-						</li>
-						
-						<li>
-							<a href="module-gcellset-Q4.html">Q4</a>
+							<a href="Q4.html">Q4</a>
 						</li>
 						
 
@@ -131,7 +131,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-3">line 3</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-13">line 13</a>
     </li></ul></dd>
     
 
@@ -163,6 +163,169 @@
         <h3 class="subsection-title">Methods</h3>
 
         <dl>
+            
+<dt>
+    <h4 class="name" id="array1d"><span class="type-signature">&lt;static> </span>array1d<span class="signature">(m, fn)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns a 1d js array by given dimension and generating function.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>m</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">length.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-utils.html#array1dGenerator">module:utils.array1dGenerator</a></span>
+|
+
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Generation function or constant value.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-30">line 30</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
             
 <dt>
     <h4 class="name" id="array2d"><span class="type-signature">&lt;static> </span>array2d<span class="signature">(m, n, fn)</span><span class="type-signature"> &rarr; {Array}</span></h4>
@@ -259,7 +422,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="array2d.html#Generator">array2d~Generator</a></span>
+<span class="param-type"><a href="module-utils.html#array2dGenerator">module:utils.array2dGenerator</a></span>
 |
 
 <span class="param-type">Any</span>
@@ -304,7 +467,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-52">line 52</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-54">line 54</a>
     </li></ul></dd>
     
 
@@ -351,170 +514,7 @@
         
             
 <dt>
-    <h4 class="name" id="array1d"><span class="type-signature">&lt;inner> </span>array1d<span class="signature">(m, fn)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns a 1d js array by given dimension and generating function.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>m</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">length.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>fn</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="array1d.html#Generator">array1d~Generator</a></span>
-|
-
-<span class="param-type">Any</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Generation function or constant value.</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-28">line 28</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Array</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="byLexical"><span class="type-signature">&lt;inner> </span>byLexical<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    <h4 class="name" id="byLexical"><span class="type-signature">&lt;static> </span>byLexical<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {Number}</span></h4>
     
     
 </dt>
@@ -674,7 +674,7 @@
         
             
 <dt>
-    <h4 class="name" id="embed"><span class="type-signature">&lt;inner> </span>embed<span class="signature">(vec, dim)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="embed"><span class="type-signature">&lt;static> </span>embed<span class="signature">(vec, dim)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -787,7 +787,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-75">line 75</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-77">line 77</a>
     </li></ul></dd>
     
 
@@ -842,762 +842,7 @@
         
             
 <dt>
-    <h4 class="name" id="isIterator"><span class="type-signature">&lt;inner> </span>isIterator<span class="signature">(obj)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Check whether an object is an iterator. An iterator must implement
-both hasNext() and next() method.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Any</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-173">line 173</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Boolean</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isMatrixOfDimension"><span class="type-signature">&lt;inner> </span>isMatrixOfDimension<span class="signature">(mat, m, n)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Check whether an object is a matrix of m by n.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>mat</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Any</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>m</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>n</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-341">line 341</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Boolean</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="isVectorOfDimension"><span class="type-signature">&lt;inner> </span>isVectorOfDimension<span class="signature">(vec, m)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Check whether an object is a vector of length m.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>vec</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Any</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>m</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-383">line 383</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Boolean</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="iteratorFromList"><span class="type-signature">&lt;inner> </span>iteratorFromList<span class="signature">(lst)</span><span class="type-signature"> &rarr; {Iterator}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Return a iterator of the list.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>lst</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-201">line 201</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Iterator</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="listFromIterator"><span class="type-signature">&lt;inner> </span>listFromIterator<span class="signature">(iter)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Construct an js array from iterator.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>iter</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Iterator</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-189">line 189</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Array</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="matrixOfDimension"><span class="type-signature">&lt;inner> </span>matrixOfDimension<span class="signature">(m, n, msg)</span><span class="type-signature"> &rarr; {Contract}</span></h4>
+    <h4 class="name" id="ensureMatrixOfDimension"><span class="type-signature">&lt;static> </span>ensureMatrixOfDimension<span class="signature">(m, n, msg)</span><span class="type-signature"> &rarr; {Contract}</span></h4>
     
     
 </dt>
@@ -1733,7 +978,7 @@ both hasNext() and next() method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-306">line 306</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-304">line 304</a>
     </li></ul></dd>
     
 
@@ -1780,7 +1025,922 @@ both hasNext() and next() method.
         
             
 <dt>
-    <h4 class="name" id="minIndex"><span class="type-signature">&lt;inner> </span>minIndex<span class="signature">(vec, cmp)</span><span class="type-signature"> &rarr; {Index}</span></h4>
+    <h4 class="name" id="ensureVectorOfDimension"><span class="type-signature">&lt;static> </span>ensureVectorOfDimension<span class="signature">(m, msg)</span><span class="type-signature"> &rarr; {Contract}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns a contract of m-D vector
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>m</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-356">line 356</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Contract</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isIterator"><span class="type-signature">&lt;static> </span>isIterator<span class="signature">(obj)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Check whether an object is an iterator. An iterator must implement
+both hasNext() and next() method.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-174">line 174</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isMatrixOfDimension"><span class="type-signature">&lt;static> </span>isMatrixOfDimension<span class="signature">(mat, m, n)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Check whether an object is a matrix of m by n.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>mat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>m</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-338">line 338</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="isVectorOfDimension"><span class="type-signature">&lt;static> </span>isVectorOfDimension<span class="signature">(vec, m)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Check whether an object is a vector of length m.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>vec</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Any</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>m</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-381">line 381</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="iteratorFromList"><span class="type-signature">&lt;static> </span>iteratorFromList<span class="signature">(lst)</span><span class="type-signature"> &rarr; {Iterator}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return a iterator of the list.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>lst</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-202">line 202</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Iterator</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="listFromIterator"><span class="type-signature">&lt;static> </span>listFromIterator<span class="signature">(iter)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Construct an js array from iterator.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>iter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Iterator</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-190">line 190</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="minIndex"><span class="type-signature">&lt;static> </span>minIndex<span class="signature">(vec, cmp)</span><span class="type-signature"> &rarr; {Index}</span></h4>
     
     
 </dt>
@@ -1896,7 +2056,7 @@ both hasNext() and next() method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-140">line 140</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-141">line 141</a>
     </li></ul></dd>
     
 
@@ -1943,7 +2103,7 @@ both hasNext() and next() method.
         
             
 <dt>
-    <h4 class="name" id="rotateLeft"><span class="type-signature">&lt;inner> </span>rotateLeft<span class="signature">(arr, offset)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="rotateLeft"><span class="type-signature">&lt;static> </span>rotateLeft<span class="signature">(arr, offset)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -2056,7 +2216,7 @@ both hasNext() and next() method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-110">line 110</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-109">line 109</a>
     </li></ul></dd>
     
 
@@ -2107,7 +2267,7 @@ both hasNext() and next() method.
         
             
 <dt>
-    <h4 class="name" id="rotateRight"><span class="type-signature">&lt;inner> </span>rotateRight<span class="signature">(arr, offset)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="rotateRight"><span class="type-signature">&lt;static> </span>rotateRight<span class="signature">(arr, offset)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
     
 </dt>
@@ -2271,7 +2431,7 @@ both hasNext() and next() method.
         
             
 <dt>
-    <h4 class="name" id="uuid"><span class="type-signature">&lt;inner> </span>uuid<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="uuid"><span class="type-signature">&lt;static> </span>uuid<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
     
     
 </dt>
@@ -2312,7 +2472,7 @@ both hasNext() and next() method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-218">line 218</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-219">line 219</a>
     </li></ul></dd>
     
 
@@ -2356,19 +2516,21 @@ both hasNext() and next() method.
     
 </dd>
 
-        
-            
+        </dl>
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
 <dt>
-    <h4 class="name" id="vectorOfDimension"><span class="type-signature">&lt;inner> </span>vectorOfDimension<span class="signature">(m, msg)</span><span class="type-signature"> &rarr; {Contract}</span></h4>
+    <h4 class="name" id="array1dGenerator"><span class="type-signature"></span>array1dGenerator<span class="signature">(i)</span><span class="type-signature"> &rarr; {Any}</span></h4>
     
     
 </dt>
 <dd>
     
-    
-    <div class="description">
-        Returns a contract of m-D vector
-    </div>
     
 
     
@@ -2401,7 +2563,7 @@ both hasNext() and next() method.
 
         <tr>
             
-                <td class="name"><code>m</code></td>
+                <td class="name"><code>i</code></td>
             
 
             <td class="type">
@@ -2417,30 +2579,7 @@ both hasNext() and next() method.
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>msg</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
+            <td class="description last">index, starts from 0.</td>
         </tr>
 
 	
@@ -2472,7 +2611,7 @@ both hasNext() and next() method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-359">line 359</a>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-17">line 17</a>
     </li></ul></dd>
     
 
@@ -2504,7 +2643,7 @@ both hasNext() and next() method.
 	</dt>
 	<dd>
 		
-<span class="param-type">Contract</span>
+<span class="param-type">Any</span>
 
 
 	</dd>
@@ -2516,9 +2655,163 @@ both hasNext() and next() method.
     
 </dd>
 
-        </dl>
+            
+                
+<dt>
+    <h4 class="name" id="array2dGenerator"><span class="type-signature"></span>array2dGenerator<span class="signature">(i, j)</span><span class="type-signature"> &rarr; {Any}</span></h4>
+    
+    
+</dt>
+<dd>
+    
     
 
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>i</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">row index, starts from 0.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>j</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">column index, starts from 1.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-40">line 40</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Any</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+            </dl>
     
 
     
@@ -2542,7 +2835,7 @@ both hasNext() and next() method.
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Tue Mar 17 2015 09:06:14 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Mar 17 2015 10:16:35 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
