@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Namespace: utils</title>
+	<title>js-fea Module: field</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -23,13 +23,17 @@
 			<ul class="nav">
 				
 				<li class="dropdown">
-					<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
+					<a href="modules.list.html" class="dropdown-toggle" data-toggle="dropdown">Modules<b
 						class="caret"></b></a>
 
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="utils.html">utils</a>
+							<a href="module-field.html">field</a>
+						</li>
+						
+						<li>
+							<a href="module-utils.html">utils</a>
 						</li>
 						
 
@@ -41,10 +45,6 @@
 						class="caret"></b></a>
 
 					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="Field.html">Field</a>
-						</li>
 						
 						<li>
 							<a href="GCellSet.html">GCellSet</a>
@@ -71,6 +71,10 @@
 						</li>
 						
 						<li>
+							<a href="module-field.Field.html">Field</a>
+						</li>
+						
+						<li>
 							<a href="Q4.html">Q4</a>
 						</li>
 						
@@ -91,12 +95,12 @@
 					
 
 
-	<h1 class="page-title">Namespace: utils</h1>
+	<h1 class="page-title">Module: field</h1>
 <section>
 
 <header>
     <h2>
-    utils
+    field
     </h2>
     
 </header>
@@ -131,7 +135,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-13">line 13</a>
+        <a href="field.js.html">field.js</a>, <a href="field.js.html#sunlight-1-line-39">line 39</a>
     </li></ul></dd>
     
 
@@ -153,6 +157,13 @@
 
     
 
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-field.Field.html">Field</a></dt>
+            <dd></dd>
+        </dl>
     
 
     
@@ -165,7 +176,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="array1d"><span class="type-signature">&lt;static> </span>array1d<span class="signature">(m, fn)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    <h4 class="name" id="test"><span class="type-signature">&lt;inner> </span>test<span class="signature">(x)</span><span class="type-signature"> &rarr; {Number}</span></h4>
     
     
 </dt>
@@ -173,7 +184,7 @@
     
     
     <div class="description">
-        Returns a 1d js array by given dimension and generating function.
+        Test
     </div>
     
 
@@ -207,7 +218,7 @@
 
         <tr>
             
-                <td class="name"><code>m</code></td>
+                <td class="name"><code>x</code></td>
             
 
             <td class="type">
@@ -223,33 +234,7 @@
 
             
 
-            <td class="description last">length.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>fn</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="array1d.html#Generator">array1d~Generator</a></span>
-|
-
-<span class="param-type">Any</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Generation function or constant value.</td>
+            <td class="description last"></td>
         </tr>
 
 	
@@ -281,7 +266,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-21">line 21</a>
+        <a href="field.js.html">field.js</a>, <a href="field.js.html#sunlight-1-line-48">line 48</a>
     </li></ul></dd>
     
 
@@ -313,332 +298,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">Array</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="array2d"><span class="type-signature">&lt;static> </span>array2d<span class="signature">(m, n, fn)</span><span class="type-signature"> &rarr; {Array}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns a 2d js array by given dimension and generating function.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>m</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of rows.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>n</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">number of columns.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>fn</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array2d~Generator</span>
-|
-
-<span class="param-type">Any</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Generation function or constant value.</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-44">line 44</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Array</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="normalizedCell"><span class="type-signature">&lt;static> </span>normalizedCell<span class="signature">(conn)</span><span class="type-signature"> &rarr; {ConnectivityList}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Return a normalized connectivity list by rotating the original one
-so that the smallest index is the first element. Useful when check
-whether two cells are the same.
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>conn</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">ConnectivityList</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Connectivity list of cell.</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.utils.js.html">core.utils.js</a>, <a href="core.utils.js.html#sunlight-1-line-226">line 226</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">ConnectivityList</span>
 
 
 	</dd>
@@ -653,6 +313,233 @@ whether two cells are the same.
         </dl>
     
 
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
+<dt>
+    <h4 class="name" id="FieldInitOption">FieldInitOption</h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Field init option.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+        <h5 class="subsection-title">Properties:</h5>
+
+        <dl>
+
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>values</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Matrix</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>pointset</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">PointSet</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>fens</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">FeNodeSet</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>nfens</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">undefined</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+</dl>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="field.js.html">field.js</a>, <a href="field.js.html#sunlight-1-line-50">line 50</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+            </dl>
     
 
     
@@ -676,7 +563,7 @@ whether two cells are the same.
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Tue Mar 17 2015 09:33:48 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Mar 17 2015 13:23:43 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
