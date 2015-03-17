@@ -4048,7 +4048,7 @@ var fe =
 	 */
 
 	/**
-	 * @typedef module.gcellset.GCellSetInitOption
+	 * @typedef module:gcellset.GCellSetInitOption
 	 * @property {Topology} topology - required.
 	 * @property {Number} otherDimension - optional. default is 1.0.
 	 * @property {Boolean} axisSymm - optional. default is false.
@@ -4057,13 +4057,13 @@ var fe =
 	/**
 	 * Geometry cell set.
 	 * @class
-	 * @param {module.gcellset.GCellSetInitOption} options
+	 * @param {module:gcellset.GCellSetInitOption} options
 	 */
 	// TODO: support lookup by label.
 	exports.GCellSet = function GCellSet(options) {
 	  if (!isObject(options) || !isa(options.topology, Topology))
 	    throw new Error('GCellSet#constructor(options): options' +
-	                    ' is not a valid GCellSet~InitOption.');
+	                    ' is not a valid GCellSetInitOption.');
 
 	  this._axisSymm = null;
 	  this._otherDimension = null;
@@ -4130,7 +4130,7 @@ var fe =
 
 	/**
 	 * Returns a vector of vertices ids. Mainly used for visualization.
-	 * @returns {module.types.Vector}
+	 * @returns {module:types.Vector}
 	 */
 	exports.GCellSet.prototype.vertices = function() {
 	  return this._topology.getPointIndices();
@@ -4138,7 +4138,7 @@ var fe =
 
 	/**
 	 * Returns a list of L2 cells. Mainly used for visualization.
-	 * @returns {GCellSet~ConnectivityList}
+	 * @returns {module:types.ConnectivityList}
 	 */
 	exports.GCellSet.prototype.edges = function() {
 	  return this._topology.getCellsInDim(1);
@@ -4146,7 +4146,7 @@ var fe =
 
 	/**
 	 * Returns a list of T3 cells. Mainly used for visualization.
-	 * @returns {GCellSet~ConnectivityList}
+	 * @returns {module:types.ConnectivityList}
 	 */
 	exports.GCellSet.prototype.triangles = function() {
 	  return this._topology.getCellsInDim(2);
@@ -4182,7 +4182,7 @@ var fe =
 
 	/**
 	 * Return the boundary of this gcellset.
-	 * @returns {GCellSet} the boundary gcellset.
+	 * @returns {module:gcellset.GCellSet} the boundary gcellset.
 	 */
 	exports.GCellSet.prototype.boundary = function() {
 	  var C = this.boundaryGCellSetConstructor();
@@ -4218,7 +4218,7 @@ var fe =
 
 	/**
 	 * Returns the connectiviy list.
-	 * @returns {GCellSet~ConnectivityList} connectivity list of length
+	 * @returns {module:types.ConnectivityList} connectivity list of length
 	 * this.count().
 	 */
 	exports.GCellSet.prototype.conn = function() {
@@ -4227,9 +4227,9 @@ var fe =
 
 	/**
 	 * Evaluate the Jacob matrix.
-	 * @param {GCellSet~Matrix} nder - Nodal derivatives in parametric domain.
-	 * @param {GCellSet~Matrix} x - Nodal coordinates in spatial domain.
-	 * @returns {GCellSet~Matrix} Jacob matrix.
+	 * @param {module:types.Matrix} nder - Nodal derivatives in parametric domain.
+	 * @param {module:types.Matrix} x - Nodal coordinates in spatial domain.
+	 * @returns {module:types.Matrix} Jacob matrix.
 	 */
 	exports.GCellSet.prototype.jacobianMatrix = function(nder, x) {
 	  return mul(transpose(x), nder);
@@ -4238,8 +4238,8 @@ var fe =
 	/**
 	 * Evaluate the basis function matrix.
 	 * @abstract
-	 * @param {GCellSet~Matrix} paramCoords - Coordinates in parametric domain.
-	 * @returns {GCellSet~Matrix} Nodal contributions. (cellSize by 1).
+	 * @param {module:types.Matrix} paramCoords - Coordinates in parametric domain.
+	 * @returns {module:types.Matrix} Nodal contributions. (cellSize by 1).
 	 */
 	exports.GCellSet.prototype.bfun = function(paramCoords) {
 	  throw new Error('GCellSet::bfun(): is not implemented.');
@@ -4248,8 +4248,8 @@ var fe =
 	/**
 	 * Evaluate the derivatives of the basis function matrix.
 	 * @abstract
-	 * @param {GCellSet~Matrix} paramCoords - Coordinates in parametric domain.
-	 * @returns {GCellSet~Matrix} Nodal contribution derivatives. (cellSize by dim).
+	 * @param {module:types.Matrix} paramCoords - Coordinates in parametric domain.
+	 * @returns {module:types.Matrix} Nodal contribution derivatives. (cellSize by dim).
 	 */
 	exports.GCellSet.prototype.bfundpar = function(paramCoords) {
 	  throw new Error('GCellSet::bfundpar(): is not implemented.');
@@ -4257,10 +4257,10 @@ var fe =
 
 	/**
 	 * Returns derivatives of the basis functions in spatical domain.
-	 * @param {GCellSet~Matrix} nder - Nodal derivatives in parametric
+	 * @param {module:types.Matrix} nder - Nodal derivatives in parametric
 	 * domain.
-	 * @param {GCellSet~Matrix} x - Nodal coordinates in spatial domain.
-	 * @returns {GCellSet~Matrix} Derivatives of the basis functions in
+	 * @param {module:types.Matrix} x - Nodal coordinates in spatial domain.
+	 * @returns {module:types.Matrix} Derivatives of the basis functions in
 	 * spatical domain.
 	 */
 	exports.GCellSet.prototype.bfundsp = function(nder, x) {
@@ -4312,7 +4312,7 @@ var fe =
 	 * Returns a new GCellSet of same type which is a subset of self by
 	 * given indices.
 	 * @param {Array} indices - indices of selected cell, starts from 0.
-	 * @returns {GCellSet}
+	 * @returns {module:gcellset.GCellSet}
 	 */
 	exports.GCellSet.prototype.subset = function(indices) {
 	  var conn = subset(this.conn(), indices);
@@ -4326,7 +4326,7 @@ var fe =
 
 	/**
 	 * Returns a clone of self.
-	 * @returns {GCellSet}
+	 * @returns {module:gcellset.GCellSet}
 	 */
 	exports.GCellSet.prototype.clone = function() {
 	  var C = this.constructor;
@@ -4345,7 +4345,7 @@ var fe =
 	/**
 	 * Geometry cell set of mainfold 0.
 	 * @class
-	 * @extends GCellSet
+	 * @extends module:gcellset.GCellSet
 	 */
 	exports.GCellSetManifold0 = function GCellSetManifold0(options) {
 	  GCellSet.call(this, options);
@@ -4363,10 +4363,10 @@ var fe =
 
 	/**
 	 * Evaluate the manifold Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold0.prototype.jacobian = function(conn, N, J, x) {
@@ -4376,10 +4376,10 @@ var fe =
 
 	/**
 	 * Evaluate the curve Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold0.prototype.jacobianCurve = function(conn, N, J, x) {
@@ -4395,10 +4395,10 @@ var fe =
 
 	/**
 	 * Evaluate the surface Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold0.prototype.jacobianSurface = function(conn, N, J, x) {
@@ -4414,10 +4414,10 @@ var fe =
 
 	/**
 	 * Evaluate the volumn Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold0.prototype.jacobianVolumn = function(conn, N, J, x) {
@@ -4434,10 +4434,10 @@ var fe =
 	/**
 	 * A convinient wrapper for jacobianCurve, jacobianSurface,
 	 * jacobianVolumn
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @param {Int} dim - 1 (curve), 2 (surface) or 3 (volumn).
 	 * @returns {Number}
 	 */
@@ -4462,7 +4462,7 @@ var fe =
 	/**
 	 * Geometry cell set of mainfold 1.
 	 * @class
-	 * @extends GCellSet
+	 * @extends module:gcellset.GCellSet
 	 */
 	exports.GCellSetManifold1 = function GCellSetManifold1(options) {
 	  GCellSet.call(this, options);
@@ -4480,10 +4480,10 @@ var fe =
 
 	/**
 	 * Evaluate the manifold Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold1.prototype.jacobian = function(conn, N, J, x) {
@@ -4493,10 +4493,10 @@ var fe =
 
 	/**
 	 * Evaluate the curve Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold1.prototype.jacobianCurve = function(conn, N, J, x) {
@@ -4507,10 +4507,10 @@ var fe =
 
 	/**
 	 * Evaluate the surface Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold1.prototype.jacobianSurface = function(conn, N, J, x) {
@@ -4526,10 +4526,10 @@ var fe =
 
 	/**
 	 * Evaluate the volumn Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold1.prototype.jacobianVolumn = function(conn, N, J, x) {
@@ -4546,10 +4546,10 @@ var fe =
 	/**
 	 * A convinient wrapper for jacobianCurve, jacobianSurface,
 	 * jacobianVolumn
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @param {Int} dim - 1 (curve), 2 (surface) or 3 (volumn).
 	 * @returns {Number}
 	 */
@@ -4574,7 +4574,7 @@ var fe =
 	/**
 	 * Geometry cell set of mainfold 2.
 	 * @class
-	 * @extends GCellSet
+	 * @extends module:gcellset.GCellSet
 	 */
 	exports.GCellSetManifold2 = function GCellSetManifold2(options) {
 	  GCellSet.call(this, options);
@@ -4591,10 +4591,10 @@ var fe =
 
 	/**
 	 * Evaluate the manifold Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold2.prototype.jacobian = function(conn, N, J, x) {
@@ -4603,10 +4603,10 @@ var fe =
 
 	/**
 	 * Evaluate the surface Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold2.prototype.jacobianSurface = function(conn, N, J, x) {
@@ -4628,10 +4628,10 @@ var fe =
 
 	/**
 	 * Evaluate the volumn Jacobian.
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
 	exports.GCellSetManifold2.prototype.jacobianVolumn = function(conn, N, J, x) {
@@ -4648,10 +4648,10 @@ var fe =
 	/**
 	 * A convinient wrapper for jacobianCurve, jacobianSurface,
 	 * jacobianVolumn
-	 * @param {GCellSet~Connectivity} conn - Connectivity of a single cell.
-	 * @param {GCellSet~Matrix} N - Values of the basis functions. (cellSize by 1).
-	 * @param {GCellSet~Matrix} J - Jacobian matrix.
-	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
+	 * @param {module:types.Connectivity} conn - Connectivity of a single cell.
+	 * @param {module:types.Matrix} N - Values of the basis functions. (cellSize by 1).
+	 * @param {module:types.Matrix} J - Jacobian matrix.
+	 * @param {module:types.Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @param {Int} dim - 2 (surface) or 3 (volumn).
 	 * @returns {Number}
 	 */
@@ -4669,13 +4669,13 @@ var fe =
 	/**
 	 * Two-node curve geometric cell set.
 	 * @class
-	 * @extends GCellSetManifold1
-	 * @param {L2~InitOption} options
+	 * @extends module:gcellset.GCellSetManifold1
+	 * @param {module:gcellset.L2InitOption} options
 	 */
 	exports.L2 = function L2(options) {
 	  if (!options || !(options.conn || options.topology))
 	    throw new Error('L2#constructor(options): options is not a valid' +
-	                    ' L2~InitOption');
+	                    ' L2InitOption');
 
 	  if (options.conn) options.topology = hypercube(options.conn, 1);
 
@@ -4687,7 +4687,7 @@ var fe =
 	L2.prototype.constructor = L2;
 
 	/**
-	 * {@link GCellSet#boundaryGCellSetConstructor}
+	 * {@link module:gcellset.GCellSet#boundaryGCellSetConstructor}
 	 * @override
 	 */
 	exports.L2.prototype.boundaryGCellSetConstructor = function() {
@@ -4696,25 +4696,25 @@ var fe =
 	};
 
 	/**
-	 * {@link GCellSet#triangles}
+	 * {@link module:gcellset.GCellSet#triangles}
 	 * @override
 	 */
 	exports.L2.prototype.triangles = function() { return []; };
 
 	/**
-	 * {@link GCellSet#cellSize}
+	 * {@link module:gcellset.GCellSet#cellSize}
 	 * @override
 	 */
 	exports.L2.prototype.cellSize = function() { return 2; };
 
 	/**
-	 * {@link GCellSet#type}
+	 * {@link module:gcellset.GCellSet#type}
 	 * @override
 	 */
 	exports.L2.prototype.type = function() { return 'L2'; };
 
 	/**
-	 * {@link GCellSet#bfun}
+	 * {@link module:gcellset.GCellSet#bfun}
 	 * @override
 	 */
 	exports.L2.prototype.bfun = function(paramCoords) {
@@ -4727,7 +4727,7 @@ var fe =
 	};
 
 	/**
-	 * {@link GCellSet#bfundpar}
+	 * {@link module:gcellset.GCellSet#bfundpar}
 	 * @override
 	 */
 	exports.L2.prototype.bfundpar = function(paramCoords) {
@@ -4740,13 +4740,13 @@ var fe =
 	/**
 	 * Four-node quad geometric cell set.
 	 * @class
-	 * @extends GCellSetManifold2
-	 * @param {Q4~InitOption} options
+	 * @extends module:gcellset.GCellSetManifold2
+	 * @param {module:types.Q4InitOption} options
 	 */
 	exports.Q4 = function Q4(options) {
 	  if (!options || !(options.conn || options.topology))
 	    throw new Error('Q4#constructor(options): options is not a valid' +
-	                    ' Q4~InitOption');
+	                    ' Q4InitOption');
 
 	  if (options.conn) options.topology = hypercube(options.conn, 2);
 	  GCellSetManifold2.call(this, options);
@@ -4757,25 +4757,25 @@ var fe =
 	Q4.prototype.constructor = Q4;
 
 	/**
-	 * {@link GCellSet#cellSize}
+	 * {@link module:gcellset.GCellSet#cellSize}
 	 * @override
 	 */
 	exports.Q4.prototype.cellSize = function() { return 4; };
 
 	/**
-	 * {@link GCellSet#type}
+	 * {@link module:gcellset.GCellSet#type}
 	 * @override
 	 */
 	exports.Q4.prototype.type = function() { return 'Q4'; };
 
 	/**
-	 * {@link GCellSet#boundaryGCellSetConstructor}
+	 * {@link module:gcellset.GCellSet#boundaryGCellSetConstructor}
 	 * @override
 	 */
 	exports.Q4.prototype.boundaryGCellSetConstructor = function() { return L2; };
 
 	/**
-	 * {@link GCellSet#triangles}
+	 * {@link module:gcellset.GCellSet#triangles}
 	 * @override
 	 */
 	exports.Q4.prototype.triangles = function() {
@@ -4792,7 +4792,7 @@ var fe =
 	};
 
 	/**
-	 * {@link GCellSet#bfun}
+	 * {@link module:gcellset.GCellSet#bfun}
 	 * @override
 	 */
 	exports.Q4.prototype.bfun = function(paramCoords) {
@@ -4811,7 +4811,7 @@ var fe =
 	};
 
 	/**
-	 * {@link GCellSet#bfundpar}
+	 * {@link module:gcellset.GCellSet#bfundpar}
 	 * @override
 	 */
 	exports.Q4.prototype.bfundpar = function(paramCoords) {
