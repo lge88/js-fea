@@ -4667,6 +4667,76 @@ var fe =
 	};
 
 	/**
+	 * One-node point geometric cell set.
+	 * @class
+	 * @extends module:gcellset.GCellSetManifold0
+	 * @param {module:gcellset.P1InitOption} options
+	 */
+	exports.P1 = function P1(options) {
+	  if (!options || !(options.conn || options.topology))
+	    throw new Error('P1#constructor(options): options is not a valid' +
+	                    ' P1InitOption');
+
+	  if (options.conn) options.topology = hypercube(options.conn, 0);
+
+	  GCellSetManifold0.call(this, options);
+	};
+	var P1 = exports.P1;
+
+	P1.prototype = Object.create(GCellSetManifold0.prototype);
+	P1.prototype.constructor = P1;
+
+	/**
+	 * {@link module:gcellset.GCellSet#boundaryGCellSetConstructor}
+	 * @override
+	 */
+	exports.P1.prototype.boundaryGCellSetConstructor = function() { return null; };
+
+	/**
+	 * {@link module:gcellset.GCellSet#edges}
+	 * @override
+	 */
+	exports.P1.prototype.edges = function() { return []; };
+
+	/**
+	 * {@link module:gcellset.GCellSet#triangles}
+	 * @override
+	 */
+	exports.P1.prototype.triangles = function() { return []; };
+
+	/**
+	 * {@link module:gcellset.GCellSet#cellSize}
+	 * @override
+	 */
+	exports.P1.prototype.cellSize = function() { return 1; };
+
+	/**
+	 * {@link module:gcellset.GCellSet#type}
+	 * @override
+	 */
+	exports.P1.prototype.type = function() { return 'P1'; };
+
+	/**
+	 * {@link module:gcellset.GCellSet#bfun}
+	 * @override
+	 */
+	exports.P1.prototype.bfun = function(paramCoords) {
+	  return [
+	    [1]
+	  ];
+	};
+
+	/**
+	 * {@link module:gcellset.GCellSet#bfundpar}
+	 * @override
+	 */
+	exports.P1.prototype.bfundpar = function(paramCoords) {
+	  return [
+	    [0]
+	  ];
+	};
+
+	/**
 	 * Two-node curve geometric cell set.
 	 * @class
 	 * @extends module:gcellset.GCellSetManifold1
