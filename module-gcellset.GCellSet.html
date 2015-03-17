@@ -33,6 +33,14 @@
 						</li>
 						
 						<li>
+							<a href="module-gcellset.html">gcellset</a>
+						</li>
+						
+						<li>
+							<a href="module-types.html">types</a>
+						</li>
+						
+						<li>
 							<a href="module-utils.html">utils</a>
 						</li>
 						
@@ -47,26 +55,6 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
-							<a href="GCellSet.html">GCellSet</a>
-						</li>
-						
-						<li>
-							<a href="GCellSetManifold0.html">GCellSetManifold0</a>
-						</li>
-						
-						<li>
-							<a href="GCellSetManifold1.html">GCellSetManifold1</a>
-						</li>
-						
-						<li>
-							<a href="GCellSetManifold2.html">GCellSetManifold2</a>
-						</li>
-						
-						<li>
-							<a href="L2.html">L2</a>
-						</li>
-						
-						<li>
 							<a href="Mesh.html">Mesh</a>
 						</li>
 						
@@ -75,7 +63,27 @@
 						</li>
 						
 						<li>
-							<a href="Q4.html">Q4</a>
+							<a href="module-gcellset.GCellSet.html">GCellSet</a>
+						</li>
+						
+						<li>
+							<a href="module-gcellset.GCellSetManifold0.html">GCellSetManifold0</a>
+						</li>
+						
+						<li>
+							<a href="module-gcellset.GCellSetManifold1.html">GCellSetManifold1</a>
+						</li>
+						
+						<li>
+							<a href="module-gcellset.GCellSetManifold2.html">GCellSetManifold2</a>
+						</li>
+						
+						<li>
+							<a href="module-gcellset.L2.html">L2</a>
+						</li>
+						
+						<li>
+							<a href="module-gcellset.Q4.html">Q4</a>
 						</li>
 						
 
@@ -100,6 +108,8 @@
 
 <header>
     <h2>
+        <span class="ancestors"><a href="module-gcellset.html">gcellset</a>.</span>
+    
     GCellSet
     </h2>
     
@@ -112,7 +122,7 @@
     
         
 <dt>
-    <h4 class="name" id="GCellSet"><span class="type-signature"></span>new GCellSet<span class="signature">(topology)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="GCellSet"><span class="type-signature"></span>new GCellSet<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -154,13 +164,13 @@
 
         <tr>
             
-                <td class="name"><code>topology</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Topology</span>
+<span class="param-type"><a href="module.gcellset.html#GCellSetInitOption">module.gcellset.GCellSetInitOption</a></span>
 
 
             
@@ -202,7 +212,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-71">line 71</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-51">line 51</a>
     </li></ul></dd>
     
 
@@ -289,7 +299,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-137">line 137</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-117">line 117</a>
     </li></ul></dd>
     
 
@@ -336,7 +346,7 @@
         
             
 <dt>
-    <h4 class="name" id="bfun"><span class="type-signature">&lt;virtual> </span>bfun<span class="signature">(paramCoords)</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#Matrix">GCellSet~Matrix</a>}</span></h4>
+    <h4 class="name" id="bfun"><span class="type-signature">&lt;virtual> </span>bfun<span class="signature">(paramCoords)</span><span class="type-signature"> &rarr; {GCellSet~Matrix}</span></h4>
     
     
 </dt>
@@ -384,7 +394,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
             
@@ -426,7 +436,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-252">line 252</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-232">line 232</a>
     </li></ul></dd>
     
 
@@ -462,7 +472,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
 	</dd>
@@ -477,7 +487,7 @@
         
             
 <dt>
-    <h4 class="name" id="bfundpar"><span class="type-signature">&lt;virtual> </span>bfundpar<span class="signature">(paramCoords)</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#Matrix">GCellSet~Matrix</a>}</span></h4>
+    <h4 class="name" id="bfundpar"><span class="type-signature">&lt;virtual> </span>bfundpar<span class="signature">(paramCoords)</span><span class="type-signature"> &rarr; {GCellSet~Matrix}</span></h4>
     
     
 </dt>
@@ -525,7 +535,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
             
@@ -567,7 +577,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-262">line 262</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-242">line 242</a>
     </li></ul></dd>
     
 
@@ -603,7 +613,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
 	</dd>
@@ -618,7 +628,7 @@
         
             
 <dt>
-    <h4 class="name" id="bfundsp"><span class="type-signature"></span>bfundsp<span class="signature">(nder, x)</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#Matrix">GCellSet~Matrix</a>}</span></h4>
+    <h4 class="name" id="bfundsp"><span class="type-signature"></span>bfundsp<span class="signature">(nder, x)</span><span class="type-signature"> &rarr; {GCellSet~Matrix}</span></h4>
     
     
 </dt>
@@ -666,7 +676,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
             
@@ -690,7 +700,7 @@ domain.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
             
@@ -732,7 +742,7 @@ domain.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-274">line 274</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-254">line 254</a>
     </li></ul></dd>
     
 
@@ -769,7 +779,7 @@ spatical domain.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
 	</dd>
@@ -784,7 +794,7 @@ spatical domain.
         
             
 <dt>
-    <h4 class="name" id="boundary"><span class="type-signature"></span>boundary<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="GCellSet.html">GCellSet</a>}</span></h4>
+    <h4 class="name" id="boundary"><span class="type-signature"></span>boundary<span class="signature">()</span><span class="type-signature"> &rarr; {GCellSet}</span></h4>
     
     
 </dt>
@@ -825,7 +835,7 @@ spatical domain.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-195">line 195</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-175">line 175</a>
     </li></ul></dd>
     
 
@@ -861,7 +871,7 @@ spatical domain.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html">GCellSet</a></span>
+<span class="param-type">GCellSet</span>
 
 
 	</dd>
@@ -917,7 +927,7 @@ spatical domain.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-186">line 186</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-166">line 166</a>
     </li></ul></dd>
     
 
@@ -1010,7 +1020,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-178">line 178</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-158">line 158</a>
     </li></ul></dd>
     
 
@@ -1102,7 +1112,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-215">line 215</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-195">line 195</a>
     </li></ul></dd>
     
 
@@ -1153,7 +1163,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
         
             
 <dt>
-    <h4 class="name" id="clone"><span class="type-signature"></span>clone<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="GCellSet.html">GCellSet</a>}</span></h4>
+    <h4 class="name" id="clone"><span class="type-signature"></span>clone<span class="signature">()</span><span class="type-signature"> &rarr; {GCellSet}</span></h4>
     
     
 </dt>
@@ -1194,7 +1204,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-339">line 339</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-319">line 319</a>
     </li></ul></dd>
     
 
@@ -1226,7 +1236,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html">GCellSet</a></span>
+<span class="param-type">GCellSet</span>
 
 
 	</dd>
@@ -1241,7 +1251,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
         
             
 <dt>
-    <h4 class="name" id="conn"><span class="type-signature"></span>conn<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#ConnectivityList">GCellSet~ConnectivityList</a>}</span></h4>
+    <h4 class="name" id="conn"><span class="type-signature"></span>conn<span class="signature">()</span><span class="type-signature"> &rarr; {GCellSet~ConnectivityList}</span></h4>
     
     
 </dt>
@@ -1282,7 +1292,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-232">line 232</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-212">line 212</a>
     </li></ul></dd>
     
 
@@ -1319,7 +1329,7 @@ this.count().
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#ConnectivityList">GCellSet~ConnectivityList</a></span>
+<span class="param-type">GCellSet~ConnectivityList</span>
 
 
 	</dd>
@@ -1375,7 +1385,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-289">line 289</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-269">line 269</a>
     </li></ul></dd>
     
 
@@ -1463,7 +1473,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-206">line 206</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-186">line 186</a>
     </li></ul></dd>
     
 
@@ -1514,7 +1524,7 @@ this.count().
         
             
 <dt>
-    <h4 class="name" id="edges"><span class="type-signature"></span>edges<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#ConnectivityList">GCellSet~ConnectivityList</a>}</span></h4>
+    <h4 class="name" id="edges"><span class="type-signature"></span>edges<span class="signature">()</span><span class="type-signature"> &rarr; {GCellSet~ConnectivityList}</span></h4>
     
     
 </dt>
@@ -1555,7 +1565,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-151">line 151</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-131">line 131</a>
     </li></ul></dd>
     
 
@@ -1587,7 +1597,7 @@ this.count().
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#ConnectivityList">GCellSet~ConnectivityList</a></span>
+<span class="param-type">GCellSet~ConnectivityList</span>
 
 
 	</dd>
@@ -1643,7 +1653,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-223">line 223</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-203">line 203</a>
     </li></ul></dd>
     
 
@@ -1694,7 +1704,7 @@ this.count().
         
             
 <dt>
-    <h4 class="name" id="jacobianMatrix"><span class="type-signature"></span>jacobianMatrix<span class="signature">(nder, x)</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#Matrix">GCellSet~Matrix</a>}</span></h4>
+    <h4 class="name" id="jacobianMatrix"><span class="type-signature"></span>jacobianMatrix<span class="signature">(nder, x)</span><span class="type-signature"> &rarr; {GCellSet~Matrix}</span></h4>
     
     
 </dt>
@@ -1742,7 +1752,7 @@ this.count().
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
             
@@ -1765,7 +1775,7 @@ this.count().
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
             
@@ -1807,7 +1817,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-242">line 242</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-222">line 222</a>
     </li></ul></dd>
     
 
@@ -1843,7 +1853,7 @@ this.count().
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type">GCellSet~Matrix</span>
 
 
 	</dd>
@@ -1899,7 +1909,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-297">line 297</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-277">line 277</a>
     </li></ul></dd>
     
 
@@ -1996,7 +2006,7 @@ coordinate.
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Connectivity">GCellSet~Connectivity</a></span>
+<span class="param-type"><a href="module-types.html#Connectivity">module:types.Connectivity</a></span>
 
 
             
@@ -2020,7 +2030,7 @@ cell.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
 
 
             
@@ -2043,7 +2053,7 @@ cell.</td>
             <td class="type">
             
                 
-<span class="param-type"><a href="GCellSet.html#Matrix">GCellSet~Matrix</a></span>
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
 
 
             
@@ -2085,7 +2095,7 @@ cell.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-127">line 127</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-107">line 107</a>
     </li></ul></dd>
     
 
@@ -2132,7 +2142,7 @@ cell.</td>
         
             
 <dt>
-    <h4 class="name" id="subset"><span class="type-signature"></span>subset<span class="signature">(indices)</span><span class="type-signature"> &rarr; {<a href="GCellSet.html">GCellSet</a>}</span></h4>
+    <h4 class="name" id="subset"><span class="type-signature"></span>subset<span class="signature">(indices)</span><span class="type-signature"> &rarr; {GCellSet}</span></h4>
     
     
 </dt>
@@ -2223,7 +2233,7 @@ given indices.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-325">line 325</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-305">line 305</a>
     </li></ul></dd>
     
 
@@ -2255,7 +2265,7 @@ given indices.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html">GCellSet</a></span>
+<span class="param-type">GCellSet</span>
 
 
 	</dd>
@@ -2270,7 +2280,7 @@ given indices.
         
             
 <dt>
-    <h4 class="name" id="topology"><span class="type-signature"></span>topology<span class="signature">()</span><span class="type-signature"> &rarr; {Topology}</span></h4>
+    <h4 class="name" id="topology"><span class="type-signature"></span>topology<span class="signature">()</span><span class="type-signature"> &rarr; {module:topology.Topology}</span></h4>
     
     
 </dt>
@@ -2312,7 +2322,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-113">line 113</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-93">line 93</a>
     </li></ul></dd>
     
 
@@ -2344,7 +2354,7 @@ visualization.
 	</dt>
 	<dd>
 		
-<span class="param-type">Topology</span>
+<span class="param-type">module:topology.Topology</span>
 
 
 	</dd>
@@ -2359,7 +2369,7 @@ visualization.
         
             
 <dt>
-    <h4 class="name" id="triangles"><span class="type-signature"></span>triangles<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#ConnectivityList">GCellSet~ConnectivityList</a>}</span></h4>
+    <h4 class="name" id="triangles"><span class="type-signature"></span>triangles<span class="signature">()</span><span class="type-signature"> &rarr; {GCellSet~ConnectivityList}</span></h4>
     
     
 </dt>
@@ -2400,7 +2410,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-159">line 159</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-139">line 139</a>
     </li></ul></dd>
     
 
@@ -2432,7 +2442,7 @@ visualization.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#ConnectivityList">GCellSet~ConnectivityList</a></span>
+<span class="param-type">GCellSet~ConnectivityList</span>
 
 
 	</dd>
@@ -2488,7 +2498,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-168">line 168</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-148">line 148</a>
     </li></ul></dd>
     
 
@@ -2539,7 +2549,7 @@ visualization.
         
             
 <dt>
-    <h4 class="name" id="vertices"><span class="type-signature"></span>vertices<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="GCellSet.html#Vector">GCellSet~Vector</a>}</span></h4>
+    <h4 class="name" id="vertices"><span class="type-signature"></span>vertices<span class="signature">()</span><span class="type-signature"> &rarr; {module.types.Vector}</span></h4>
     
     
 </dt>
@@ -2580,7 +2590,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-143">line 143</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-123">line 123</a>
     </li></ul></dd>
     
 
@@ -2612,7 +2622,7 @@ visualization.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="GCellSet.html#Vector">GCellSet~Vector</a></span>
+<span class="param-type">module.types.Vector</span>
 
 
 	</dd>
@@ -2627,378 +2637,6 @@ visualization.
         </dl>
     
 
-    
-        <h3 class="subsection-title">Type Definitions</h3>
-
-        <dl>
-                
-<dt>
-    <h4 class="name" id="Connectivity">Connectivity</h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        An array of positive integers.
-    </div>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-47">line 47</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-            
-                
-<dt>
-    <h4 class="name" id="ConnectivityList">ConnectivityList</h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        A <a href="GCellSet.html#Matrix"><code>GCellSet~Matrix</code></a> of positive integers. Each row of the
-matrix is a <a href="GCellSet.html#Connectivity"><code>GCellSet~Connectivity</code></a>.
-    </div>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-52">line 52</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-            
-                
-<dt>
-    <h4 class="name" id="InitOption">InitOption</h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-        <h5 class="subsection-title">Properties:</h5>
-
-        <dl>
-
-<table class="props table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>topology</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Topology</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">required.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>otherDimension</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">optional. default is 1.0.</td>
-        </tr>
-
-	
-
-        <tr>
-            
-                <td class="name"><code>axisSymm</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">optional. default is false.</td>
-        </tr>
-
-	
-	</tbody>
-</table>
-</dl>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-58">line 58</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-            
-                
-<dt>
-    <h4 class="name" id="Matrix">Matrix</h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        A 2D js array of numbers that: 1) has non-zero number of rows.
-(mat.length > 0). 2) has consistent non-zero column
-length. (mat[0].length === mat[1].length ... === mat[m-1].length >
-0)
-    </div>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-39">line 39</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-            
-                
-<dt>
-    <h4 class="name" id="Vector">Vector</h4>
-    
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        A 1D js array of numbers that has non-zero length.
-    </div>
-    
-    
-    
-
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-34">line 34</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-</dd>
-
-            </dl>
     
 
     
@@ -3022,7 +2660,7 @@ length. (mat[0].length === mat[1].length ... === mat[m-1].length >
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Tue Mar 17 2015 13:23:43 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Mar 17 2015 13:48:59 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
