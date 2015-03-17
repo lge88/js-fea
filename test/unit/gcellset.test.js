@@ -153,22 +153,22 @@ describe('gcellset', function() {
           output: null,
           verify: 'L2::jacbianMatrix'
         },
-        {
-          input: [
-            [ [1] ],
-            [ [2], [2] ]
-          ],
-          exception: true,
-          desc: 'nder wrong dimension'
-        },
-        {
-          input: [
-            [ [1], [2] ],
-            [ [2], [2], [3] ]
-          ],
-          exception: true,
-          desc: 'x wrong dimension'
-        }
+        // {
+        //   input: [
+        //     [ [1] ],
+        //     [ [2], [2] ]
+        //   ],
+        //   exception: true,
+        //   desc: 'nder wrong dimension'
+        // },
+        // {
+        //   input: [
+        //     [ [1], [2] ],
+        //     [ [2], [2], [3] ]
+        //   ],
+        //   exception: true,
+        //   desc: 'x wrong dimension'
+        // }
       ],
 
       bfun: [

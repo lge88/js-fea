@@ -34,8 +34,8 @@ describe('FAESOR Ltract example', function() {
 
     var mesh = L2x2();
           // .refineQ4().refineQ4();
-    fens = mesh.fens;
-    gcells = mesh.gcells;
+    fens = mesh.fens();
+    gcells = mesh.gcells();
 
     prop = new LinElIso({ E: E, nu: nu });
 
