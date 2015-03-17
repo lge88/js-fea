@@ -170,7 +170,7 @@
             <td class="type">
             
                 
-<span class="param-type">Q4~InitOption</span>
+<span class="param-type">module:types.Q4InitOption</span>
 
 
             
@@ -244,7 +244,7 @@
         <h3 class="subsection-title">Extends</h3>
 
         <ul>
-            <li>GCellSetManifold2</li>
+            <li><a href="module-gcellset.GCellSetManifold2.html">module:gcellset.GCellSetManifold2</a></li>
         </ul>
     
 
@@ -264,6 +264,99 @@
         <dl>
             
 <dt>
+    <h4 class="name" id="axisSymm"><span class="type-signature"></span>axisSymm<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns whether it is axis symmetric.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#axisSymm">module:gcellset.GCellSet#axisSymm</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-117">line 117</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="bfun"><span class="type-signature"></span>bfun<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
@@ -272,7 +365,7 @@
     
     
     <div class="description">
-        <code>GCellSet#bfun</code>
+        <a href="module-gcellset.GCellSet.html#bfun"><code>module:gcellset.GCellSet#bfun</code></a>
     </div>
     
 
@@ -341,7 +434,7 @@
     
     
     <div class="description">
-        <code>GCellSet#bfundpar</code>
+        <a href="module-gcellset.GCellSet.html#bfundpar"><code>module:gcellset.GCellSet#bfundpar</code></a>
     </div>
     
 
@@ -402,6 +495,371 @@
         
             
 <dt>
+    <h4 class="name" id="bfundsp"><span class="type-signature"></span>bfundsp<span class="signature">(nder, x)</span><span class="type-signature"> &rarr; {<a href="module-types.html#Matrix">module:types.Matrix</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns derivatives of the basis functions in spatical domain.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>nder</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Nodal derivatives in parametric
+domain.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Nodal coordinates in spatial domain.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#bfundsp">module:gcellset.GCellSet#bfundsp</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-254">line 254</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Derivatives of the basis functions in
+spatical domain.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="boundary"><span class="type-signature"></span>boundary<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return the boundary of this gcellset.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#boundary">module:gcellset.GCellSet#boundary</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-175">line 175</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    the boundary gcellset.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="boundaryCellType"><span class="type-signature"></span>boundaryCellType<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return the type of boundary gcellset.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#boundaryCellType">module:gcellset.GCellSet#boundaryCellType</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-166">line 166</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    type of boundary gcellset.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="boundaryGCellSetConstructor"><span class="type-signature"></span>boundaryGCellSetConstructor<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
@@ -410,7 +868,7 @@
     
     
     <div class="description">
-        <code>GCellSet#boundaryGCellSetConstructor</code>
+        <a href="module-gcellset.GCellSet.html#boundaryGCellSetConstructor"><code>module:gcellset.GCellSet#boundaryGCellSetConstructor</code></a>
     </div>
     
 
@@ -479,7 +937,7 @@
     
     
     <div class="description">
-        <code>GCellSet#cellSize</code>
+        <a href="module-gcellset.GCellSet.html#cellSize"><code>module:gcellset.GCellSet#cellSize</code></a>
     </div>
     
 
@@ -540,6 +998,2127 @@
         
             
 <dt>
+    <h4 class="name" id="clone"><span class="type-signature"></span>clone<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns a clone of self.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#clone">module:gcellset.GCellSet#clone</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-319">line 319</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="conn"><span class="type-signature"></span>conn<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-types.html#ConnectivityList">module:types.ConnectivityList</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the connectiviy list.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#conn">module:gcellset.GCellSet#conn</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-212">line 212</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    connectivity list of length
+this.count().
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-types.html#ConnectivityList">module:types.ConnectivityList</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="count"><span class="type-signature"></span>count<span class="signature">()</span><span class="type-signature"> &rarr; {Int}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return the number of cells.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#count">module:gcellset.GCellSet#count</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-269">line 269</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Int</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="dim"><span class="type-signature"></span>dim<span class="signature">()</span><span class="type-signature"> &rarr; {Int}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSetManifold2.html#dim">module:gcellset.GCellSetManifold2#dim</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-578">line 578</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Int</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="edges"><span class="type-signature"></span>edges<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-types.html#ConnectivityList">module:types.ConnectivityList</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns a list of L2 cells. Mainly used for visualization.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#edges">module:gcellset.GCellSet#edges</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-131">line 131</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-types.html#ConnectivityList">module:types.ConnectivityList</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="id"><span class="type-signature"></span>id<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the unique id of this geometry cell set.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#id">module:gcellset.GCellSet#id</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-203">line 203</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    unique id.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="jacobian"><span class="type-signature"></span>jacobian<span class="signature">(conn, N, J, x)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Evaluate the manifold Jacobian.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>conn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Connectivity">module:types.Connectivity</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Connectivity of a single cell.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Values of the basis functions. (cellSize by 1).</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>J</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Jacobian matrix.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Spatial coordinates. (cellSize by dim).</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSetManifold2.html#jacobian">module:gcellset.GCellSetManifold2#jacobian</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-588">line 588</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="jacobianInDim"><span class="type-signature"></span>jacobianInDim<span class="signature">(conn, N, J, x, dim)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        A convinient wrapper for jacobianCurve, jacobianSurface,
+jacobianVolumn
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>conn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Connectivity">module:types.Connectivity</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Connectivity of a single cell.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Values of the basis functions. (cellSize by 1).</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>J</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Jacobian matrix.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Spatial coordinates. (cellSize by dim).</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>dim</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">2 (surface) or 3 (volumn).</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSetManifold2.html#jacobianInDim">module:gcellset.GCellSetManifold2#jacobianInDim</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-646">line 646</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="jacobianMatrix"><span class="type-signature"></span>jacobianMatrix<span class="signature">(nder, x)</span><span class="type-signature"> &rarr; {<a href="module-types.html#Matrix">module:types.Matrix</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Evaluate the Jacob matrix.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>nder</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Nodal derivatives in parametric domain.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Nodal coordinates in spatial domain.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#jacobianMatrix">module:gcellset.GCellSet#jacobianMatrix</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-222">line 222</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Jacob matrix.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="jacobianSurface"><span class="type-signature"></span>jacobianSurface<span class="signature">(conn, N, J, x)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Evaluate the surface Jacobian.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>conn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Connectivity">module:types.Connectivity</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Connectivity of a single cell.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Values of the basis functions. (cellSize by 1).</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>J</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Jacobian matrix.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Spatial coordinates. (cellSize by dim).</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSetManifold2.html#jacobianSurface">module:gcellset.GCellSetManifold2#jacobianSurface</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-600">line 600</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="jacobianVolumn"><span class="type-signature"></span>jacobianVolumn<span class="signature">(conn, N, J, x)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Evaluate the volumn Jacobian.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>conn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Connectivity">module:types.Connectivity</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Connectivity of a single cell.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Values of the basis functions. (cellSize by 1).</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>J</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Jacobian matrix.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Spatial coordinates. (cellSize by dim).</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSetManifold2.html#jacobianVolumn">module:gcellset.GCellSetManifold2#jacobianVolumn</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-625">line 625</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="nfens"><span class="type-signature"></span>nfens<span class="signature">()</span><span class="type-signature"> &rarr; {Int}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return the number of nodes this gcellset connect
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#nfens">module:gcellset.GCellSet#nfens</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-277">line 277</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Int</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="otherDimension"><span class="type-signature"></span>otherDimension<span class="signature">(conn, N, x)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Evaluate the other dimension (area, thickness) of the element at
+given parametric coordinates, or at any given spatial
+coordinate.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>conn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Connectivity">module:types.Connectivity</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">connectivity of a single
+cell.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">values of the basic functions.</td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">spatial coordinates.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#otherDimension">module:gcellset.GCellSet#otherDimension</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-107">line 107</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="subset"><span class="type-signature"></span>subset<span class="signature">(indices)</span><span class="type-signature"> &rarr; {<a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns a new GCellSet of same type which is a subset of self by
+given indices.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>indices</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">indices of selected cell, starts from 0.</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#subset">module:gcellset.GCellSet#subset</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-305">line 305</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="topology"><span class="type-signature"></span>topology<span class="signature">()</span><span class="type-signature"> &rarr; {module:topology.Topology}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the full topology of gcellset. Mainly used for
+visualization.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#topology">module:gcellset.GCellSet#topology</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-93">line 93</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">module:topology.Topology</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="triangles"><span class="type-signature"></span>triangles<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
@@ -548,7 +3127,7 @@
     
     
     <div class="description">
-        <code>GCellSet#triangles</code>
+        <a href="module-gcellset.GCellSet.html#triangles"><code>module:gcellset.GCellSet#triangles</code></a>
     </div>
     
 
@@ -617,7 +3196,7 @@
     
     
     <div class="description">
-        <code>GCellSet#type</code>
+        <a href="module-gcellset.GCellSet.html#type"><code>module:gcellset.GCellSet#type</code></a>
     </div>
     
 
@@ -675,6 +3254,99 @@
     
 </dd>
 
+        
+            
+<dt>
+    <h4 class="name" id="vertices"><span class="type-signature"></span>vertices<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-types.html#Vector">module:types.Vector</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns a vector of vertices ids. Mainly used for visualization.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#vertices">module:gcellset.GCellSet#vertices</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-123">line 123</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-types.html#Vector">module:types.Vector</a></span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
         </dl>
     
 
@@ -701,7 +3373,7 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Tue Mar 17 2015 13:48:59 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Mar 17 2015 14:05:48 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
