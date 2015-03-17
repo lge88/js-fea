@@ -4044,31 +4044,11 @@ var fe =
 	var hypercube = topology.hypercube;
 
 	/**
-	 * A 1D js array of numbers that has non-zero length.
-	 * @typedef GCellSet~Vector
+	 * @module gcellset
 	 */
 
 	/**
-	 * A 2D js array of numbers that: 1) has non-zero number of rows.
-	 * (mat.length > 0). 2) has consistent non-zero column
-	 * length. (mat[0].length === mat[1].length ... === mat[m-1].length >
-	 * 0)
-	 * @typedef GCellSet~Matrix
-	 */
-
-	/**
-	 * An array of positive integers.
-	 * @typedef GCellSet~Connectivity
-	 */
-
-	/**
-	 * A {@link GCellSet~Matrix} of positive integers. Each row of the
-	 * matrix is a {@link GCellSet~Connectivity}.
-	 * @typedef GCellSet~ConnectivityList
-	 */
-
-	/**
-	 * @typedef GCellSet~InitOption
+	 * @typedef module.gcellset.GCellSetInitOption
 	 * @property {Topology} topology - required.
 	 * @property {Number} otherDimension - optional. default is 1.0.
 	 * @property {Boolean} axisSymm - optional. default is false.
@@ -4077,10 +4057,10 @@ var fe =
 	/**
 	 * Geometry cell set.
 	 * @class
-	 * @param {Topology} topology
+	 * @param {module.gcellset.GCellSetInitOption} options
 	 */
 	// TODO: support lookup by label.
-	function GCellSet(options) {
+	exports.GCellSet = function GCellSet(options) {
 	  if (!isObject(options) || !isa(options.topology, Topology))
 	    throw new Error('GCellSet#constructor(options): options' +
 	                    ' is not a valid GCellSet~InitOption.');
@@ -4114,15 +4094,15 @@ var fe =
 
 	  this._id = uuid();
 	  this._topology = topology;
-	}
-	exports.GCellSet = GCellSet;
+	};
+	var GCellSet = exports.GCellSet;
 
 	/**
 	 * Returns the full topology of gcellset. Mainly used for
 	 * visualization.
-	 * @returns {Topology}
+	 * @returns {module:topology.Topology}
 	 */
-	GCellSet.prototype.topology = function() {
+	exports.GCellSet.prototype.topology = function() {
 	  return this._topology;
 	};
 
@@ -4130,13 +4110,13 @@ var fe =
 	 * Evaluate the other dimension (area, thickness) of the element at
 	 * given parametric coordinates, or at any given spatial
 	 * coordinate.
-	 * @param {GCellSet~Connectivity} conn - connectivity of a single
+	 * @param {module:types.Connectivity} conn - connectivity of a single
 	 * cell.
-	 * @param {GCellSet~Matrix} N - values of the basic functions.
-	 * @param {GCellSet~Matrix} x - spatial coordinates.
+	 * @param {module:types.Matrix} N - values of the basic functions.
+	 * @param {module:types.Matrix} x - spatial coordinates.
 	 * @returns {Number}
 	 */
-	GCellSet.prototype.otherDimension = function(conn, N, x) {
+	exports.GCellSet.prototype.otherDimension = function(conn, N, x) {
 	  if (typeof this._otherDimension === 'function')
 	    return this._otherDimension(conn, N, x);
 	  return this._otherDimension;
@@ -4146,13 +4126,13 @@ var fe =
 	 * Returns whether it is axis symmetric.
 	 * @returns {Boolean}
 	 */
-	GCellSet.prototype.axisSymm = function() { return this._axisSymm; };
+	exports.GCellSet.prototype.axisSymm = function() { return this._axisSymm; };
 
 	/**
 	 * Returns a vector of vertices ids. Mainly used for visualization.
-	 * @returns {GCellSet~Vector}
+	 * @returns {module.types.Vector}
 	 */
-	GCellSet.prototype.vertices = function() {
+	exports.GCellSet.prototype.vertices = function() {
 	  return this._topology.getPointIndices();
 	};
 
@@ -4160,7 +4140,7 @@ var fe =
 	 * Returns a list of L2 cells. Mainly used for visualization.
 	 * @returns {GCellSet~ConnectivityList}
 	 */
-	GCellSet.prototype.edges = function() {
+	exports.GCellSet.prototype.edges = function() {
 	  return this._topology.getCellsInDim(1);
 	};
 
@@ -4168,7 +4148,7 @@ var fe =
 	 * Returns a list of T3 cells. Mainly used for visualization.
 	 * @returns {GCellSet~ConnectivityList}
 	 */
-	GCellSet.prototype.triangles = function() {
+	exports.GCellSet.prototype.triangles = function() {
 	  return this._topology.getCellsInDim(2);
 	};
 
@@ -4177,7 +4157,7 @@ var fe =
 	 * @abstract
 	 * @returns {String} the type string of this gcellset.
 	 */
-	GCellSet.prototype.type = function() {
+	exports.GCellSet.prototype.type = function() {
 	  throw new Error('GCellSet::type(): is not implemented.');
 	};
 
@@ -4187,7 +4167,7 @@ var fe =
 	 * @abstract
 	 * @returns {Function} the constructor of boundary gcellset.
 	 */
-	GCellSet.prototype.boundaryGCellSetConstructor = function() {
+	exports.GCellSet.prototype.boundaryGCellSetConstructor = function() {
 	  throw new Error('GCellSet::getBoundaryGCellSetConstructor(): is not implemented.');
 	};
 
@@ -4195,7 +4175,7 @@ var fe =
 	 * Return the type of boundary gcellset.
 	 * @returns {String} type of boundary gcellset.
 	 */
-	GCellSet.prototype.boundaryCellType = function() {
+	exports.GCellSet.prototype.boundaryCellType = function() {
 	  var C = this.boundaryGCellSetConstructor();
 	  return C.prototype.type.call(null);
 	};
@@ -4204,7 +4184,7 @@ var fe =
 	 * Return the boundary of this gcellset.
 	 * @returns {GCellSet} the boundary gcellset.
 	 */
-	GCellSet.prototype.boundary = function() {
+	exports.GCellSet.prototype.boundary = function() {
 	  var C = this.boundaryGCellSetConstructor();
 	  var boundaryTopology = this._topology.boundary();
 	  return new C({ topology: boundaryTopology });
@@ -4215,7 +4195,7 @@ var fe =
 	 * @abstract
 	 * @returns {Int} dimension.
 	 */
-	GCellSet.prototype.dim = function() {
+	exports.GCellSet.prototype.dim = function() {
 	  throw new Error('GCellSet::dim(): is not implemented.');
 	};
 
@@ -4224,7 +4204,7 @@ var fe =
 	 * @abstract
 	 * @returns {Int} number of nodes per cell.
 	 */
-	GCellSet.prototype.cellSize = function() {
+	exports.GCellSet.prototype.cellSize = function() {
 	  throw new Error('GCellSet::cellSize(): is not implemented.');
 	};
 
@@ -4232,7 +4212,7 @@ var fe =
 	 * Returns the unique id of this geometry cell set.
 	 * @returns {String} unique id.
 	 */
-	GCellSet.prototype.id = function() {
+	exports.GCellSet.prototype.id = function() {
 	  return this._id;
 	};
 
@@ -4241,7 +4221,7 @@ var fe =
 	 * @returns {GCellSet~ConnectivityList} connectivity list of length
 	 * this.count().
 	 */
-	GCellSet.prototype.conn = function() {
+	exports.GCellSet.prototype.conn = function() {
 	  return this._topology.getMaxCells();
 	};
 
@@ -4251,7 +4231,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Nodal coordinates in spatial domain.
 	 * @returns {GCellSet~Matrix} Jacob matrix.
 	 */
-	GCellSet.prototype.jacobianMatrix = function(nder, x) {
+	exports.GCellSet.prototype.jacobianMatrix = function(nder, x) {
 	  return mul(transpose(x), nder);
 	};
 
@@ -4261,7 +4241,7 @@ var fe =
 	 * @param {GCellSet~Matrix} paramCoords - Coordinates in parametric domain.
 	 * @returns {GCellSet~Matrix} Nodal contributions. (cellSize by 1).
 	 */
-	GCellSet.prototype.bfun = function(paramCoords) {
+	exports.GCellSet.prototype.bfun = function(paramCoords) {
 	  throw new Error('GCellSet::bfun(): is not implemented.');
 	};
 
@@ -4271,7 +4251,7 @@ var fe =
 	 * @param {GCellSet~Matrix} paramCoords - Coordinates in parametric domain.
 	 * @returns {GCellSet~Matrix} Nodal contribution derivatives. (cellSize by dim).
 	 */
-	GCellSet.prototype.bfundpar = function(paramCoords) {
+	exports.GCellSet.prototype.bfundpar = function(paramCoords) {
 	  throw new Error('GCellSet::bfundpar(): is not implemented.');
 	};
 
@@ -4283,7 +4263,7 @@ var fe =
 	 * @returns {GCellSet~Matrix} Derivatives of the basis functions in
 	 * spatical domain.
 	 */
-	GCellSet.prototype.bfundsp = function(nder, x) {
+	exports.GCellSet.prototype.bfundsp = function(nder, x) {
 	  var J = mul(transpose(x), nder);
 	  var res = dot(nder, inv(J));
 	  return res;
@@ -4298,7 +4278,7 @@ var fe =
 	 * Return the number of cells.
 	 * @returns {Int}
 	 */
-	GCellSet.prototype.count = function() {
+	exports.GCellSet.prototype.count = function() {
 	  return this._topology.getNumOfCellsInDim(this._topology.getDim());
 	};
 
@@ -4306,7 +4286,7 @@ var fe =
 	 * Return the number of nodes this gcellset connect
 	 * @returns {Int}
 	 */
-	GCellSet.prototype.nfens = function() {
+	exports.GCellSet.prototype.nfens = function() {
 	  return this._topology.getNumOfCellsInDim(0);
 	};
 
@@ -4334,7 +4314,7 @@ var fe =
 	 * @param {Array} indices - indices of selected cell, starts from 0.
 	 * @returns {GCellSet}
 	 */
-	GCellSet.prototype.subset = function(indices) {
+	exports.GCellSet.prototype.subset = function(indices) {
 	  var conn = subset(this.conn(), indices);
 	  var C = this.constructor;
 	  return new C({
@@ -4348,7 +4328,7 @@ var fe =
 	 * Returns a clone of self.
 	 * @returns {GCellSet}
 	 */
-	GCellSet.prototype.clone = function() {
+	exports.GCellSet.prototype.clone = function() {
 	  var C = this.constructor;
 	  return new C({
 	    topology: this._topology.clone(),
@@ -4367,9 +4347,10 @@ var fe =
 	 * @class
 	 * @extends GCellSet
 	 */
-	function GCellSetManifold0(options) {
+	exports.GCellSetManifold0 = function GCellSetManifold0(options) {
 	  GCellSet.call(this, options);
-	}
+	};
+	var GCellSetManifold0 = exports.GCellSetManifold0;
 
 	GCellSetManifold0.prototype = Object.create(GCellSet.prototype);
 	GCellSetManifold0.prototype.constructor = GCellSetManifold0;
@@ -4378,7 +4359,7 @@ var fe =
 	 * @override
 	 * @returns {Int}
 	 */
-	GCellSetManifold0.prototype.dim = function() { return 0; };
+	exports.GCellSetManifold0.prototype.dim = function() { return 0; };
 
 	/**
 	 * Evaluate the manifold Jacobian.
@@ -4388,7 +4369,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold0.prototype.jacobian = function(conn, N, J, x) {
+	exports.GCellSetManifold0.prototype.jacobian = function(conn, N, J, x) {
 	  var jac = 1;
 	  return jac;
 	};
@@ -4401,7 +4382,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold0.prototype.jacobianCurve = function(conn, N, J, x) {
+	exports.GCellSetManifold0.prototype.jacobianCurve = function(conn, N, J, x) {
 	  var jac, xyz;
 	  if (this.axisSymm()) {
 	    xyz = dot(transpose(N), x)[0];
@@ -4420,7 +4401,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold0.prototype.jacobianSurface = function(conn, N, J, x) {
+	exports.GCellSetManifold0.prototype.jacobianSurface = function(conn, N, J, x) {
 	  var jac, xyz;
 	  if (this.axisSymm()) {
 	    xyz = dot(transpose(N), x)[0];
@@ -4439,7 +4420,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold0.prototype.jacobianVolumn = function(conn, N, J, x) {
+	exports.GCellSetManifold0.prototype.jacobianVolumn = function(conn, N, J, x) {
 	  var jac;
 	  if (this.axisSymm()) {
 	    var xyz = mul(transpose(N), x)[0];
@@ -4460,7 +4441,7 @@ var fe =
 	 * @param {Int} dim - 1 (curve), 2 (surface) or 3 (volumn).
 	 * @returns {Number}
 	 */
-	GCellSetManifold0.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+	exports.GCellSetManifold0.prototype.jacobianInDim = function(conn, N, J, x, dim) {
 	  var jac;
 	  switch (dim) {
 	  case 3:
@@ -4483,9 +4464,10 @@ var fe =
 	 * @class
 	 * @extends GCellSet
 	 */
-	function GCellSetManifold1(options) {
+	exports.GCellSetManifold1 = function GCellSetManifold1(options) {
 	  GCellSet.call(this, options);
-	}
+	};
+	var GCellSetManifold1 = exports.GCellSetManifold1;
 
 	GCellSetManifold1.prototype = Object.create(GCellSet.prototype);
 	GCellSetManifold1.prototype.constructor = GCellSetManifold1;
@@ -4494,7 +4476,7 @@ var fe =
 	 * @override
 	 * @returns {Int}
 	 */
-	GCellSetManifold1.prototype.dim = function() { return 1; };
+	exports.GCellSetManifold1.prototype.dim = function() { return 1; };
 
 	/**
 	 * Evaluate the manifold Jacobian.
@@ -4504,7 +4486,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold1.prototype.jacobian = function(conn, N, J, x) {
+	exports.GCellSetManifold1.prototype.jacobian = function(conn, N, J, x) {
 	  var jac = this.jacobianCurve(conn, N, J, x);
 	  return jac;
 	};
@@ -4517,7 +4499,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold1.prototype.jacobianCurve = function(conn, N, J, x) {
+	exports.GCellSetManifold1.prototype.jacobianCurve = function(conn, N, J, x) {
 	  var vec = transpose(J)[0];
 	  var jac = norm(vec);
 	  return jac;
@@ -4531,7 +4513,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold1.prototype.jacobianSurface = function(conn, N, J, x) {
+	exports.GCellSetManifold1.prototype.jacobianSurface = function(conn, N, J, x) {
 	  var jac, xyz;
 	  if (this.axisSymm()) {
 	    xyz = dot(transpose(N), x)[0];
@@ -4550,7 +4532,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold1.prototype.jacobianVolumn = function(conn, N, J, x) {
+	exports.GCellSetManifold1.prototype.jacobianVolumn = function(conn, N, J, x) {
 	  var jac, xyz;
 	  if (this.axisSymm()) {
 	    xyz = dot(transpose(N), x)[0];
@@ -4571,7 +4553,7 @@ var fe =
 	 * @param {Int} dim - 1 (curve), 2 (surface) or 3 (volumn).
 	 * @returns {Number}
 	 */
-	GCellSetManifold1.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+	exports.GCellSetManifold1.prototype.jacobianInDim = function(conn, N, J, x, dim) {
 	  var jac;
 	  switch (dim) {
 	  case 3:
@@ -4594,11 +4576,10 @@ var fe =
 	 * @class
 	 * @extends GCellSet
 	 */
-	function GCellSetManifold2(options) {
+	exports.GCellSetManifold2 = function GCellSetManifold2(options) {
 	  GCellSet.call(this, options);
-	}
-
-	exports.GCellSetManifold2 = GCellSetManifold2;
+	};
+	var GCellSetManifold2 = exports.GCellSetManifold2;
 	GCellSetManifold2.prototype = Object.create(GCellSet.prototype);
 	GCellSetManifold2.prototype.constructor = GCellSetManifold2;
 
@@ -4606,7 +4587,7 @@ var fe =
 	 * @override
 	 * @returns {Int}
 	 */
-	GCellSetManifold2.prototype.dim = function() { return 2; };
+	exports.GCellSetManifold2.prototype.dim = function() { return 2; };
 
 	/**
 	 * Evaluate the manifold Jacobian.
@@ -4616,7 +4597,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold2.prototype.jacobian = function(conn, N, J, x) {
+	exports.GCellSetManifold2.prototype.jacobian = function(conn, N, J, x) {
 	  return this.jacobianSurface(conn, N, J, x);
 	};
 
@@ -4628,7 +4609,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold2.prototype.jacobianSurface = function(conn, N, J, x) {
+	exports.GCellSetManifold2.prototype.jacobianSurface = function(conn, N, J, x) {
 	  var tmp = size(J), sdim = tmp[0], ntan = tmp[1];
 	  var jac;
 	  if (ntan === 2) {
@@ -4653,7 +4634,7 @@ var fe =
 	 * @param {GCellSet~Matrix} x - Spatial coordinates. (cellSize by dim).
 	 * @returns {Number}
 	 */
-	GCellSetManifold2.prototype.jacobianVolumn = function(conn, N, J, x) {
+	exports.GCellSetManifold2.prototype.jacobianVolumn = function(conn, N, J, x) {
 	  var xyz, jac;
 	  if (this.axisSymm()) {
 	    xyz = dot(transpose(N), x)[0];
@@ -4674,7 +4655,7 @@ var fe =
 	 * @param {Int} dim - 2 (surface) or 3 (volumn).
 	 * @returns {Number}
 	 */
-	GCellSetManifold2.prototype.jacobianInDim = function(conn, N, J, x, dim) {
+	exports.GCellSetManifold2.prototype.jacobianInDim = function(conn, N, J, x, dim) {
 	  switch (dim) {
 	  case 3:
 	    return this.jacobianVolumn(conn, N, J, x);
@@ -4691,7 +4672,7 @@ var fe =
 	 * @extends GCellSetManifold1
 	 * @param {L2~InitOption} options
 	 */
-	function L2(options) {
+	exports.L2 = function L2(options) {
 	  if (!options || !(options.conn || options.topology))
 	    throw new Error('L2#constructor(options): options is not a valid' +
 	                    ' L2~InitOption');
@@ -4699,8 +4680,8 @@ var fe =
 	  if (options.conn) options.topology = hypercube(options.conn, 1);
 
 	  GCellSetManifold1.call(this, options);
-	}
-	exports.L2 = L2;
+	};
+	var L2 = exports.L2;
 
 	L2.prototype = Object.create(GCellSetManifold1.prototype);
 	L2.prototype.constructor = L2;
@@ -4709,7 +4690,7 @@ var fe =
 	 * {@link GCellSet#boundaryGCellSetConstructor}
 	 * @override
 	 */
-	L2.prototype.boundaryGCellSetConstructor = function() {
+	exports.L2.prototype.boundaryGCellSetConstructor = function() {
 	  // TODO:
 	  return P1;
 	};
@@ -4718,25 +4699,25 @@ var fe =
 	 * {@link GCellSet#triangles}
 	 * @override
 	 */
-	L2.prototype.triangles = function() { return []; };
+	exports.L2.prototype.triangles = function() { return []; };
 
 	/**
 	 * {@link GCellSet#cellSize}
 	 * @override
 	 */
-	L2.prototype.cellSize = function() { return 2; };
+	exports.L2.prototype.cellSize = function() { return 2; };
 
 	/**
 	 * {@link GCellSet#type}
 	 * @override
 	 */
-	L2.prototype.type = function() { return 'L2'; };
+	exports.L2.prototype.type = function() { return 'L2'; };
 
 	/**
 	 * {@link GCellSet#bfun}
 	 * @override
 	 */
-	L2.prototype.bfun = function(paramCoords) {
+	exports.L2.prototype.bfun = function(paramCoords) {
 	  var x = paramCoords[0];
 	  var out = [
 	    [ 0.5 * (1 - x) ],
@@ -4749,7 +4730,7 @@ var fe =
 	 * {@link GCellSet#bfundpar}
 	 * @override
 	 */
-	L2.prototype.bfundpar = function(paramCoords) {
+	exports.L2.prototype.bfundpar = function(paramCoords) {
 	  return [
 	    [ -0.5 ],
 	    [ +0.5 ]
@@ -4762,16 +4743,16 @@ var fe =
 	 * @extends GCellSetManifold2
 	 * @param {Q4~InitOption} options
 	 */
-	function Q4(options) {
+	exports.Q4 = function Q4(options) {
 	  if (!options || !(options.conn || options.topology))
 	    throw new Error('Q4#constructor(options): options is not a valid' +
 	                    ' Q4~InitOption');
 
 	  if (options.conn) options.topology = hypercube(options.conn, 2);
 	  GCellSetManifold2.call(this, options);
-	}
+	};
 
-	exports.Q4 = Q4;
+	var Q4 = exports.Q4;
 	Q4.prototype = Object.create(GCellSetManifold2.prototype);
 	Q4.prototype.constructor = Q4;
 
@@ -4779,25 +4760,25 @@ var fe =
 	 * {@link GCellSet#cellSize}
 	 * @override
 	 */
-	Q4.prototype.cellSize = function() { return 4; };
+	exports.Q4.prototype.cellSize = function() { return 4; };
 
 	/**
 	 * {@link GCellSet#type}
 	 * @override
 	 */
-	Q4.prototype.type = function() { return 'Q4'; };
+	exports.Q4.prototype.type = function() { return 'Q4'; };
 
 	/**
 	 * {@link GCellSet#boundaryGCellSetConstructor}
 	 * @override
 	 */
-	Q4.prototype.boundaryGCellSetConstructor = function() { return L2; };
+	exports.Q4.prototype.boundaryGCellSetConstructor = function() { return L2; };
 
 	/**
 	 * {@link GCellSet#triangles}
 	 * @override
 	 */
-	Q4.prototype.triangles = function() {
+	exports.Q4.prototype.triangles = function() {
 	  var quads = this._topology.getCellsInDim(2);
 	  var triangles = [];
 
@@ -4814,7 +4795,7 @@ var fe =
 	 * {@link GCellSet#bfun}
 	 * @override
 	 */
-	Q4.prototype.bfun = function(paramCoords) {
+	exports.Q4.prototype.bfun = function(paramCoords) {
 	  var one_minus_xi = (1 - paramCoords[0]);
 	  var one_plus_xi  = (1 + paramCoords[0]);
 	  var one_minus_eta = (1 - paramCoords[1]);
@@ -4833,7 +4814,7 @@ var fe =
 	 * {@link GCellSet#bfundpar}
 	 * @override
 	 */
-	Q4.prototype.bfundpar = function(paramCoords) {
+	exports.Q4.prototype.bfundpar = function(paramCoords) {
 	  var xi = paramCoords[0], eta = paramCoords[1];
 	  var val = [
 	    [-(1. - eta) * 0.25, -(1. - xi) * 0.25],
