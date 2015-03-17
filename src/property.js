@@ -4,7 +4,7 @@
 var _ = require('./core.utils');
 var assert = _.assert;
 var check = _.check;
-var matrixOfDimension = _.contracts.matrixOfDimension;
+var matrixOfDimension = assert.ensureMatrixOfDimension;
 var mat6x6 = matrixOfDimension(6, 6);
 var numeric = require('./core.numeric');
 var diag = numeric.diag;

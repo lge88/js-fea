@@ -5,11 +5,11 @@ var _ = require('./core.utils');
 var cloneDeep = _.cloneDeep;
 var check = _.check;
 var assert = _.assert;
-var isVectorOfDimension = _.isVectorOfDimension;
+var isVectorOfDimension = check.isVectorOfDimension;
 var array2d = _.array2d;
 var array1d = _.array1d;
 var defineContract = _.defineContract;
-var matrixOfDimension = _.contracts.matrixOfDimension;
+var matrixOfDimension = assert.ensureMatrixOfDimension;
 var PointSet = require('./geometry.pointset').PointSet;
 var FeNodeSet = require('./fens').FeNodeSet;
 

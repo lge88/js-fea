@@ -1,7 +1,5 @@
 /*global require*/
 
-/** @module utils */
-
 // var _ = require('highland');
 var _ = require('lodash');
 _.assign(exports, _);
@@ -13,7 +11,11 @@ exports.Bipartite= require('./core.bipartite').Bipartite;
 exports.SetStore = require('./core.setstore').SetStore;
 
 /**
- * @callback array1d~Generator
+ * @module utils
+ */
+
+/**
+ * @callback module:utils.array1dGenerator
  * @param {Number} i - index, starts from 0.
  * @returns {Any}
  */
@@ -22,20 +24,21 @@ exports.SetStore = require('./core.setstore').SetStore;
  * Returns a 1d js array by given dimension and generating function.
  * @function
  * @param {Number} m - length.
- * @param {array1d~Generator|Any} fn - Generation function or constant value.
+ * @param {module:utils.array1dGenerator|Any} fn - Generation function or constant value.
  * @returns {Array}
  */
-function array1d(m, fn) {
+exports.array1d = function array1d(m, fn) {
   if (typeof fn === 'function') {
     return Array.apply(null, Array(m)).map(function(x, i) { return fn(i); });
   } else {
     return Array.apply(null, Array(m)).map(function() { return fn; });
   }
-}
-exports.array1d = array1d;
+};
+
+var array1d = exports.array1d;
 
 /**
- * @callback array2d~Generator
+ * @callback module:utils.array2dGenerator
  * @param {Number} i - row index, starts from 0.
  * @param {Number} j - column index, starts from 1.
  * @returns {Any}
@@ -43,13 +46,12 @@ exports.array1d = array1d;
 
 /**
  * Returns a 2d js array by given dimension and generating function.
- * @static
  * @param {Number} m - number of rows.
  * @param {Number} n - number of columns.
- * @param {array2d~Generator|Any} fn - Generation function or constant value.
+ * @param {module:utils.array2dGenerator|Any} fn - Generation function or constant value.
  * @returns {Array}
  */
-function array2d(m, n, fn) {
+exports.array2d = function array2d(m, n, fn) {
   if (typeof fn === 'function') {
     return array1d(m, function(i) {
       return array1d(n, function(j) {
@@ -61,8 +63,8 @@ function array2d(m, n, fn) {
       return array1d(n, fn);
     });
   }
-}
-exports.array2d = array2d;
+};
+var array2d = exports.array2d;
 
 /**
  * Return a new vector that embeded in new dimension.
@@ -72,7 +74,7 @@ exports.array2d = array2d;
  * @param {Number} dim
  * @returns {Array}
  */
-function embed(vec, dim) {
+exports.embed = function embed(vec, dim) {
   var i, len, out;
   if (_.isArray(vec) && typeof dim === 'number') {
     out = array1d(dim, 0.0);
@@ -80,9 +82,7 @@ function embed(vec, dim) {
     return out;
   }
   throw new Error('embed(vec, dim): vec must be a Javascript array.');
-}
-exports.embed = embed;
-
+};
 
 /**
  * Compare two array lexically.
@@ -90,7 +90,7 @@ exports.embed = embed;
  * @param {Array} b - second array.
  * @returns {Number}
  */
-function byLexical(a, b) {
+exports.byLexical = function byLexical(a, b) {
   var i = 0, l = a.length, res;
   while (i < l) {
     res = a[i] - b[i];
@@ -98,8 +98,7 @@ function byLexical(a, b) {
     ++i;
   }
   return res;
-}
-exports.byLexical = byLexical;
+};
 
 /**
  * Returns a new array that roated by towards left by given offset.
@@ -107,7 +106,7 @@ exports.byLexical = byLexical;
  * @param {Integer} offset
  * @returns {Array} - new rotated array.
  */
-function rotateLeft(arr, offset) {
+exports.rotateLeft = function rotateLeft(arr, offset) {
   if (typeof offset === 'undefined')
     throw new Error('rotateLeft(): no offset specified.');
 
@@ -119,7 +118,8 @@ function rotateLeft(arr, offset) {
     ++j;
   }
   return out;
-}
+};
+var rotateLeft = exports.rotateLeft;
 
 /**
  * Returns a new array that roated by towards right by given offset.
@@ -127,9 +127,10 @@ function rotateLeft(arr, offset) {
  * @param {Integer} offset
  * @returns {Array} - new rotated array.
  */
-function rotateRight(arr, offset) { return rotateLeft(arr, -offset); }
-exports.rotateLeft = rotateLeft;
-exports.rotateRight = rotateRight;
+exports.rotateRight = function rotateRight(arr, offset) {
+  return rotateLeft(arr, -offset);
+};
+var rotateRight = exports.rotateRight;
 
 /**
  * Returns the index of the smallest value.
@@ -137,7 +138,7 @@ exports.rotateRight = rotateRight;
  * @param {CompareFn|undefined} cmp
  * @returns {Index}
  */
-function minIndex(vec, cmp) {
+exports.minIndex = function minIndex(vec, cmp) {
   if (typeof cmp === 'function') {
     return _.reduce(vec, function(sofar, x, i) {
       if (cmp(x, sofar.value) < 0) {
@@ -161,8 +162,8 @@ function minIndex(vec, cmp) {
       index: -1
     }).index;
   }
-}
-exports.minIndex = minIndex;
+};
+var minIndex = exports.minIndex;
 
 /**
  * Check whether an object is an iterator. An iterator must implement
@@ -170,11 +171,11 @@ exports.minIndex = minIndex;
  * @param {Any} obj
  * @returns {Boolean}
  */
-function isIterator(obj) {
+exports.isIterator = function isIterator(obj) {
   return obj && typeof obj.hasNext === 'function' &&
     typeof obj.next === 'function';
-}
-exports.isIterator = isIterator;
+};
+var isIterator = exports.isIterator;
 
 exports.noopIterator = {
   hasNext: function() { return false; },
@@ -186,19 +187,19 @@ exports.noopIterator = {
  * @param {Iterator} iter
  * @returns {Array}
  */
-function listFromIterator(iter) {
+exports.listFromIterator = function listFromIterator(iter) {
   var out = [];
   while (iter.hasNext()) out.push(iter.next());
   return out;
-}
-exports.listFromIterator = listFromIterator;
+};
+var listFromIterator = exports.listFromIterator;
 
 /**
  * Return a iterator of the list.
  * @param {Array} lst
  * @returns {Iterator}
  */
-function iteratorFromList(lst) {
+exports.iteratorFromList = function iteratorFromList(lst) {
   if (!_.isArray(lst)) {
     throw new Error('iteratorFromList(lst): lst must be an array.');
   }
@@ -208,20 +209,20 @@ function iteratorFromList(lst) {
     hasNext: function() { return i < len; },
     next: function() { return lst[i++]; }
   };
-}
-exports.iteratorFromList = iteratorFromList;
+};
+var iteratorFromList = exports.iteratorFromList;
 
 /**
  * Returns a unique identifier.
  * @returns {String}
  */
-function uuid() {
+exports.uuid = function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
     return v.toString(16);
   });
-}
-exports.uuid = uuid;
+};
+var uuid = exports.uuid;
 
 /**
  * Return a normalized connectivity list by rotating the original one
@@ -231,12 +232,11 @@ exports.uuid = uuid;
  * @param {ConnectivityList} conn - Connectivity list of cell.
  * @returns {ConnectivityList}
  */
-function normalizedCell(conn) {
+exports.normalizedCell = function normalizedCell(conn) {
   var offset = minIndex(conn);
   return rotateLeft(conn, offset);
-}
-exports.normalizedCell = normalizedCell;
-
+};
+var normalizedCell = exports.normalizedCell;
 
 // Type checking & contracts:
 var check = require('check-types');
@@ -247,7 +247,7 @@ exports._env = 'dev';
 function noop() {}
 exports.noop = noop;
 
-function defineContract(c, whatsWrong) {
+exports.defineContract = function defineContract(c, whatsWrong) {
   if (exports._env === 'dev') {
     return function() {
       try {
@@ -265,7 +265,8 @@ function defineContract(c, whatsWrong) {
   } else {
     return noop;
   }
-}
+};
+var defineContract = exports.defineContract;
 
 assert.string = check.assert.string;
 assert.unemptyString = check.assert.unemptyString;
@@ -292,9 +293,6 @@ assert.boolean = check.assert.boolean;
 
 exports.check = check;
 exports.assert = assert;
-exports.defineContract = defineContract;
-
-exports.contracts = {};
 
 /**
  * Returns a contract of m by n matrix.
@@ -303,7 +301,7 @@ exports.contracts = {};
  * @param {String} msg
  * @returns {Contract}
  */
-function matrixOfDimension(m, n, msg) {
+exports.ensureMatrixOfDimension = function ensureMatrixOfDimension(m, n, msg) {
   if (m !== '*') assert.positive(m);
   if (n !== '*') assert.positive(n);
 
@@ -326,10 +324,9 @@ function matrixOfDimension(m, n, msg) {
     }
   }, msg);
 };
-assert.matrixOfDimension = matrixOfDimension;
-
-exports.contracts.matrixOfDimension = matrixOfDimension;
-
+var ensureMatrixOfDimension =
+      assert.ensureMatrixOfDimension =
+      exports.ensureMatrixOfDimension;
 
 /**
  * Check whether an object is a matrix of m by n.
@@ -338,17 +335,17 @@ exports.contracts.matrixOfDimension = matrixOfDimension;
  * @param {Number} n
  * @returns {Boolean}
  */
-function isMatrixOfDimension(mat, m, n) {
+exports.isMatrixOfDimension = function isMatrixOfDimension(mat, m, n) {
   try {
-    matrixOfDimension(m, n)(mat);
+    ensureMatrixOfDimension(m, n)(mat);
   } catch(err) {
     return false;
   }
   return true;
-}
-exports.isMatrixOfDimension = isMatrixOfDimension;
-check.matrixOfDimension = isMatrixOfDimension;
-
+};
+var isMatrixOfDimension =
+      check.isMatrixOfDimension =
+      exports.isMatrixOfDimension;
 
 /**
  * Returns a contract of m-D vector
@@ -356,7 +353,7 @@ check.matrixOfDimension = isMatrixOfDimension;
  * @param {String} msg
  * @returns {Contract}
  */
-function vectorOfDimension(n, msg) {
+exports.ensureVectorOfDimension = function ensureVectorOfDimension(n, msg) {
   if (n !== '*') assert.positive(n);
   if (!msg) msg = 'input is not a vector of ' + n + ' dimension.';
   return defineContract(function(vec) {
@@ -369,10 +366,11 @@ function vectorOfDimension(n, msg) {
       assert.number(vec[i], 'vec(' + i + '): ' + vec[i] + ' is not a number.');
 
   }, msg);
+};
 
-}
-assert.vectorOfDimension = vectorOfDimension;
-exports.contracts.vectorOfDimension = vectorOfDimension;
+var ensureVectorOfDimension =
+      assert.ensureVectorOfDimension =
+      exports.ensureVectorOfDimension;
 
 /**
  * Check whether an object is a vector of length m.
@@ -380,13 +378,14 @@ exports.contracts.vectorOfDimension = vectorOfDimension;
  * @param {Number} m
  * @returns {Boolean}
  */
-function isVectorOfDimension(vector, n) {
+exports.isVectorOfDimension = function isVectorOfDimension(vector, n) {
   try {
-    vectorOfDimension(n)(vector);
+    ensureVectorOfDimension(n)(vector);
   } catch(err) {
     return false;
   }
   return true;
-}
-exports.isVectorOfDimension = isVectorOfDimension;
-check.vectorOfDimension = vectorOfDimension;
+};
+var isVectorOfDimension =
+      check.isVectorOfDimension =
+      exports.isVectorOfDimension;

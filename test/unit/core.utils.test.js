@@ -297,7 +297,7 @@ describe('core.utils', function() {
   });
 
   describe('matrixOfDimension(m, n, msg)', function() {
-    var matrixOfDimension = _.contracts.matrixOfDimension;
+    var matrixOfDimension = _.assert.ensureMatrixOfDimension;
 
     var casesShouldWork = [
       {
@@ -452,7 +452,7 @@ describe('core.utils', function() {
   });
 
   describe('vectorOfDimension(n, msg)', function() {
-    var vectorOfDimension = _.contracts.vectorOfDimension;
+    var vectorOfDimension = _.assert.ensureVectorOfDimension;
 
     var casesShouldWork = [
       {
