@@ -1,12 +1,17 @@
 /*global require*/
-// feblock
+// dependencies
 var _ = require('./core.utils');
 var assert = _.assert;
 var check = _.check;
+var isObject = check.object;
+var isFunction = check.function;
+var isAssigned = check.assigned;
+var isa = check.instance;
+var isMatrixOfDimension = check.isMatrixOfDimension;
 var array2d = _.array2d;
 var array1d = _.array1d;
 var defineContract = _.defineContract;
-var isMatrixOfDimension = _.isMatrixOfDimension;
+
 var numeric = require('./core.numeric');
 var size = numeric.size;
 var transpose = numeric.transpose;
@@ -15,45 +20,81 @@ var add = numeric.add;
 var mul = numeric.mul;
 var inv = numeric.inv;
 var norm = numeric.norm;
-var ixUpdate = numeric.ixUpdate;
 var colon = numeric.colon;
+var ixUpdate_ = numeric.ixUpdate_;
+
 var Material = require('./material').Material;
 var GCellSet = require('./gcellset').GCellSet;
 var IntegrationRule = require('./integrationrule').IntegrationRule;
 var ElementMatrix = require('./system.matrix').ElementMatrix;
 var ElementVector = require('./system.vector').ElementVector;
 
-function Feblock() {}
+/**
+ * @module feblock
+ */
 
-Feblock.prototype.gcells = function() {
+/**
+ * Finite element block class.
+ * @class
+ * @abstract
+ */
+exports.Feblock = function Feblock() {};
+var Feblock = exports.Feblock;
+
+/**
+ * Returns the gcellset. Useful for visualization.
+ * @returns {module:gcellset.GCellSet}
+ */
+exports.Feblock.prototype.gcells = function() {
   return this._gcells;
 };
 
-Feblock.prototype.topology = function() {
+/**
+ * Returns the topology. Useful for visualization.
+ * @returns {module:topology.Topology}
+ */
+exports.Feblock.prototype.topology = function() {
   return this._gcells.topology();
 };
 
-var _input_contract_deforss_option = defineContract(function(o) {
-  assert.object(o);
-  if (!check.instance(o.material, Material))
-    throw new Error('options.material is not a instance of Material');
+/**
+ * @typedef module:feblock.DeforSSInitOption
+ * @property {module:material.Material} material
+ * @property {module:gcellset.GCellSet} gcells
+ * @property {module:integrationrule.IntegrationRule} integrationRule
+ */
 
-  if (!check.instance(o.gcells, GCellSet))
-    throw new Error('options.gcells is not a instance of GCellSet');
+/**
+ * @class
+ * @extends module:feblock.Feblock
+ * @param {module:feblock.DeforSSInitOption} options
+ */
+exports.DeforSS = function DeforSS(options) {
+  this._mater = null;
+  this._gcells = null;
+  this._ir = null;
+  this._rm = null;
 
-  if (!check.instance(o.integrationRule, IntegrationRule))
-    throw new Error('options.integrationRule is not a instance of integrationRule');
+  if (!isObject(options))
+    throw new Error('DeforSS#constructor(options): option is not a valid ' +
+                    'DeforSSInitOption.');
 
-}, 'Input is not valid DeforSS option.');
+  if (!isa(options.material, Material))
+    throw new Error('DeforSS#constructor(options):' +
+                    ' options.material is not a instance of Material');
 
-function DeforSS(options) {
-  _input_contract_deforss_option(options);
+  if (!isa(options.gcells, GCellSet))
+    throw new Error('DeforSS#constructor(options):' +
+                    'options.gcells is not a instance of GCellSet');
+
+  if (!isa(options.integrationRule, IntegrationRule))
+    throw new Error('DeforSS#constructor(options):' +
+                    'options.integrationRule is not a instance of integrationRule');
+
   this._mater = options.material;
   this._gcells = options.gcells;
   this._ir = options.integrationRule;
-  if (check.assigned(options.rm)) {
-    this._rm = options.rm;
-  }
+  if (isAssigned(options.rm)) this._rm = options.rm;
 
   var dim = this._gcells.dim();
   switch (dim) {
@@ -62,18 +103,33 @@ function DeforSS(options) {
     break;
   case 2:
     if (this._gcells.axisSymm())
-      throw new Error('DeforSS::hBlmat() for axixSymm, dim = ' + dim + ' is not implemented.');
+      throw new Error('DeforSS::hBlmat() for axixSymm, dim = ' +
+                      dim + ' is not implemented.');
     else
       this.hBlmat = this._blmat2;
+    break;
+  case 3:
+    this.hBlmat = this._blmat3;
     break;
   default:
     throw new Error('DeforSS::hBlmat() for dim ' + dim + ' is not implemented.');
   }
-}
+};
+var DeforSS = exports.DeforSS;
 DeforSS.prototype = Object.create(Feblock.prototype);
 DeforSS.prototype.constructor = DeforSS;
 
-DeforSS.prototype._blmat1 = function(N, Ndersp, c, Rm) {
+/**
+ * Compute the strain-displacement matrix (B) for a one-manifold element.
+ * @param {module:types.Matrix} N - matrix of basis function values.
+ * @param {module:types.Matrix} Ndersp - matrix of basis function
+ * gradients.
+ * @param {module:types.Matrix} c - spatial coordinates.
+ * @param {module:types.Matrix|undefined} Rm - orthogonal matrix
+ * represent the global-to-local transformation.
+ * @returns {module:types.Matrix} B matrix.
+ */
+exports.DeforSS.prototype._blmat1 = function(N, Ndersp, c, Rm) {
   var nfn = size(Ndersp, 1);
   var dim = size(c, 2);
   var B = array2d(1, nfn*dim, 0);
@@ -101,11 +157,19 @@ DeforSS.prototype._blmat1 = function(N, Ndersp, c, Rm) {
     throw new Error('_blmat1: not implmented when !Rm');
   }
   return B;
-
 };
 
-
-DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
+/**
+ * Compute the strain-displacement matrix (B) for a two-manifold element.
+ * @param {module:types.Matrix} N - matrix of basis function values.
+ * @param {module:types.Matrix} Ndersp - matrix of basis function
+ * gradients.
+ * @param {module:types.Matrix} c - spatial coordinates.
+ * @param {module:types.Matrix|undefined} Rm - orthogonal matrix
+ * represent the global-to-local transformation.
+ * @returns {module:types.Matrix} B matrix.
+ */
+exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
   var nfn = size(Ndersp, 1);
   var dim = size(c, 2);
   var B = array2d(3, nfn*dim, 0);
@@ -122,7 +186,7 @@ DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
       // console.log("B = ", B);
       // console.log("cols = ", cols);
       // console.log("vals = ", vals);
-      B = ixUpdate(B, ':', cols, vals);
+      B = ixUpdate_(B, ':', cols, vals);
       // console.log("B = ", B);
     }
   } else
@@ -130,14 +194,59 @@ DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
   return B;
 };
 
-// In:
-//   geom: Geometry Field
-//   geom: Displacemeent Field
-// out: [ ElementMatrix ]
-// out: { matrices: [ 2D JS Array of dimension cellSize x cellSize ] }
-//  eqnums: [ 1D JS Array of dimension cellSize ] }
+/**
+ * Compute the strain-displacement matrix (B) for a 3-manifold element.
+ * @param {module:types.Matrix} N - matrix of basis function values.
+ * @param {module:types.Matrix} Ndersp - matrix of basis function
+ * gradients.
+ * @param {module:types.Matrix} c - spatial coordinates.
+ * @param {module:types.Matrix|undefined} Rm - orthogonal matrix
+ * represent the global-to-local transformation.
+ * @returns {module:types.Matrix} B matrix.
+ */
+exports.DeforSS.prototype._blmat3 = function(N, Ndersp, c, Rm) {
+  var nfn = size(Ndersp, 1);
+  var B = array2d(6, nfn*3);
+
+  var i, k, RmT, indices, part;
+  if (!isAssigned(Rm)) {
+    for (i = 0; i < nfn; ++i) {
+      k = 3*i;
+      B[0][k] = Ndersp[i][0];
+      B[1][k+1] = Ndersp[i][1];
+      B[2][k+2] = Ndersp[i][2] ;
+      B[3][k] = Ndersp[i][1]; B[3][k+1]= Ndersp[i][0];
+      B[4][k] = Ndersp[i][2]; B[4][k+2]= Ndersp[i][0];
+      B[5][k+1] = Ndersp[i][2]; B[5][k+2]= Ndersp[i][1];
+    }
+  } else {
+    RmT = transpose(Rm);
+    for (i = 1; i <= nfn; ++i) {
+      indices = colon(3*(i-1)+1, 3*i);
+      part = [
+        [ Ndersp[i-1][0], 0, 0 ],
+        [ 0, Ndersp[i-1][1], 0 ],
+        [ 0, 0, Ndersp[i-1][2] ],
+        [ Ndersp[i-1][1], Ndersp[i-1][0], 0 ],
+        [ Ndersp[i-1][2], 0, Ndersp[i-1][0] ],
+        [ 0, Ndersp[i-1][2], Ndersp[i-1][1] ]
+      ];
+      part = dot(part, RmT);
+      ixUpdate_(B, ':', indices, part);
+    }
+  }
+
+  return B;
+};
+
+/**
+ * Return a list of element matrices that can be assembled to global
+ * stiffness matrix.
+ * @param {module:field.Field} geom - geometric field.
+ * @param {module:field.Field} u - displacement field.
+ * @returns {Array} array of {@link module:system.matrix.ElementMatrix }
+ */
 DeforSS.prototype.stiffness = function(geom, u) {
-  // _input_contract_stiffness_(geom, u);
   var gcells = this._gcells;
   var cellSize = gcells.cellSize();
   var ir = this._ir;
@@ -154,8 +263,7 @@ DeforSS.prototype.stiffness = function(geom, u) {
   }
 
   var rmh = null;
-  if (typeof this._rm === 'function')
-    rmh = this._rm;
+  if (isFunction(this._rm)) rmh = this._rm;
   var rm = this._rm;
   var mat = this._mater;
 
@@ -186,8 +294,7 @@ DeforSS.prototype.stiffness = function(geom, u) {
       J = dot(transpose(x), Nders[j]);
       // console.log("c = ", c);
       // console.log("J = ", J);
-      if (rmh)
-        rm = rmh(c, J);
+      if (rmh) rm = rmh(c, J);
 
       if (rm) {
         // TODO: figure out rm
@@ -198,6 +305,7 @@ DeforSS.prototype.stiffness = function(geom, u) {
       // console.log("Ndersp = ", Ndersp);
 
       Jac = gcells.jacobianVolumn(conn, Ns[j], J, x);
+      // console.log("Jac = ", Jac);
       if (Jac < 0) throw new Error('Non-positive Jacobian');
 
       // TODO: _hBlmat
@@ -229,11 +337,11 @@ DeforSS.prototype.stiffness = function(geom, u) {
     }
   }
 
-  var elementMatrix = Ke.map(function(mat, i) {
+  var elementMatrices = Ke.map(function(mat, i) {
     return new ElementMatrix(mat, eqnums[i]);
   });
 
-  return elementMatrix;
+  return elementMatrices;
 };
 
 

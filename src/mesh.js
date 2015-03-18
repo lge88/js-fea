@@ -127,16 +127,22 @@ exports.H8Block = function(w, l, h, nx, ny, nz) {
   function cellConnAt(i, j, k) {
     return [
       ijkToIndex(i, j, k, nx+1, ny+1, nz+1),
-      ijkToIndex(i, j, k+1, nx+1, ny+1, nz+1),
-      ijkToIndex(i, j+1, k+1, nx+1, ny+1, nz+1),
+      ijkToIndex(i+1, j, k, nx+1, ny+1, nz+1),
+      ijkToIndex(i+1, j+1, k, nx+1, ny+1, nz+1),
       ijkToIndex(i, j+1, k, nx+1, ny+1, nz+1),
 
-      ijkToIndex(i+1, j, k, nx+1, ny+1, nz+1),
+      ijkToIndex(i, j, k+1, nx+1, ny+1, nz+1),
       ijkToIndex(i+1, j, k+1, nx+1, ny+1, nz+1),
       ijkToIndex(i+1, j+1, k+1, nx+1, ny+1, nz+1),
-      ijkToIndex(i+1, j+1, k, nx+1, ny+1, nz+1)
+      ijkToIndex(i, j+1, k+1, nx+1, ny+1, nz+1)
     ];
   }
+
+  // FIXME: should be a better way to unify zero-based vs one-based
+  // indices madness :(
+  conn.forEach(function(cell) {
+    cell.forEach(function(x, i) { cell[i] = x + 1; });
+  });
 
   var fens = new FeNodeSet({ xyz: xyz });
   var gcells = new H8({ conn: conn });
