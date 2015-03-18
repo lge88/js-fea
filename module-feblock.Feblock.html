@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Class: DeforSSLinElBiax</title>
+	<title>js-fea Class: Feblock</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -155,14 +155,14 @@
 					
 
 
-	<h1 class="page-title">Class: DeforSSLinElBiax</h1>
+	<h1 class="page-title">Class: Feblock</h1>
 <section>
 
 <header>
     <h2>
-        <span class="ancestors"><a href="module-material.html">material</a>.</span>
+        <span class="ancestors"><a href="module-feblock.html">feblock</a>.</span>
     
-    DeforSSLinElBiax
+    Feblock
     </h2>
     
 </header>
@@ -174,67 +174,22 @@
     
         
 <dt>
-    <h4 class="name" id="DeforSSLinElBiax"><span class="type-signature"></span>new DeforSSLinElBiax<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Feblock"><span class="type-signature">&lt;virtual> </span>new Feblock<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Finite element block class.
+    </div>
+    
 
     
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="module-material.html#DeforSSLinElBiaxInitOption">module:material.DeforSSLinElBiaxInitOption</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
     
     
     
@@ -260,7 +215,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-88">line 88</a>
+        <a href="feblock.js.html">feblock.js</a>, <a href="feblock.js.html#sunlight-1-line-41">line 41</a>
     </li></ul></dd>
     
 
@@ -288,12 +243,6 @@
     
     </div>
 
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        <ul>
-            <li><a href="module-material.Material.html">module:material.Material</a></li>
-        </ul>
     
 
     
@@ -312,7 +261,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="newState"><span class="type-signature">&lt;virtual> </span>newState<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="gcells"><span class="type-signature"></span>gcells<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a>}</span></h4>
     
     
 </dt>
@@ -320,81 +269,7 @@
     
     
     <div class="description">
-        Create a new material state. Override by subclasses.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="module-material.Material.html#newState">module:material.Material#newState</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-35">line 35</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="tangentModuli"><span class="type-signature"></span>tangentModuli<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-types.html#Matrix">module:types.Matrix</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the tangent moduli
+        Returns the gcellset. Useful for visualization.
     </div>
     
 
@@ -427,7 +302,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-105">line 105</a>
+        <a href="feblock.js.html">feblock.js</a>, <a href="feblock.js.html#sunlight-1-line-48">line 48</a>
     </li></ul></dd>
     
 
@@ -451,11 +326,6 @@
     <h5>Returns:</h5>
     
             
-<div class="param-desc">
-    'strain' or 'stress' - 3 by 3
-matrix. 'axisSymm' 4 by 4 matrix.
-</div>
-
 
 
 <dl>
@@ -464,7 +334,7 @@ matrix. 'axisSymm' 4 by 4 matrix.
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+<span class="param-type"><a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a></span>
 
 
 	</dd>
@@ -479,7 +349,7 @@ matrix. 'axisSymm' 4 by 4 matrix.
         
             
 <dt>
-    <h4 class="name" id="update"><span class="type-signature">&lt;virtual> </span>update<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="topology"><span class="type-signature"></span>topology<span class="signature">()</span><span class="type-signature"> &rarr; {module:topology.Topology}</span></h4>
     
     
 </dt>
@@ -487,7 +357,7 @@ matrix. 'axisSymm' 4 by 4 matrix.
     
     
     <div class="description">
-        Update material state. Override by subclasses.
+        Returns the topology. Useful for visualization.
     </div>
     
 
@@ -506,11 +376,6 @@ matrix. 'axisSymm' 4 by 4 matrix.
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="module-material.Material.html#update">module:material.Material#update</a>
-    </li></dd>
-    
 
     
 
@@ -525,7 +390,7 @@ matrix. 'axisSymm' 4 by 4 matrix.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-43">line 43</a>
+        <a href="feblock.js.html">feblock.js</a>, <a href="feblock.js.html#sunlight-1-line-56">line 56</a>
     </li></ul></dd>
     
 
@@ -546,6 +411,25 @@ matrix. 'axisSymm' 4 by 4 matrix.
     
     
     
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">module:topology.Topology</span>
+
+
+	</dd>
+</dl>
+
+
+        
     
     
 </dd>
@@ -576,7 +460,7 @@ matrix. 'axisSymm' 4 by 4 matrix.
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Tue Mar 17 2015 23:55:34 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Tue Mar 17 2015 23:55:33 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
