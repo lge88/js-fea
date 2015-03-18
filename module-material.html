@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Class: Mesh</title>
+	<title>js-fea Module: material</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -143,14 +143,12 @@
 					
 
 
-	<h1 class="page-title">Class: Mesh</h1>
+	<h1 class="page-title">Module: material</h1>
 <section>
 
 <header>
     <h2>
-        <span class="ancestors"><a href="module-mesh.html">mesh</a>~</span>
-    
-    Mesh
+    material
     </h2>
     
 </header>
@@ -161,28 +159,100 @@
 
     
         
+
+        
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-20">line 20</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-material.DeforSSLinElBiax.html">DeforSSLinElBiax</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-material.DeforSSLinElTriax.html">DeforSSLinElTriax</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-material.DeforSSLinElUniax.html">DeforSSLinElUniax</a></dt>
+            <dd></dd>
+        
+            <dt><a href="module-material.Material.html">Material</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
 <dt>
-    <h4 class="name" id="Mesh"><span class="type-signature"></span>new Mesh<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="DeforSSLinElBiaxInitOption">DeforSSLinElBiaxInitOption</h4>
     
     
 </dt>
 <dd>
     
     
-    <div class="description">
-        Mesh class.
-    </div>
     
 
     
+<dl class="details">
     
-    
-    
-    
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+        <h5 class="subsection-title">Properties:</h5>
+
+        <dl>
+
+<table class="props table table-striped">
     <thead>
 	<tr>
 		
@@ -204,13 +274,139 @@
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>property</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="module-mesh.html#MeshInitOption">module:mesh.MeshInitOption</a></span>
+<span class="param-type">module:property.LinElIso</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>reduction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">'strain', 'stress' or
+'axisSymm'. Default is 'strain'</td>
+        </tr>
+
+	
+	</tbody>
+</table>
+</dl>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-76">line 76</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+</dd>
+
+            
+                
+<dt>
+    <h4 class="name" id="DeforSSLinElTriaxInitOption">DeforSSLinElTriaxInitOption</h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    
+
+    
+<dl class="details">
+    
+
+        <h5 class="subsection-title">Properties:</h5>
+
+        <dl>
+
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>property</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">module:property.LinElIso</span>
 
 
             
@@ -226,11 +422,8 @@
 	
 	</tbody>
 </table>
+</dl>
 
-    
-    
-    
-<dl class="details">
     
 
     
@@ -252,7 +445,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-44">line 44</a>
+        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-124">line 124</a>
     </li></ul></dd>
     
 
@@ -265,74 +458,74 @@
 
     
     
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">var msh1 = new Mesh({
-  fens: new FeNodeSet(...),
-  gcells: new L2(...)
-});
-
-var msh2 = new Mesh({
-  xyz: [...],
-  gcellsType: 'L2',
-  conn: [...]
-});</pre>
-
-
-    
 </dd>
 
+            
+                
+<dt>
+    <h4 class="name" id="DeforSSLinElUniaxInitOption">DeforSSLinElUniaxInitOption</h4>
     
-    </div>
-
     
-
+</dt>
+<dd>
     
-
     
-
-    
-
-    
-
     
 
     
-        <h3 class="subsection-title">Methods</h3>
+<dl class="details">
+    
+
+        <h5 class="subsection-title">Properties:</h5>
 
         <dl>
-            
-<dt>
-    <h4 class="name" id="fens"><span class="type-signature"></span>fens<span class="signature">()</span><span class="type-signature"> &rarr; {module:fens.FeNodeSet}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns finite element node set of the mesh.
-    </div>
-    
 
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>property</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">module:property.LinElIso</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+</dl>
+
     
 
     
@@ -354,7 +547,7 @@ var msh2 = new Mesh({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-54">line 54</a>
+        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-47">line 47</a>
     </li></ul></dd>
     
 
@@ -367,128 +560,9 @@ var msh2 = new Mesh({
 
     
     
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">module:fens.FeNodeSet</span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
 </dd>
 
-        
-            
-<dt>
-    <h4 class="name" id="gcells"><span class="type-signature"></span>gcells<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns geometry cell set of the mesh.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-60">line 60</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a></span>
-
-
-	</dd>
-</dl>
-
-
-        
-    
-    
-</dd>
-
-        </dl>
-    
-
+            </dl>
     
 
     

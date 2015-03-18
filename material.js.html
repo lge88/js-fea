@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Source: mesh.js</title>
+	<title>js-fea Source: material.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -143,7 +143,7 @@
 					
 
 
-		<h1 class="page-title">Source: mesh.js</h1>
+		<h1 class="page-title">Source: material.js</h1>
     
     <section>
         <article>
@@ -152,146 +152,151 @@
 var _ = require('./core.utils');
 var check = _.check;
 var isObject = check.object;
-var array2d = _.array2d;
-var fens = require('./fens');
-var FeNodeSet = fens.FeNodeSet;
-var gcells = require('./gcellset');
-var Q4 = gcells.Q4;
-var H8 = gcells.H8;
+var isa = check.instance;
+var assert = _.assert;
+
+var numeric = require('./core.numeric');
+var ix = numeric.ix;
+var ixUpdate_ = numeric.ixUpdate_;
+var mul = numeric.mul;
+var div = numeric.div;
+var dot = numeric.dot;
+var add = numeric.add;
+
+var property = require('./property');
+var LinElIso = property.LinElIso;
 
 /**
- * @module mesh
+ * @module material
  */
 
 /**
- * @typedef module:mesh.MeshInitOption
- * @property {FeNodeSet} fens - optional. finite element node set.
- * @property {Array} xyz - optional. 2D array of node coordinates.
- * @property {GCellSet} gcells - optional. geometry cell set.
- * @property {String} gcellsType - optional. finite element node set.
- * @property {Array} conn - optional. connectiviy list.
- */
-
-/**
- * Mesh class.
  * @class
- * @param {module:mesh.MeshInitOption} options
- * @example
-
-   var msh1 = new Mesh({
-     fens: new FeNodeSet(...),
-     gcells: new L2(...)
-   });
-
-   var msh2 = new Mesh({
-     xyz: [...],
-     gcellsType: 'L2',
-     conn: [...]
-   });
- *
+ * @abstract
  */
-function Mesh(options) {
-  if (!isObject(options)) options = {};
-  this._fens = options.fens;
-  this._gcells = options.gcells;
-}
+exports.Material = function Material() {};
+var Material = exports.Material;
 
 /**
- * Returns finite element node set of the mesh.
- * @returns {module:fens.FeNodeSet}
+ * Create a new material state. Override by subclasses.
+ * @abstract
  */
-Mesh.prototype.fens = function() { return this._fens; };
-
-/**
- * Returns geometry cell set of the mesh.
- * @returns {module:gcellset.GCellSet}
- */
-Mesh.prototype.gcells = function() { return this._gcells; };
-
-/**
- * Creates a L-shaped domain using 3 quads.
- * @returns {module:mesh.Mesh}
- */
-exports.L2x2 = function L2x2() {
-  var fens, gcells;
-  fens = new FeNodeSet({
-    xyz: [
-      [1/2, 0],
-      [1, 0],
-      [1, 1/2],
-      [1/2, 1/2],
-      [1, 1],
-      [1/2, 1],
-      [0, 1],
-      [0, 1/2]
-    ]
-  });
-
-  gcells = new Q4({
-    conn: [
-      [1, 2, 3, 4],
-      [4, 3, 5, 6],
-      [4, 6, 7, 8]
-    ]
-  });
-
-  return new Mesh({ fens: fens, gcells: gcells });
+exports.Material.prototype.newState = function() {
+  throw new Error('Material::newState(): is not implemented.');
 };
-var L2x2 = exports.L2x2;
 
 /**
- * Creates a H8 block mesh.
- * @param {Number} w - width in x direction.
- * @param {Number} l - length in y direction.
- * @param {Number} h - height in z direction.
- * @param {Int} nx - number of divisions in x direction.
- * @param {Int} ny - number of divisions in y direction.
- * @param {Int} nz - number of divisions in z direction.
- * @returns {module:mesh.Mesh}
+ * Update material state. Override by subclasses.
+ * @abstract
  */
-exports.H8Block = function(w, l, h, nx, ny, nz) {
-  var dx = w/nx, dy = l/ny, dz = h/nz;
-  var nn = (nx+1)*(ny+1)*(nz+1);
-  var xyz = new Array(nn);
-  var conn = new Array(nx*ny*nz);
-  var i, j, k;
+exports.Material.prototype.update = function() {
+  throw new Error('Material::update(): is not implemented.');
+};
 
-  // return 1d index from 3 index
-  function ijkToIndex(i, j, k, ni, nj, nk) {
-    return i*nj*nk + j*nk + k;
+/**
+ * @typedef module:material.DeforSSLinElUniaxInitOption
+ * @property {module:property.LinElIso} property
+ */
+
+/**
+ * @class
+ * @extends module:material.Material
+ * @param {module:material.DeforSSLinElUniaxInitOption} options
+ */
+exports.DeforSSLinElUniax = function DeforSSLinElUniax(options) {
+  if (!isObject(options) || !isa(options.property, LinElIso))
+    throw new Error('DeforSSLinElUniax#constructor(options): options' +
+                    ' is not valid DeforSSLinElUniaxInitOption');
+  this._prop = options.property;
+};
+var DeforSSLinElUniax = exports.DeforSSLinElUniax;
+
+DeforSSLinElUniax.prototype = Object.create(Material.prototype);
+DeforSSLinElUniax.prototype.constructor = DeforSSLinElUniax;
+
+/**
+ * Returns the tangent moduli
+ * @returns {module:types.Matrix}
+ */
+exports.DeforSSLinElUniax.prototype.tangentModuli = function() {
+  return [ [this._prop.E()] ];
+};
+
+/**
+ * @typedef module:material.DeforSSLinElBiaxInitOption
+ * @property {module:property.LinElIso} property
+ * @property {String} reduction - 'strain', 'stress' or
+ * 'axisSymm'. Default is 'strain'
+ */
+
+/**
+ * @class
+ * @extends module:material.Material
+ * @param {module:material.DeforSSLinElBiaxInitOption} options
+ */
+exports.DeforSSLinElBiax = function DeforSSLinElBiax(options) {
+  if (!isObject(options) || !isa(options.property, LinElIso))
+    throw new Error('DeforSSLinElBiax#constructor(options): options' +
+                    ' is not valid DeforSSLinElBiaxInitOption');
+  this._prop = options.property;
+  this._reduction = options.reduction || 'strain';
+};
+var DeforSSLinElBiax = exports.DeforSSLinElBiax;
+
+DeforSSLinElBiax.prototype = Object.create(Material.prototype);
+DeforSSLinElBiax.prototype.constructor = DeforSSLinElBiax;
+
+/**
+ * Returns the tangent moduli
+ * @returns {module:types.Matrix} 'strain' or 'stress' - 3 by 3
+ * matrix. 'axisSymm' 4 by 4 matrix.
+ */
+exports.DeforSSLinElBiax.prototype.tangentModuli = function() {
+  var D = this._prop.D();
+  var reduced, Dt;
+  if (this._reduction === 'strain') {
+    reduced = ix(D, [1, 2, 4], [1, 2, 4]);
+  } else if (this._reduction === 'axisSymm') {
+    reduced = ix(D, [1, 2, 3, 4], [1, 2, 3, 4]);
+  } else if (this._reduction === 'stress') {
+    Dt = ix(D, [1,2], [1,2]);
+    Dt = add(Dt, mul(-1, div(dot(ix(D, [1,2], [3]), ix(D, [3], [1,2])), D[2][2])));
+    reduced = ix(D, [1,2,4], [1,2,4]);
+    reduced = ixUpdate_(reduced, [1,2], [1,2], Dt);
+  } else {
+    throw new Error('DeforSSLinElBiax::tangentModuli() is ');
   }
 
-  // nodes
-  for (i = 0; i &lt; nx + 1; ++i)
-    for (j = 0; j &lt; ny + 1; ++j)
-      for (k = 0; k &lt; nz + 1; ++k)
-        xyz[ijkToIndex(i, j, k, nx+1, ny+1, nz+1)] = [i*dx, j*dy, k*dz];
+  return reduced;
+};
 
-  // connectivity:
-  for (i = 0; i &lt; nx; ++i)
-    for (j = 0; j &lt; ny; ++j)
-      for (k = 0; k &lt; nz; ++k)
-        conn[ijkToIndex(i, j, k, nx, ny, nz)] = cellConnAt(i, j, k);
+/**
+ * @typedef module:material.DeforSSLinElTriaxInitOption
+ * @property {module:property.LinElIso} property
+ */
 
-  function cellConnAt(i, j, k) {
-    return [
-      ijkToIndex(i, j, k, nx+1, ny+1, nz+1),
-      ijkToIndex(i, j, k+1, nx+1, ny+1, nz+1),
-      ijkToIndex(i, j+1, k+1, nx+1, ny+1, nz+1),
-      ijkToIndex(i, j+1, k, nx+1, ny+1, nz+1),
+/**
+ * @class
+ * @extends module:material.Material
+ * @param {module:material.DeforSSLinElTriaxInitOption} options
+ */
+exports.DeforSSLinElTriax = function DeforSSLinElTriax(options) {
+  if (!isObject(options) || !isa(options.property, LinElIso))
+    throw new Error('DeforSSLinElTriax#constructor(options): options' +
+                    ' is not valid DeforSSLinElTriaxInitOption');
+  this._prop = options.property;
+};
+var DeforSSLinElTriax = exports.DeforSSLinElTriax;
 
-      ijkToIndex(i+1, j, k, nx+1, ny+1, nz+1),
-      ijkToIndex(i+1, j, k+1, nx+1, ny+1, nz+1),
-      ijkToIndex(i+1, j+1, k+1, nx+1, ny+1, nz+1),
-      ijkToIndex(i+1, j+1, k, nx+1, ny+1, nz+1)
-    ];
-  }
+DeforSSLinElTriax.prototype = Object.create(Material.prototype);
+DeforSSLinElTriax.prototype.constructor = DeforSSLinElTriax;
 
-  var fens = new FeNodeSet({ xyz: xyz });
-  var gcells = new H8({ conn: conn });
-  var mesh = new Mesh({ fens: fens, gcells: gcells });
-
-  return mesh;
+/**
+ * Returns the tangent moduli
+ * @returns {module:types.Matrix} matrix 6 by 6
+ */
+exports.DeforSSLinElTriax.prototype.tangentModuli = function() {
+  return this._prop.D();
 };
 </pre>
         </article>

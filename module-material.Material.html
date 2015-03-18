@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Class: Mesh</title>
+	<title>js-fea Class: Material</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -143,14 +143,14 @@
 					
 
 
-	<h1 class="page-title">Class: Mesh</h1>
+	<h1 class="page-title">Class: Material</h1>
 <section>
 
 <header>
     <h2>
-        <span class="ancestors"><a href="module-mesh.html">mesh</a>~</span>
+        <span class="ancestors"><a href="module-material.html">material</a>.</span>
     
-    Mesh
+    Material
     </h2>
     
 </header>
@@ -162,71 +162,18 @@
     
         
 <dt>
-    <h4 class="name" id="Mesh"><span class="type-signature"></span>new Mesh<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Material"><span class="type-signature">&lt;virtual> </span>new Material<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
     
-    <div class="description">
-        Mesh class.
-    </div>
-    
 
     
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-
-		<th>Type</th>
-
-		
-
-		
-
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-
-	<tbody>
-	
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="module-mesh.html#MeshInitOption">module:mesh.MeshInitOption</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-	
-	</tbody>
-</table>
-
     
     
     
@@ -252,7 +199,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-44">line 44</a>
+        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-28">line 28</a>
     </li></ul></dd>
     
 
@@ -274,21 +221,6 @@
     
     
     
-    
-        <h5>Example</h5>
-        
-    <pre class="sunlight-highlight-javascript">var msh1 = new Mesh({
-  fens: new FeNodeSet(...),
-  gcells: new L2(...)
-});
-
-var msh2 = new Mesh({
-  xyz: [...],
-  gcellsType: 'L2',
-  conn: [...]
-});</pre>
-
-
     
 </dd>
 
@@ -313,7 +245,7 @@ var msh2 = new Mesh({
         <dl>
             
 <dt>
-    <h4 class="name" id="fens"><span class="type-signature"></span>fens<span class="signature">()</span><span class="type-signature"> &rarr; {module:fens.FeNodeSet}</span></h4>
+    <h4 class="name" id="newState"><span class="type-signature">&lt;virtual> </span>newState<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -321,7 +253,7 @@ var msh2 = new Mesh({
     
     
     <div class="description">
-        Returns finite element node set of the mesh.
+        Create a new material state. Override by subclasses.
     </div>
     
 
@@ -354,7 +286,7 @@ var msh2 = new Mesh({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-54">line 54</a>
+        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-35">line 35</a>
     </li></ul></dd>
     
 
@@ -375,25 +307,6 @@ var msh2 = new Mesh({
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">module:fens.FeNodeSet</span>
-
-
-	</dd>
-</dl>
-
-
-        
     
     
 </dd>
@@ -401,7 +314,7 @@ var msh2 = new Mesh({
         
             
 <dt>
-    <h4 class="name" id="gcells"><span class="type-signature"></span>gcells<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a>}</span></h4>
+    <h4 class="name" id="update"><span class="type-signature">&lt;virtual> </span>update<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -409,7 +322,7 @@ var msh2 = new Mesh({
     
     
     <div class="description">
-        Returns geometry cell set of the mesh.
+        Update material state. Override by subclasses.
     </div>
     
 
@@ -442,7 +355,7 @@ var msh2 = new Mesh({
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="mesh.js.html">mesh.js</a>, <a href="mesh.js.html#sunlight-1-line-60">line 60</a>
+        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-43">line 43</a>
     </li></ul></dd>
     
 
@@ -463,25 +376,6 @@ var msh2 = new Mesh({
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type"><a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a></span>
-
-
-	</dd>
-</dl>
-
-
-        
     
     
 </dd>
