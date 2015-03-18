@@ -51,12 +51,12 @@ describe('FAESOR simple_beam example', function() {
 
     prop = new LinElIso({ E: E, nu: nu });
 
-    return;
     mater = new DeforSSLinElTriax({
       property: prop
     });
 
     febIr = new GaussRule(3, 2);
+    return;
 
     feb = new DeforSS({
       material: mater,
@@ -97,12 +97,14 @@ describe('FAESOR simple_beam example', function() {
     });
 
 
-    var elementMatrices = feb.stiffness(geom, u);
     var neqns = u.neqns();
     console.log("neqns = ", neqns);
 
+    var elementMatrices = feb.stiffness(geom, u);
+
     var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
     console.log("K = ", K.toFull());
+
 
     var fi = new ForceIntensity({ magn: [0, 0, magn] });
     var bdryGcells = gcells.boundary();

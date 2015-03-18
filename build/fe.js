@@ -5756,7 +5756,8 @@ var fe =
 
 	/**
 	 * Returns the tangent moduli
-	 * @returns {module:types.Matrix}
+	 * @returns {module:types.Matrix} 'strain' or 'stress' - 3 by 3
+	 * matrix. 'axisSymm' 4 by 4 matrix.
 	 */
 	exports.DeforSSLinElBiax.prototype.tangentModuli = function() {
 	  var D = this._prop.D();
@@ -5775,6 +5776,35 @@ var fe =
 	  }
 
 	  return reduced;
+	};
+
+	/**
+	 * @typedef module:material.DeforSSLinElTriaxInitOption
+	 * @property {module:property.LinElIso} property
+	 */
+
+	/**
+	 * @class
+	 * @extends module:material.Material
+	 * @param {module:material.DeforSSLinElTriaxInitOption} options
+	 */
+	exports.DeforSSLinElTriax = function DeforSSLinElTriax(options) {
+	  if (!isObject(options) || !isa(options.property, LinElIso))
+	    throw new Error('DeforSSLinElTriax#constructor(options): options' +
+	                    ' is not valid DeforSSLinElTriaxInitOption');
+	  this._prop = options.property;
+	};
+	var DeforSSLinElTriax = exports.DeforSSLinElTriax;
+
+	DeforSSLinElTriax.prototype = Object.create(Material.prototype);
+	DeforSSLinElTriax.prototype.constructor = DeforSSLinElTriax;
+
+	/**
+	 * Returns the tangent moduli
+	 * @returns {module:types.Matrix} matrix 6 by 6
+	 */
+	exports.DeforSSLinElTriax.prototype.tangentModuli = function() {
+	  return this._prop.D();
 	};
 
 
