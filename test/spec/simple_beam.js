@@ -6,7 +6,7 @@ var fe = require(SRC);
 
 describe('FAESOR simple_beam example', function() {
 
-  xit('should create model.', function() {
+  it('should create model.', function() {
 
     var FeNodeSet = fe.fens.FeNodeSet;
     var H8Block = fe.mesh.H8Block;
@@ -20,7 +20,7 @@ describe('FAESOR simple_beam example', function() {
     var EBC = fe.ebc.EBC;
     var DeforSS = fe.feblock.DeforSS;
     var NodalLoad = fe.nodalload.NodalLoad;
-    var ForceIntensity = fe.forceIntensity.ForceIntensity;
+    var ForceIntensity = fe.forceintensity.ForceIntensity;
     var genISORm = fe.feutils.genISORm;
     var matrixEquals = fe.numeric.matrixEquals;
     var sum = fe.numeric.sum;
@@ -47,6 +47,9 @@ describe('FAESOR simple_beam example', function() {
     var mesh = H8Block(W, L, H, nx, ny, nz);
     fens = mesh.fens();
     gcells = mesh.gcells();
+    // console.log("fens = ", fens.xyz());
+    // console.log("gcells = ", gcells);
+    return;
 
     prop = new LinElIso({ E: E, nu: nu });
 

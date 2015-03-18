@@ -22,6 +22,7 @@ exports.material = require('./material');
 exports.feblock = require('./feblock');
 exports.system = require('./system');
 exports.nodalload = require('./nodalload');
+exports.forceintensity = require('./forceintensity');
 exports.integrationrule = require('./integrationrule');
 exports.ebc = require('./ebc');
 exports.mesh = require('./mesh');
