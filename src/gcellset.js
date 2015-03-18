@@ -31,6 +31,7 @@ var skewmat = feutils.skewmat;
 var topology = require('./geometry.topology');
 var Topology = topology.Topology;
 var hypercube = topology.hypercube;
+var hypercubeBoundary = topology.hypercubeBoundary;
 
 /**
  * @module gcellset
@@ -93,6 +94,27 @@ var GCellSet = exports.GCellSet;
  */
 exports.GCellSet.prototype.topology = function() {
   return this._topology;
+};
+
+/**
+ * Return true if two gcellset is same.
+ * @returns {Boolean}
+ */
+exports.GCellSet.prototype.equals = function(other) {
+  if (!isa(other, GCellSet)) return false;
+
+  if (this.type() !== other.type() ||
+      this.cellSize() !== other.cellSize())
+    return false;
+
+  if (this.axisSymm() !== other.axisSymm() ||
+      this.otherDimension() !== other.otherDimension())
+    return false;
+
+  if (!this._topology.equals(other._topology))
+    return false;
+
+  return true;
 };
 
 /**
@@ -170,13 +192,23 @@ exports.GCellSet.prototype.boundaryCellType = function() {
 };
 
 /**
+ * Returns the connectivity list of the boundary. Override by
+ * subclasses.
+ * @abstract
+ * @returns {module:types.ConnectivityList}
+ */
+exports.GCellSet.prototype.boundaryConn = function() {
+  throw new Error('GCellSet#boundaryConn() is not implemented.');
+};
+
+/**
  * Return the boundary of this gcellset.
  * @returns {module:gcellset.GCellSet} the boundary gcellset.
  */
 exports.GCellSet.prototype.boundary = function() {
   var C = this.boundaryGCellSetConstructor();
-  var boundaryTopology = this._topology.boundary();
-  return new C({ topology: boundaryTopology });
+  var boundaryConn = this.boundaryConn();
+  return new C({ conn: boundaryConn });
 };
 
 /**
@@ -820,8 +852,15 @@ L2.prototype.constructor = L2;
  * @override
  */
 exports.L2.prototype.boundaryGCellSetConstructor = function() {
-  // TODO:
   return P1;
+};
+
+/**
+ * {@link module:gcellset.GCellSet#boundaryConn}
+ * @override
+ */
+exports.L2.prototype.boundaryConn = function() {
+  return hypercubeBoundary(this.conn(), this.dim());
 };
 
 /**
@@ -902,6 +941,14 @@ exports.Q4.prototype.type = function() { return 'Q4'; };
  * @override
  */
 exports.Q4.prototype.boundaryGCellSetConstructor = function() { return L2; };
+
+/**
+ * {@link module:gcellset.GCellSet#boundaryConn}
+ * @override
+ */
+exports.Q4.prototype.boundaryConn = function() {
+  return hypercubeBoundary(this.conn(), this.dim());
+};
 
 /**
  * {@link module:gcellset.GCellSet#triangles}
@@ -991,6 +1038,14 @@ exports.H8.prototype.type = function() { return 'H8'; };
  * @override
  */
 exports.H8.prototype.boundaryGCellSetConstructor = function() { return Q4; };
+
+/**
+ * {@link module:gcellset.GCellSet#boundaryConn}
+ * @override
+ */
+exports.H8.prototype.boundaryConn = function() {
+  return hypercubeBoundary(this.conn(), this.dim());
+};
 
 /**
  * {@link module:gcellset.GCellSet#triangles}

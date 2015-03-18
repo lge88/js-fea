@@ -107,9 +107,13 @@ describe('FAESOR simple_beam example', function() {
     var fi = new ForceIntensity({ magn: [0, 0, magn] });
     // console.log("fi = ", fi);
     // console.log("fi.magn() = ", fi.magn());
-    return;
 
     var bdryGcells = gcells.boundary();
+    // console.log("bdryGcells = ", bdryGcells);
+    // console.log("bdryGcells.type() = ", bdryGcells.type());
+    // console.log("bdryGcells.conn() = ", bdryGcells.conn());
+    return;
+
     var bcl = bdryGcells.boxSelect(fens, {
       bounds: [0, W, L, L, 0, H],
       inflate: htol

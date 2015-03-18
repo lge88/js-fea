@@ -31,6 +31,8 @@
 //   hypercube.getCellSize(dim)
 
 var _ = require('./core.utils');
+var check = _.check;
+var isAssigned = check.assigned;
 var array1d = _.array1d;
 var cloneDeep = _.cloneDeep;
 var normalizedCell = _.normalizedCell;
@@ -210,34 +212,39 @@ Topology.prototype.getPointIndices = function() {
 
 // };
 
-Topology.prototype.boundaryConn = function() {
-  var lowerDim = this.getDim() - 1;
-  if (lowerDim < 0) return [];
+// Topology.prototype.boundaryConn = function() {
+//   var lowerDim = this.getDim() - 1;
+//   if (lowerDim < 0) return [];
 
-  var nonBoundaryIndexMask = {}, seen = {};
-  var cells = this.getCellsInDim(lowerDim);
+//   var nonBoundaryIndexMask = {}, seen = {};
+//   var cells = this.getCellsInDim(lowerDim);
+//   // console.log("cells = ", cells);
 
-  function hashCell(cell) {
-    var cellCopy = cell.slice().sort(function(a, b) { return a-b; });
-    return cellCopy.join(',');
-  };
+//   function hashCell(cell) {
+//     var cellCopy = cell.slice().sort(function(a, b) { return a-b; });
+//     return cellCopy.join(',');
+//   };
 
-  cells.forEach(function(cell, i) {
-    var key = hashCell(cell);
-    if (!seen[key]) {
-      seen[key] = i;
-    } else {
-      nonBoundaryIndexMask[i] = true;
-      nonBoundaryIndexMask[seen[key]] = true;
-    }
-  });
+//   cells.forEach(function(cell, i) {
+//     var key = hashCell(cell);
+//     // console.log("cell = ", cell);
+//     // console.log("seen = ", seen);
+//     // console.log("key = ", key);
+//     if (!seen[key]) {
+//       seen[key] = i;
+//     } else {
+//       nonBoundaryIndexMask[i] = true;
+//       nonBoundaryIndexMask[seen[key]] = true;
+//     }
+//   });
+//   console.log("nonBoundaryIndexMask = ", nonBoundaryIndexMask);
 
-  var bdryConn = cells.filter(function(cell, i) {
-    return !nonBoundaryIndexMask[i];
-  });
+//   var bdryConn = cells.filter(function(cell, i) {
+//     return !nonBoundaryIndexMask[i];
+//   });
 
-  return bdryConn;
-};
+//   return bdryConn;
+// };
 
 // function __static__() {}
 
@@ -641,6 +648,48 @@ function hypercubeCellBoundary3(cell) {
   return [ f1, f2, f3, f4, f5, f6 ];
 };
 
+exports.hypercubeBoundary = function hypercubeBoundary(conn, dim) {
+  var getCellBoundary;
+  if (dim === 1)
+    getCellBoundary = hypercubeCellBoundary1;
+  else if (dim === 2)
+    getCellBoundary = hypercubeCellBoundary2;
+  else if (dim === 3)
+    getCellBoundary = hypercubeCellBoundary3;
+  else
+    return [];
+
+  function hashCell(cell) {
+    var cellCopy = cell.slice().sort(function(a, b) { return a-b; });
+    return cellCopy.join(',');
+  };
+
+  var res = [];
+
+  conn.forEach(function(cell) {
+    getCellBoundary(cell).forEach(function(bdryCell) {
+      res.push(bdryCell);
+    });
+  });
+
+  var nonBoundaryIndexMask = {}, seen = {};
+  res.forEach(function(cell, i) {
+    var key = hashCell(cell);
+    if (!isAssigned(seen[key])) {
+      seen[key] = i;
+    } else {
+      nonBoundaryIndexMask[i] = true;
+      nonBoundaryIndexMask[seen[key]] = true;
+    }
+  });
+
+  res = res.filter(function(cell, i) {
+    return !nonBoundaryIndexMask[i];
+  });
+
+  return res;
+};
+
 function hypercubeSkeleton(conn, dim) {
   var getCellBoundary;
   if (dim === 1)
@@ -650,19 +699,19 @@ function hypercubeSkeleton(conn, dim) {
   else if (dim === 3)
     getCellBoundary = hypercubeCellBoundary3;
   else
-    throw new Error('hypercubeBoundaryCells(conn, dim): dim (' +
+    throw new Error('hypercubeSkeleton(conn, dim): dim (' +
                        dim + ') is not valid.');
 
   function hashCell(cell) {
     return normalizedCell(cell).join(',');
-  };
+  }
 
   var seen = {}, skeleton = [];
   conn.forEach(function(cell) {
     var boundaryCells = getCellBoundary(cell);
     boundaryCells.forEach(function(bdryCell) {
       var key = hashCell(bdryCell);
-      if (!seen[key]) {
+      if (!isAssigned(seen[key])) {
         skeleton.push(bdryCell);
         seen[key] = true;
       }

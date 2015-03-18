@@ -5,15 +5,18 @@ var expect = require('expect.js');
 // var dataDriven = require('data-driven');
 
 var _ = require(SRC + '/core.utils');
-// var assert = _.assert;
+var assert = _.assert;
 var check = _.check;
 // var defineContract = _.defineContract;
-var matrixOfDimension = _.assert.ensureMatrixOfDimension;
+var matrixOfDimension = assert.ensureMatrixOfDimension;
 // var vectorOfDimension = _.contracts.vectorOfDimension;
 var normalizedCell = _.normalizedCell;
 var byLexical = _.byLexical;
 
 var gcellset = require(SRC + '/gcellset.js');
+var P1 = gcellset.P1;
+var L2 = gcellset.L2;
+var Q4 = gcellset.Q4;
 
 var VERIFIES = {
   'id': function(computed) {
@@ -39,6 +42,9 @@ var VERIFIES = {
       return normalizedCell(cell);
     }).sort(byLexical);
     expect(computed).to.eql(expected);
+  },
+  'gcellsetEquals': function(computed, expected) {
+    expect(computed.equals(expected)).to.be(true);
   }
 };
 
@@ -77,6 +83,97 @@ describe('gcellset', function() {
           ],
           otherDimension: 1.0,
           axisSymm: false
+        }
+      ],
+
+      equals: [
+        {
+          input: [
+            new L2({
+              conn: [
+                [ 1, 3 ],
+                [ 1, 4 ],
+                [ 2, 4 ],
+                [ 3, 4 ],
+                [ 3, 5 ],
+                [ 5, 4 ],
+                [ 6, 4 ],
+                [ 5, 6 ]
+              ],
+              otherDimension: 1.0,
+              axisSymm: true
+            })
+          ],
+          output: false,
+          desc: 'axisSymm is different'
+        },
+        {
+          input: [
+            new L2({
+              conn: [
+                [ 1, 3 ],
+                [ 1, 4 ],
+                [ 2, 4 ],
+                [ 3, 4 ],
+                [ 3, 5 ],
+                [ 5, 4 ],
+                [ 6, 4 ],
+                [ 5, 6 ]
+              ],
+              otherDimension: 2.0,
+              axisSymm: false
+            })
+          ],
+          output: false,
+          desc: 'otherDimension is different'
+        },
+        {
+          input: [
+            new L2({
+              conn: [
+                [ 1, 3 ],
+                [ 1, 4 ],
+                [ 2, 4 ],
+                [ 3, 4 ],
+                [ 3, 5 ],
+                [ 5, 4 ],
+                [ 6, 4 ],
+                [ 5, 6 ]
+              ],
+              otherDimension: 1.0,
+              axisSymm: false
+            })
+          ],
+          output: true,
+          desc: 'same'
+        },
+        {
+          input: [
+            new L2({
+              conn: [
+                [ 1, 3 ],
+                [ 2, 4 ],
+                [ 3, 4 ],
+                [ 3, 5 ],
+                [ 5, 4 ],
+                [ 6, 4 ],
+                [ 5, 6 ]
+              ],
+              otherDimension: 1.0,
+              axisSymm: false
+            })
+          ],
+          output: false,
+          desc: 'conn is different'
+        },
+        {
+          input: [
+            new Q4({
+              conn: [ [1,2,3,4] ]
+            })
+          ],
+          desc: 'type is different',
+          output: false
         }
       ],
 
@@ -200,6 +297,10 @@ describe('gcellset', function() {
         }
       ],
 
+      boundary: [
+        { output: new P1({ conn: [ [2] ] }), verify: 'gcellsetEquals' }
+      ]
+
       // jacobian: [
       //   {
       //     input: [
@@ -217,6 +318,25 @@ describe('gcellset', function() {
       //     output: 1.0
       //   }
       // ]
+    },
+    {
+      _type: 'Q4',
+      _init_params: [
+        {
+          conn: [
+            [1,2,3,4],
+            [4,3,6,5]
+          ]
+        }
+      ],
+      boundary: [
+        {
+          output: new L2({
+            conn: [ [1, 2], [2, 3], [4, 1], [3, 6], [6, 5], [5, 4] ]
+          }),
+          verify: 'gcellsetEquals'
+        }
+      ]
     },
     {
       _type: 'Q4',

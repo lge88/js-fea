@@ -9,6 +9,7 @@ var dataDriven = require('data-driven');
 var topology = require(SRC + '/geometry.topology.js');
 var Topology = topology.Topology;
 var hypercube = topology.hypercube;
+var hypercubeBoundary = topology.hypercubeBoundary;
 var simplex = topology.simplex;
 
 function normalizeEql(computed, expected) {
@@ -419,39 +420,34 @@ describe('geometry.topology', function() {
   });
 
 
-  describe('Topology#boundaryConn', function() {
+  describe('hypercubeBoundary(conn, dim)', function() {
 
     it('should work for hybercube0', function() {
-      var t = hypercube([ [1] ], 0);
-      var bdry = t.boundaryConn();
+      var bdry = hypercubeBoundary([ [1] ], 0);
       expect(bdry).to.eql([]);
     });
 
     it('should work for hybercube1', function() {
-      var t = hypercube([ [1, 2] ], 1);
-      var bdry = t.boundaryConn();
+      var bdry = hypercubeBoundary([ [1, 2] ], 1);
       expect(bdry).to.eql([ [1], [2] ]);
     });
 
     it('should work for one hybercube2', function() {
-      var t = hypercube([ [1, 2, 3, 4] ], 2);
-      var bdry = t.boundaryConn();
+      var bdry = hypercubeBoundary([ [1, 2, 3, 4] ], 2);
       normalizeEql(bdry, [
         [1, 2], [2, 3], [3, 4], [1, 4]
       ]);
     });
 
     it('should work for two hybercube2', function() {
-      var t = hypercube([ [1, 2, 3, 4], [4, 3, 5, 6] ], 2);
-      var bdry = t.boundaryConn();
+      var bdry = hypercubeBoundary([ [1, 2, 3, 4], [4, 3, 6, 5] ], 2);
       normalizeEql(bdry, [
-        [1, 2], [2, 3], [3, 4], [1, 4], [3, 5], [5, 6], [6, 4]
+        [1, 2], [2, 3], [1, 4], [3, 6], [5, 6], [5, 4]
       ]);
     });
 
     it('should work for one hybercube3', function() {
-      var t = hypercube([ [1, 2, 3, 4, 5, 6, 7, 8] ], 3);
-      var bdry = t.boundaryConn();
+      var bdry = hypercubeBoundary([ [1, 2, 3, 4, 5, 6, 7, 8] ], 3);
       normalizeEql(bdry, [
         [2, 1, 4, 3],
         [5, 6, 7, 8],
@@ -463,11 +459,10 @@ describe('geometry.topology', function() {
     });
 
     it('should work for two hybercube3', function() {
-      var t = hypercube([
+      var bdry = hypercubeBoundary([
         [1, 2, 3, 4, 5, 6, 7, 8],
         [5, 6, 7, 8, 9, 10, 11, 12]
       ], 3);
-      var bdry = t.boundaryConn();
       normalizeEql(bdry, [
         [2, 1, 4, 3],
 
