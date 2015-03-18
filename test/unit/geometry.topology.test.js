@@ -11,6 +11,16 @@ var Topology = topology.Topology;
 var hypercube = topology.hypercube;
 var simplex = topology.simplex;
 
+function normalizeEql(computed, expected) {
+  computed = computed.slice().map(function(cell) {
+    return normalizedCell(cell);
+  }).sort(byLexical);
+  expected = expected.slice().map(function(cell) {
+    return normalizedCell(cell);
+  }).sort(byLexical);
+  expect(computed).to.eql(expected);
+}
+
 describe('geometry.topology', function() {
   var f = function(a, b, c) { return new Topology(a, b, c); };
   describe('Topology::constructor(complexes)', function() {
@@ -405,6 +415,76 @@ describe('geometry.topology', function() {
         expect(resultTopology.equals(expectedTopology)).to.be(true);
       });
     });
+
+  });
+
+
+  describe('Topology#boundaryConn', function() {
+
+    it('should work for hybercube0', function() {
+      var t = hypercube([ [1] ], 0);
+      var bdry = t.boundaryConn();
+      expect(bdry).to.eql([]);
+    });
+
+    it('should work for hybercube1', function() {
+      var t = hypercube([ [1, 2] ], 1);
+      var bdry = t.boundaryConn();
+      expect(bdry).to.eql([ [1], [2] ]);
+    });
+
+    it('should work for one hybercube2', function() {
+      var t = hypercube([ [1, 2, 3, 4] ], 2);
+      var bdry = t.boundaryConn();
+      normalizeEql(bdry, [
+        [1, 2], [2, 3], [3, 4], [1, 4]
+      ]);
+    });
+
+    it('should work for two hybercube2', function() {
+      var t = hypercube([ [1, 2, 3, 4], [4, 3, 5, 6] ], 2);
+      var bdry = t.boundaryConn();
+      normalizeEql(bdry, [
+        [1, 2], [2, 3], [3, 4], [1, 4], [3, 5], [5, 6], [6, 4]
+      ]);
+    });
+
+    it('should work for one hybercube3', function() {
+      var t = hypercube([ [1, 2, 3, 4, 5, 6, 7, 8] ], 3);
+      var bdry = t.boundaryConn();
+      normalizeEql(bdry, [
+        [2, 1, 4, 3],
+        [5, 6, 7, 8],
+        [2, 3, 7, 6],
+        [3, 4, 8, 7],
+        [4, 1, 5, 8],
+        [2, 6, 5, 1]
+      ]);
+    });
+
+    it('should work for two hybercube3', function() {
+      var t = hypercube([
+        [1, 2, 3, 4, 5, 6, 7, 8],
+        [5, 6, 7, 8, 9, 10, 11, 12]
+      ], 3);
+      var bdry = t.boundaryConn();
+      normalizeEql(bdry, [
+        [2, 1, 4, 3],
+
+        [2, 3, 7, 6],
+        [3, 4, 8, 7],
+        [4, 1, 5, 8],
+        [2, 6, 5, 1],
+
+        [6, 7, 11, 10],
+        [7, 8, 12, 11],
+        [8, 5, 9, 12],
+        [5, 6, 10, 9],
+
+        [9, 10, 11, 12]
+      ]);
+    });
+
 
   });
 });

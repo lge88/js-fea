@@ -38,6 +38,7 @@ var byLexical = _.byLexical;
 
 var Bimap = _.Bimap;
 
+
 // dim = 0 -> point, dim = 1 -> curve,
 // dim = 2 -> surface, dim = 4 -> volumn'
 // Private constructor, DO NOT call it directly if you don't know what is going on
@@ -209,8 +210,33 @@ Topology.prototype.getPointIndices = function() {
 
 // };
 
-Topology.prototype.boundary = function() {
-  throw new Error('Topology::boundary(): is not implemented.');
+Topology.prototype.boundaryConn = function() {
+  var lowerDim = this.getDim() - 1;
+  if (lowerDim < 0) return [];
+
+  var nonBoundaryIndexMask = {}, seen = {};
+  var cells = this.getCellsInDim(lowerDim);
+
+  function hashCell(cell) {
+    var cellCopy = cell.slice().sort(function(a, b) { return a-b; });
+    return cellCopy.join(',');
+  };
+
+  cells.forEach(function(cell, i) {
+    var key = hashCell(cell);
+    if (!seen[key]) {
+      seen[key] = i;
+    } else {
+      nonBoundaryIndexMask[i] = true;
+      nonBoundaryIndexMask[seen[key]] = true;
+    }
+  });
+
+  var bdryConn = cells.filter(function(cell, i) {
+    return !nonBoundaryIndexMask[i];
+  });
+
+  return bdryConn;
 };
 
 // function __static__() {}
@@ -627,7 +653,7 @@ function hypercubeSkeleton(conn, dim) {
     throw new Error('hypercubeBoundaryCells(conn, dim): dim (' +
                        dim + ') is not valid.');
 
-  var hashCell = function(cell) {
+  function hashCell(cell) {
     return normalizedCell(cell).join(',');
   };
 
