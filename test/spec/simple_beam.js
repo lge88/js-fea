@@ -104,9 +104,11 @@ describe('FAESOR simple_beam example', function() {
     var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
     // console.log("K = ", K.toFull());
 
+    var fi = new ForceIntensity({ magn: [0, 0, magn] });
+    // console.log("fi = ", fi);
+    // console.log("fi.magn() = ", fi.magn());
     return;
 
-    var fi = new ForceIntensity({ magn: [0, 0, magn] });
     var bdryGcells = gcells.boundary();
     var bcl = bdryGcells.boxSelect(fens, {
       bounds: [0, W, L, L, 0, H],
