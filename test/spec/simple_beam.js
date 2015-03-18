@@ -47,12 +47,11 @@ describe('FAESOR simple_beam example', function() {
     var mesh = H8Block(W, L, H, nx, ny, nz);
     fens = mesh.fens();
     gcells = mesh.gcells();
-    // console.log("fens = ", fens.xyz());
-    // console.log("gcells = ", gcells);
-    return;
+
 
     prop = new LinElIso({ E: E, nu: nu });
 
+    return;
     mater = new DeforSSLinElTriax({
       property: prop
     });

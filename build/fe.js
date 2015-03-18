@@ -69,9 +69,10 @@ var fe =
 	exports.feblock = __webpack_require__(15);
 	exports.system = __webpack_require__(16);
 	exports.nodalload = __webpack_require__(17);
-	exports.integrationrule = __webpack_require__(18);
-	exports.ebc = __webpack_require__(19);
-	exports.mesh = __webpack_require__(20);
+	exports.forceintensity = __webpack_require__(18);
+	exports.integrationrule = __webpack_require__(19);
+	exports.ebc = __webpack_require__(20);
+	exports.mesh = __webpack_require__(21);
 
 
 /***/ },
@@ -81,7 +82,7 @@ var fe =
 	/*global require*/
 
 	// var _ = require('highland');
-	var _ = __webpack_require__(24);
+	var _ = __webpack_require__(25);
 	_.assign(exports, _);
 
 	exports.Bimap = __webpack_require__(2).Bimap;
@@ -319,8 +320,8 @@ var fe =
 	var normalizedCell = exports.normalizedCell;
 
 	// Type checking & contracts:
-	var check = __webpack_require__(25);
-	var assert = __webpack_require__(23);
+	var check = __webpack_require__(26);
+	var assert = __webpack_require__(24);
 
 	exports._env = 'dev';
 
@@ -2231,7 +2232,7 @@ var fe =
 	var array2d = _.array2d;
 	var listFromIterator = _.listFromIterator;
 
-	var numeric = __webpack_require__(26);
+	var numeric = __webpack_require__(27);
 	var ccsSparse = numeric.ccsSparse;
 	var ccsFull = numeric.ccsFull;
 	var ccsLUP = numeric.ccsLUP;
@@ -5655,74 +5656,109 @@ var fe =
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
-	// material
-
+	// dependencies
 	var _ = __webpack_require__(1);
 	var check = _.check;
+	var isObject = check.object;
+	var isa = check.instance;
 	var assert = _.assert;
-	var defineContract = _.defineContract;
-	var property = __webpack_require__(13);
-	var LinElIso = property.LinElIso;
+
 	var numeric = __webpack_require__(6);
 	var ix = numeric.ix;
-	var ixUpdate = numeric.ixUpdate;
+	var ixUpdate_ = numeric.ixUpdate_;
 	var mul = numeric.mul;
 	var div = numeric.div;
 	var dot = numeric.dot;
 	var add = numeric.add;
 
-	function Material() {}
+	var property = __webpack_require__(13);
+	var LinElIso = property.LinElIso;
 
-	Material.prototype.newState = function() {
+	/**
+	 * @module material
+	 */
+
+	/**
+	 * @class
+	 * @abstract
+	 */
+	exports.Material = function Material() {};
+	var Material = exports.Material;
+
+	/**
+	 * Create a new material state. Override by subclasses.
+	 * @abstract
+	 */
+	exports.Material.prototype.newState = function() {
 	  throw new Error('Material::newState(): is not implemented.');
 	};
 
-	Material.prototype.update = function() {
+	/**
+	 * Update material state. Override by subclasses.
+	 * @abstract
+	 */
+	exports.Material.prototype.update = function() {
 	  throw new Error('Material::update(): is not implemented.');
 	};
-	exports.Material = Material;
 
-	var _input_contract_linel_uniax_prop_ = defineContract(function(o) {
-	  assert.object(o);
-	  if (!check.instance(o.property, LinElIso)) {
-	    throw new Error('input is not a instance of LinElIso.');
-	  }
-	}, 'Input is not a valid option for DeforSSLinElUniax');
+	/**
+	 * @typedef module:material.DeforSSLinElUniaxInitOption
+	 * @property {module:property.LinElIso} property
+	 */
 
-	function DeforSSLinElUniax(options) {
-	  _input_contract_linel_uniax_prop_(options);
+	/**
+	 * @class
+	 * @extends module:material.Material
+	 * @param {module:material.DeforSSLinElUniaxInitOption} options
+	 */
+	exports.DeforSSLinElUniax = function DeforSSLinElUniax(options) {
+	  if (!isObject(options) || !isa(options.property, LinElIso))
+	    throw new Error('DeforSSLinElUniax#constructor(options): options' +
+	                    ' is not valid DeforSSLinElUniaxInitOption');
 	  this._prop = options.property;
-	}
+	};
+	var DeforSSLinElUniax = exports.DeforSSLinElUniax;
 
 	DeforSSLinElUniax.prototype = Object.create(Material.prototype);
 	DeforSSLinElUniax.prototype.constructor = DeforSSLinElUniax;
 
-	// return: mat:(1,1)
-	DeforSSLinElUniax.prototype.tangentModuli = function() {
+	/**
+	 * Returns the tangent moduli
+	 * @returns {module:types.Matrix}
+	 */
+	exports.DeforSSLinElUniax.prototype.tangentModuli = function() {
 	  return [ [this._prop.E()] ];
 	};
 
-	exports.DeforSSLinElUniax = DeforSSLinElUniax;
+	/**
+	 * @typedef module:material.DeforSSLinElBiaxInitOption
+	 * @property {module:property.LinElIso} property
+	 * @property {String} reduction - 'strain', 'stress' or
+	 * 'axisSymm'. Default is 'strain'
+	 */
 
-	var _input_contract_linel_biax_prop_ = defineContract(function(o) {
-	  assert.object(o);
-	  if (!check.instance(o.property, LinElIso)) {
-	    throw new Error('input is not a instance of LinElIso.');
-	  }
-	}, 'Input is not a valid option for DeforSSLinElBiax');
-
-	function DeforSSLinElBiax(options) {
-	  _input_contract_linel_uniax_prop_(options);
+	/**
+	 * @class
+	 * @extends module:material.Material
+	 * @param {module:material.DeforSSLinElBiaxInitOption} options
+	 */
+	exports.DeforSSLinElBiax = function DeforSSLinElBiax(options) {
+	  if (!isObject(options) || !isa(options.property, LinElIso))
+	    throw new Error('DeforSSLinElBiax#constructor(options): options' +
+	                    ' is not valid DeforSSLinElBiaxInitOption');
 	  this._prop = options.property;
 	  this._reduction = options.reduction || 'strain';
-	}
-	exports.DeforSSLinElBiax = DeforSSLinElBiax;
+	};
+	var DeforSSLinElBiax = exports.DeforSSLinElBiax;
 
 	DeforSSLinElBiax.prototype = Object.create(Material.prototype);
 	DeforSSLinElBiax.prototype.constructor = DeforSSLinElBiax;
 
-	// return: mat:(3, 3) or mat:(4, 4)
-	DeforSSLinElBiax.prototype.tangentModuli = function() {
+	/**
+	 * Returns the tangent moduli
+	 * @returns {module:types.Matrix}
+	 */
+	exports.DeforSSLinElBiax.prototype.tangentModuli = function() {
 	  var D = this._prop.D();
 	  var reduced, Dt;
 	  if (this._reduction === 'strain') {
@@ -5733,7 +5769,7 @@ var fe =
 	    Dt = ix(D, [1,2], [1,2]);
 	    Dt = add(Dt, mul(-1, div(dot(ix(D, [1,2], [3]), ix(D, [3], [1,2])), D[2][2])));
 	    reduced = ix(D, [1,2,4], [1,2,4]);
-	    reduced = ixUpdate(reduced, [1,2], [1,2], Dt);
+	    reduced = ixUpdate_(reduced, [1,2], [1,2], Dt);
 	  } else {
 	    throw new Error('DeforSSLinElBiax::tangentModuli() is ');
 	  }
@@ -5767,9 +5803,9 @@ var fe =
 	var colon = numeric.colon;
 	var Material = __webpack_require__(14).Material;
 	var GCellSet = __webpack_require__(11).GCellSet;
-	var IntegrationRule = __webpack_require__(18).IntegrationRule;
-	var ElementMatrix = __webpack_require__(21).ElementMatrix;
-	var ElementVector = __webpack_require__(22).ElementVector;
+	var IntegrationRule = __webpack_require__(19).IntegrationRule;
+	var ElementMatrix = __webpack_require__(22).ElementMatrix;
+	var ElementVector = __webpack_require__(23).ElementVector;
 
 	function Feblock() {}
 
@@ -6030,8 +6066,8 @@ var fe =
 	// system
 	var _ = __webpack_require__(1);
 	var isVector = _.isArray;
-	var matrix = __webpack_require__(21);
-	var vector = __webpack_require__(22);
+	var matrix = __webpack_require__(22);
+	var vector = __webpack_require__(23);
 	var SparseSystemMatrix = matrix.SparseSystemMatrix;
 	var SparseSystemVector = vector.SparseSystemVector;
 
@@ -6060,7 +6096,7 @@ var fe =
 	// nodalload
 	var _  = __webpack_require__(1);
 	var check = _.check;
-	var ElementVector = __webpack_require__(22).ElementVector;
+	var ElementVector = __webpack_require__(23).ElementVector;
 
 	function NodalLoad(options) {
 	  var ids = options.ids || options.id;
@@ -6099,6 +6135,22 @@ var fe =
 
 /***/ },
 /* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*global require*/
+
+	/**
+	 * @module forceintensity
+	 */
+
+	exports.ForceIntensity = function ForceIntensity() {
+
+	};
+	var ForceIntensity = exports.ForceIntensity;
+
+
+/***/ },
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6227,7 +6279,7 @@ var fe =
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6294,21 +6346,27 @@ var fe =
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
-	// mesh
+	// dependencies
 	var _ = __webpack_require__(1);
 	var check = _.check;
 	var isObject = check.object;
+	var array2d = _.array2d;
 	var fens = __webpack_require__(10);
 	var FeNodeSet = fens.FeNodeSet;
 	var gcells = __webpack_require__(11);
 	var Q4 = gcells.Q4;
+	var H8 = gcells.H8;
 
 	/**
-	 * @typedef Mesh~InitOption
+	 * @module mesh
+	 */
+
+	/**
+	 * @typedef module:mesh.MeshInitOption
 	 * @property {FeNodeSet} fens - optional. finite element node set.
 	 * @property {Array} xyz - optional. 2D array of node coordinates.
 	 * @property {GCellSet} gcells - optional. geometry cell set.
@@ -6319,7 +6377,7 @@ var fe =
 	/**
 	 * Mesh class.
 	 * @class
-	 * @param {Mesh~InitOption} options
+	 * @param {module:mesh.MeshInitOption} options
 	 * @example
 
 	   var msh1 = new Mesh({
@@ -6342,21 +6400,21 @@ var fe =
 
 	/**
 	 * Returns finite element node set of the mesh.
-	 * @returns {FeNodeSet}
+	 * @returns {module:fens.FeNodeSet}
 	 */
 	Mesh.prototype.fens = function() { return this._fens; };
 
 	/**
 	 * Returns geometry cell set of the mesh.
-	 * @returns {GCellSet}
+	 * @returns {module:gcellset.GCellSet}
 	 */
 	Mesh.prototype.gcells = function() { return this._gcells; };
 
 	/**
 	 * Creates a L-shaped domain using 3 quads.
-	 * @returns {Mesh}
+	 * @returns {module:mesh.Mesh}
 	 */
-	function L2x2() {
+	exports.L2x2 = function L2x2() {
 	  var fens, gcells;
 	  fens = new FeNodeSet({
 	    xyz: [
@@ -6380,13 +6438,67 @@ var fe =
 	  });
 
 	  return new Mesh({ fens: fens, gcells: gcells });
-	}
+	};
+	var L2x2 = exports.L2x2;
 
-	exports.L2x2 = L2x2;
+	/**
+	 * Creates a H8 block mesh.
+	 * @param {Number} w - width in x direction.
+	 * @param {Number} l - length in y direction.
+	 * @param {Number} h - height in z direction.
+	 * @param {Int} nx - number of divisions in x direction.
+	 * @param {Int} ny - number of divisions in y direction.
+	 * @param {Int} nz - number of divisions in z direction.
+	 * @returns {module:mesh.Mesh}
+	 */
+	exports.H8Block = function(w, l, h, nx, ny, nz) {
+	  var dx = w/nx, dy = l/ny, dz = h/nz;
+	  var nn = (nx+1)*(ny+1)*(nz+1);
+	  var xyz = new Array(nn);
+	  var conn = new Array(nx*ny*nz);
+	  var i, j, k;
+
+	  // return 1d index from 3 index
+	  function ijkToIndex(i, j, k, ni, nj, nk) {
+	    return i*nj*nk + j*nk + k;
+	  }
+
+	  // nodes
+	  for (i = 0; i < nx + 1; ++i)
+	    for (j = 0; j < ny + 1; ++j)
+	      for (k = 0; k < nz + 1; ++k)
+	        xyz[ijkToIndex(i, j, k, nx+1, ny+1, nz+1)] = [i*dx, j*dy, k*dz];
+
+	  // connectivity:
+	  for (i = 0; i < nx; ++i)
+	    for (j = 0; j < ny; ++j)
+	      for (k = 0; k < nz; ++k)
+	        conn[ijkToIndex(i, j, k, nx, ny, nz)] = cellConnAt(i, j, k);
+
+	  function cellConnAt(i, j, k) {
+	    return [
+	      ijkToIndex(i, j, k, nx+1, ny+1, nz+1),
+	      ijkToIndex(i, j, k+1, nx+1, ny+1, nz+1),
+	      ijkToIndex(i, j+1, k+1, nx+1, ny+1, nz+1),
+	      ijkToIndex(i, j+1, k, nx+1, ny+1, nz+1),
+
+	      ijkToIndex(i+1, j, k, nx+1, ny+1, nz+1),
+	      ijkToIndex(i+1, j, k+1, nx+1, ny+1, nz+1),
+	      ijkToIndex(i+1, j+1, k+1, nx+1, ny+1, nz+1),
+	      ijkToIndex(i+1, j+1, k, nx+1, ny+1, nz+1)
+	    ];
+	  }
+
+	  var fens = new FeNodeSet({ xyz: xyz });
+	  var gcells = new H8({ conn: conn });
+	  var mesh = new Mesh({ fens: fens, gcells: gcells });
+
+	  return mesh;
+	};
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6478,7 +6590,7 @@ var fe =
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6546,7 +6658,7 @@ var fe =
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
@@ -6576,7 +6688,7 @@ var fe =
 	// when used in node, this will actually load the util module we depend on
 	// versus loading the builtin util module as happens otherwise
 	// this is a bug in node module loading as far as I am concerned
-	var util = __webpack_require__(27);
+	var util = __webpack_require__(28);
 
 	var pSlice = Array.prototype.slice;
 	var hasOwn = Object.prototype.hasOwnProperty;
@@ -6911,7 +7023,7 @@ var fe =
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
@@ -14072,10 +14184,10 @@ var fe =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)(module), (function() { return this; }())))
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -14677,7 +14789,7 @@ var fe =
 
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -19108,7 +19220,7 @@ var fe =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -19636,7 +19748,7 @@ var fe =
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(29);
+	exports.isBuffer = __webpack_require__(30);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -19680,7 +19792,7 @@ var fe =
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(31);
+	exports.inherits = __webpack_require__(32);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -19698,10 +19810,10 @@ var fe =
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(30)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(31)))
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module) {
@@ -19717,7 +19829,7 @@ var fe =
 
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function isBuffer(arg) {
@@ -19728,7 +19840,7 @@ var fe =
 	}
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// shim for using process in browser
@@ -19792,7 +19904,7 @@ var fe =
 
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	if (typeof Object.create === 'function') {
