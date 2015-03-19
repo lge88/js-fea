@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Modules</title>
+	<title>js-fea Source: feutils.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -157,141 +157,95 @@
 	<div class="row-fluid">
 
 		
-		<div class="span8">
-			
+			<div class="span12">
+				
 				<div id="main">
 					
 
 
-	<h1 class="page-title">Modules</h1>
-<section>
-
-<header>
-    <h2>
+		<h1 class="page-title">Source: feutils.js</h1>
     
-    </h2>
-    
-</header>
+    <section>
+        <article>
+            <pre class="sunlight-highlight-javascript linenums">/*global require*/
+// feutils
+var numeric = require('./core.numeric');
+var size = numeric.size;
+var eye = numeric.eye;
+var div = numeric.div;
+var norm2 = numeric.norm2;
 
-<article>
-    <div class="container-overview">
-    
+/**
+ * @module feutils
+ */
 
-    
-        
+/**
+ * Returns true if the given coordinate is within the given box.
+ * @param {Array} xyz
+ * @param {Array} bounds - [xmin, xmax, ymin, ymax, zmin, zmax]
+ * @returns {Boolean}
+ */
+exports.isXyzInsideBox = function isXyzInsideBox(xyz, bounds) {
+  var i, dim = xyz.length, res = true;
+  var val, left, right;
+  for (i = 0; i &lt; dim; ++i) {
+    val = xyz[i];
+    left = bounds[2*i];
+    right = bounds[2*i+1];
+    if (val &lt; left || val > right) return false;
+  }
+  return res;
+};
 
-        
-<dl class="details">
-    
+function genISORm(xyz, tangents) {
+  var tmp = size(tangents);
+  var sdim = tmp[0], ntan = tmp[1];
+  if (sdim === ntan) {
+    return eye(sdim);
+  } else {
+    var e1 = tangents.map(function(row) {
+      return [row[0]];
+    });
 
-    
+    e1 = div(e1, norm2(e1));
+    switch (ntan) {
+    case 1:
+      return e1;
+      break;
+    case 2:
+      throw new Error('genISORm: ntan = ' + ntan + ' is not implemented.');
+      break;
+    default:
+      throw new Error('genISORm: incorrect size of tangents, ntan = ' + ntan);
+    }
 
-    
+  }
+}
 
-    
+exports.genISORm = genISORm;
 
-    
+// theta is a vector.
+function skewmat(theta) {
+  var n = theta.length, s;
+  if (n === 3) {
+    s = [
+      [0, -theta[2], theta[1] ],
+      [theta[3], 0, -theta[0] ],
+      [-theta[1], theta[0], 0 ]
+    ];
+  } else if (n === 2) {
+    s = [-theta[1], theta[0]];
+  } else {
+    throw new Error('skewmat(theta): theta must be a vector of 2 or 3.');
+  }
+  return s;
+}
 
-    
+exports.skewmat = skewmat;
+</pre>
+        </article>
+    </section>
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Classes</h3>
-
-        <dl>
-            <dt><a href="module-feblock.DeforSS.html">DeforSS</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-feblock.Feblock.html">Feblock</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-field.Field.html">Field</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-forceintensity.ForceIntensity.html">ForceIntensity</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.GCellSet.html">GCellSet</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.GCellSetManifold0.html">GCellSetManifold0</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.GCellSetManifold1.html">GCellSetManifold1</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.GCellSetManifold2.html">GCellSetManifold2</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.GCellSetManifold3.html">GCellSetManifold3</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.H8.html">H8</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.L2.html">L2</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.P1.html">P1</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-gcellset.Q4.html">Q4</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-material.DeforSSLinElBiax.html">DeforSSLinElBiax</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-material.DeforSSLinElTriax.html">DeforSSLinElTriax</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-material.DeforSSLinElUniax.html">DeforSSLinElUniax</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-material.Material.html">Material</a></dt>
-            <dd></dd>
-        
-            <dt><a href="module-mesh-Mesh.html">Mesh</a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
 
 
 
@@ -314,10 +268,6 @@
 				</footer>
 			</div>
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
 			
 			<br clear="both">
 		</div>

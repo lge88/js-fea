@@ -33,6 +33,10 @@
 						</li>
 						
 						<li>
+							<a href="module-feutils.html">feutils</a>
+						</li>
+						
+						<li>
 							<a href="module-field.html">field</a>
 						</li>
 						
@@ -219,7 +223,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-488">line 488</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-554">line 554</a>
     </li></ul></dd>
     
 
@@ -317,7 +321,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-140">line 140</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-145">line 145</a>
     </li></ul></dd>
     
 
@@ -459,7 +463,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-265">line 265</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-331">line 331</a>
     </li></ul></dd>
     
 
@@ -605,7 +609,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-275">line 275</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-341">line 341</a>
     </li></ul></dd>
     
 
@@ -775,7 +779,7 @@ domain.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-287">line 287</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-353">line 353</a>
     </li></ul></dd>
     
 
@@ -873,7 +877,7 @@ spatical domain.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-208">line 208</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-213">line 213</a>
     </li></ul></dd>
     
 
@@ -970,7 +974,7 @@ spatical domain.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-189">line 189</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-194">line 194</a>
     </li></ul></dd>
     
 
@@ -1068,7 +1072,7 @@ subclasses.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-200">line 200</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-205">line 205</a>
     </li></ul></dd>
     
 
@@ -1162,7 +1166,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-181">line 181</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-186">line 186</a>
     </li></ul></dd>
     
 
@@ -1199,6 +1203,170 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
 	<dd>
 		
 <span class="param-type">function</span>
+
+
+	</dd>
+</dl>
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="boxSelect"><span class="type-signature"></span>boxSelect<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Return the indices of the cells that all (or any if options.any is
+true) of its nodes are inside the given box.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">module:fens.FeNodeSet</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="module-gcellset.html#boxSelectOption">module:gcellset.boxSelectOption</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+    
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="module-gcellset.GCellSet.html#boxSelect">module:gcellset.GCellSet#boxSelect</a>
+    </li></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-237">line 237</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    the boundary gcellset.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="module-gcellset.GCellSet.html">module:gcellset.GCellSet</a></span>
 
 
 	</dd>
@@ -1259,7 +1427,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-228">line 228</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-294">line 294</a>
     </li></ul></dd>
     
 
@@ -1356,7 +1524,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-352">line 352</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-418">line 418</a>
     </li></ul></dd>
     
 
@@ -1449,7 +1617,7 @@ should return L2 as its boundary cell constructor, while L2 should retrun P1.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-245">line 245</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-311">line 311</a>
     </li></ul></dd>
     
 
@@ -1547,7 +1715,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-302">line 302</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-368">line 368</a>
     </li></ul></dd>
     
 
@@ -1631,7 +1799,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-500">line 500</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-566">line 566</a>
     </li></ul></dd>
     
 
@@ -1724,7 +1892,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-154">line 154</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-159">line 159</a>
     </li></ul></dd>
     
 
@@ -1817,7 +1985,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-103">line 103</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-108">line 108</a>
     </li></ul></dd>
     
 
@@ -1910,7 +2078,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-236">line 236</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-302">line 302</a>
     </li></ul></dd>
     
 
@@ -2120,7 +2288,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-510">line 510</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-576">line 576</a>
     </li></ul></dd>
     
 
@@ -2326,7 +2494,7 @@ this.count().
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-523">line 523</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-589">line 589</a>
     </li></ul></dd>
     
 
@@ -2556,7 +2724,7 @@ jacobianVolumn
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-577">line 577</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-643">line 643</a>
     </li></ul></dd>
     
 
@@ -2721,7 +2889,7 @@ jacobianVolumn
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-255">line 255</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-321">line 321</a>
     </li></ul></dd>
     
 
@@ -2931,7 +3099,7 @@ jacobianVolumn
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-537">line 537</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-603">line 603</a>
     </li></ul></dd>
     
 
@@ -3137,7 +3305,7 @@ jacobianVolumn
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-556">line 556</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-622">line 622</a>
     </li></ul></dd>
     
 
@@ -3230,7 +3398,7 @@ jacobianVolumn
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-310">line 310</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-376">line 376</a>
     </li></ul></dd>
     
 
@@ -3421,7 +3589,7 @@ cell.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-130">line 130</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-135">line 135</a>
     </li></ul></dd>
     
 
@@ -3564,7 +3732,7 @@ given indices.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-338">line 338</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-404">line 404</a>
     </li></ul></dd>
     
 
@@ -3658,7 +3826,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-95">line 95</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-100">line 100</a>
     </li></ul></dd>
     
 
@@ -3751,7 +3919,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-162">line 162</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-167">line 167</a>
     </li></ul></dd>
     
 
@@ -3844,7 +4012,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-171">line 171</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-176">line 176</a>
     </li></ul></dd>
     
 
@@ -3941,7 +4109,7 @@ visualization.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-146">line 146</a>
+        <a href="gcellset.js.html">gcellset.js</a>, <a href="gcellset.js.html#sunlight-1-line-151">line 151</a>
     </li></ul></dd>
     
 
@@ -4011,7 +4179,7 @@ visualization.
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Wed Mar 18 2015 16:37:40 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Thu Mar 19 2015 10:12:52 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>

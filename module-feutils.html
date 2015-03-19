@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>js-fea Class: DeforSSLinElTriax</title>
+	<title>js-fea Module: feutils</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -163,14 +163,12 @@
 					
 
 
-	<h1 class="page-title">Class: DeforSSLinElTriax</h1>
+	<h1 class="page-title">Module: feutils</h1>
 <section>
 
 <header>
     <h2>
-        <span class="ancestors"><a href="module-material.html">material</a>.</span>
-    
-    DeforSSLinElTriax
+    feutils
     </h2>
     
 </header>
@@ -181,13 +179,74 @@
 
     
         
+
+        
+<dl class="details">
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="feutils.js.html">feutils.js</a>, <a href="feutils.js.html#sunlight-1-line-9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
 <dt>
-    <h4 class="name" id="DeforSSLinElTriax"><span class="type-signature"></span>new DeforSSLinElTriax<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="isXyzInsideBox"><span class="type-signature">&lt;static> </span>isXyzInsideBox<span class="signature">(xyz, bounds)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Returns true if the given coordinate is within the given box.
+    </div>
     
 
     
@@ -220,13 +279,13 @@
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>xyz</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="module-material.html#DeforSSLinElTriaxInitOption">module:material.DeforSSLinElTriaxInitOption</a></span>
+<span class="param-type">Array</span>
 
 
             
@@ -237,6 +296,29 @@
             
 
             <td class="description last"></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>bounds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">[xmin, xmax, ymin, ymax, zmin, zmax]</td>
         </tr>
 
 	
@@ -268,174 +350,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-134">line 134</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-    
-    </div>
-
-    
-        <h3 class="subsection-title">Extends</h3>
-
-        <ul>
-            <li><a href="module-material.Material.html">module:material.Material</a></li>
-        </ul>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
-<dt>
-    <h4 class="name" id="newState"><span class="type-signature">&lt;virtual> </span>newState<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Create a new material state. Override by subclasses.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="module-material.Material.html#newState">module:material.Material#newState</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-35">line 35</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="tangentModuli"><span class="type-signature"></span>tangentModuli<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="module-types.html#Matrix">module:types.Matrix</a>}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Returns the tangent moduli
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-149">line 149</a>
+        <a href="feutils.js.html">feutils.js</a>, <a href="feutils.js.html#sunlight-1-line-19">line 19</a>
     </li></ul></dd>
     
 
@@ -459,10 +374,6 @@
     <h5>Returns:</h5>
     
             
-<div class="param-desc">
-    matrix 6 by 6
-</div>
-
 
 
 <dl>
@@ -471,7 +382,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type"><a href="module-types.html#Matrix">module:types.Matrix</a></span>
+<span class="param-type">Boolean</span>
 
 
 	</dd>
@@ -479,80 +390,6 @@
 
 
         
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="update"><span class="type-signature">&lt;virtual> </span>update<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Update material state. Override by subclasses.
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="module-material.Material.html#update">module:material.Material#update</a>
-    </li></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="material.js.html">material.js</a>, <a href="material.js.html#sunlight-1-line-43">line 43</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
     
     
 </dd>
@@ -583,7 +420,7 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Thu Mar 19 2015 10:12:53 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Thu Mar 19 2015 10:12:52 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
