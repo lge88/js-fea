@@ -22,6 +22,9 @@ var inv = numeric.inv;
 var norm = numeric.norm;
 var colon = numeric.colon;
 var ixUpdate_ = numeric.ixUpdate_;
+var zeros = numeric.zeros;
+var reshape = numeric.reshape;
+var nthColumn = numeric.nthColumn;
 
 var Material = require('./material').Material;
 var GCellSet = require('./gcellset').GCellSet;
@@ -278,7 +281,7 @@ DeforSS.prototype.stiffness = function(geom, u) {
   var i;
   for (i = 0; i < numCells; ++i) {
     eqnums[i] = u.gatherEqnumsVector(conns[i]);
-    Ke[i] = array2d(dim*cellSize, dim*cellSize, 0);
+    Ke[i] = zeros(dim*cellSize, dim*cellSize);
   }
 
   var allIds = array1d(geom.nfens(), function(i) { return i + 1; });
@@ -351,7 +354,6 @@ DeforSS.prototype.noneZeroEBCLoads = function(geom, u) {
   var conns = gcells.conn();
 
   var evs = [];
-
   var i, conn, pu, feb, ems, Ke, f, eqnums;
   for (i = 0; i < ncells; ++i) {
     conn = conns[i];
@@ -377,6 +379,82 @@ DeforSS.prototype.noneZeroEBCLoads = function(geom, u) {
     }
   }
   return evs;
+};
+
+/**
+ * Compute the element load vectors
+ * @param {module:field.Field} geom - geometric filed
+ * @param {module:field.Field} u - displacement filed
+ * @param {module:forceintensity.ForceIntensity} fi - force intensity
+ * @param {Int} m - manifold dimension
+ * @returns {ElementVector[]}
+ */
+DeforSS.prototype.distributeLoads = function(geom, u, fi, m) {
+  var evs = [];
+  var gcells = this._gcells;
+  var cellSize = gcells.cellSize();
+  var ir = this._ir;
+  var dim = u.dim();
+
+  var pc = ir.paramCoords();
+  var w = ir.weights();
+  var npts = ir.npts();
+
+  var conns = gcells.conn();
+  var Fe = new Array(ncells), eqnums = new Array(ncells);
+  var ncells = gcells.count();
+
+  var i;
+  for (i = 0; i < ncells; ++i) {
+    eqnums[i] = u.gatherEqnumsVector(conns[i]);
+    Fe[i] = zeros(geom.dim()*cellSize, 1);
+  }
+
+  var xs = geom.values(), j, N, Nder, conn, x;
+  var J, Jac, f, delta;
+  for (j = 0; j < npts; ++j) {
+    N = gcells.bfun(pc[j]);
+    Nder = gcells.bfundpar(pc[j]);
+    for (i = 0; i < ncells; ++i) {
+      conn = conns[i];
+      // console.log("conn = ", conn);
+      // FIXME: this is annoying! #indexZeroVsOne
+      x = conn.map(function(id) { return xs[id-1]; });
+
+      // console.log("x = ", x);
+      // console.log("Nder = ", Nder);
+
+      J = gcells.jacobianMatrix(Nder, x);
+      // console.log("conn = ", conn);
+      // console.log("N = ", N);
+      // console.log("J = ", J);
+      // console.log("m = ", m);
+      Jac = gcells.jacobianInDim(conn, N, J, x, m);
+      // console.log("Jac = ", Jac);
+      f = fi.magn(dot(transpose(N), x), J);
+
+      // delta = transpose(N);
+      // console.log("delta = ", delta);
+      // delta = dot(f, delta);
+      // console.log("delta = ", delta);
+      // delta = reshape(delta, dim*cellSize, 1);
+      // console.log("delta = ", delta);
+      // console.log("Jac*w[j] = ", Jac*w[j]);
+      // delta = mul(delta, Jac*w[j]);
+      // console.log("delta = ", delta);
+
+      delta = mul(reshape(dot(f, transpose(N)), dim*cellSize, 1), Jac*w[j]);
+
+      Fe[i] = add(Fe[i], delta);
+    }
+  }
+
+  var elementVectors = Fe.map(function(mat, i) {
+    var vec = transpose(mat)[0];
+    return new ElementVector(vec, eqnums[i]);
+  });
+
+  return elementVectors;
 };
 
 exports.DeforSS = DeforSS;
