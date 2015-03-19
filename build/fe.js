@@ -2230,6 +2230,8 @@ var fe =
 	var cloneDeep = _.cloneDeep;
 	var array1d = _.array1d;
 	var array2d = _.array2d;
+	var check = _.check;
+	var isAssigned = check.assigned;
 	var listFromIterator = _.listFromIterator;
 
 	var numeric = __webpack_require__(27);
@@ -2794,7 +2796,61 @@ var fe =
 	}
 	exports.eye = eye;
 
+	exports.zeros = function zeros(m, n) {
+	  if (!isAssigned(n)) n = m;
+	  return array2d(m, n, 0);
+	};
+
+	exports.ones = function ones(m, n) {
+	  if (!isAssigned(n)) n = m;
+	  return array2d(m, n, 1);
+	};
+
 	exports.SparseVector = SparseVector;
+
+
+	exports.reshape = function reshape(mat, m, n) {
+	  var tmp = size(mat), oldM = tmp[0], oldN = tmp[1];
+
+	  if (oldM*oldN !== m*n)
+	    throw new Error('reshape(mat, m, n): can not reshape' +
+	                    'matrix of ' + oldM + ' by ' + oldN +
+	                    ' to ' + m + ' by ' + n);
+
+	  var oldI, oldJ, newI, newJ, k;
+	  var res = array2d(m, n, 0);
+	  for (oldI = 0; oldI < oldM; ++oldI) {
+	    for (oldJ = 0; oldJ < oldN; ++oldJ) {
+	      k = ij2kColumnOrder(oldI, oldJ, oldM, oldN);
+	      tmp = k2ijColumnOrder(k, m, n);
+	      newI = tmp[0], newJ = tmp[1];
+	      res[newI][newJ] = mat[oldI][oldJ];
+	    }
+	  }
+	  return res;
+	};
+
+	exports.ij2kColumnOrder = function ij2kColumnOrder(i, j, m, n) {
+	  return m*j + i;
+	};
+	var ij2kColumnOrder = exports.ij2kColumnOrder;
+
+	exports.k2ijColumnOrder = function k2ijColumnOrder(k, m, n) {
+	  var i = k%m, j = Math.floor(k/m);
+	  return [i, j];
+	};
+	var k2ijColumnOrder = exports.k2ijColumnOrder;
+
+	exports.ij2kRowOrder = function ij2kRowOrder(i, j, m, n) {
+	  return n*i + j;
+	};
+	var ij2kRowOrder = exports.ij2kRowOrder;
+
+	exports.k2ijRowOrder = function k2ijRowOrder(k, m, n) {
+	  var j = k%n, i = Math.floor(k/n);
+	  return [i, j];
+	};
+	var k2ijRowOrder = exports.k2ijRowOrder;
 
 
 /***/ },
@@ -3965,7 +4021,7 @@ var fe =
 	  if (n === 3) {
 	    s = [
 	      [0, -theta[2], theta[1] ],
-	      [theta[3], 0, -theta[0] ],
+	      [theta[2], 0, -theta[0] ],
 	      [-theta[1], theta[0], 0 ]
 	    ];
 	  } else if (n === 2) {
@@ -6045,6 +6101,9 @@ var fe =
 	var norm = numeric.norm;
 	var colon = numeric.colon;
 	var ixUpdate_ = numeric.ixUpdate_;
+	var zeros = numeric.zeros;
+	var reshape = numeric.reshape;
+	var nthColumn = numeric.nthColumn;
 
 	var Material = __webpack_require__(14).Material;
 	var GCellSet = __webpack_require__(11).GCellSet;
@@ -6301,7 +6360,7 @@ var fe =
 	  var i;
 	  for (i = 0; i < numCells; ++i) {
 	    eqnums[i] = u.gatherEqnumsVector(conns[i]);
-	    Ke[i] = array2d(dim*cellSize, dim*cellSize, 0);
+	    Ke[i] = zeros(dim*cellSize, dim*cellSize);
 	  }
 
 	  var allIds = array1d(geom.nfens(), function(i) { return i + 1; });
@@ -6374,7 +6433,6 @@ var fe =
 	  var conns = gcells.conn();
 
 	  var evs = [];
-
 	  var i, conn, pu, feb, ems, Ke, f, eqnums;
 	  for (i = 0; i < ncells; ++i) {
 	    conn = conns[i];
@@ -6400,6 +6458,82 @@ var fe =
 	    }
 	  }
 	  return evs;
+	};
+
+	/**
+	 * Compute the element load vectors
+	 * @param {module:field.Field} geom - geometric filed
+	 * @param {module:field.Field} u - displacement filed
+	 * @param {module:forceintensity.ForceIntensity} fi - force intensity
+	 * @param {Int} m - manifold dimension
+	 * @returns {ElementVector[]}
+	 */
+	DeforSS.prototype.distributeLoads = function(geom, u, fi, m) {
+	  var evs = [];
+	  var gcells = this._gcells;
+	  var cellSize = gcells.cellSize();
+	  var ir = this._ir;
+	  var dim = u.dim();
+
+	  var pc = ir.paramCoords();
+	  var w = ir.weights();
+	  var npts = ir.npts();
+
+	  var conns = gcells.conn();
+	  var Fe = new Array(ncells), eqnums = new Array(ncells);
+	  var ncells = gcells.count();
+
+	  var i;
+	  for (i = 0; i < ncells; ++i) {
+	    eqnums[i] = u.gatherEqnumsVector(conns[i]);
+	    Fe[i] = zeros(geom.dim()*cellSize, 1);
+	  }
+
+	  var xs = geom.values(), j, N, Nder, conn, x;
+	  var J, Jac, f, delta;
+	  for (j = 0; j < npts; ++j) {
+	    N = gcells.bfun(pc[j]);
+	    Nder = gcells.bfundpar(pc[j]);
+	    for (i = 0; i < ncells; ++i) {
+	      conn = conns[i];
+	      // console.log("conn = ", conn);
+	      // FIXME: this is annoying! #indexZeroVsOne
+	      x = conn.map(function(id) { return xs[id-1]; });
+
+	      // console.log("x = ", x);
+	      // console.log("Nder = ", Nder);
+
+	      J = gcells.jacobianMatrix(Nder, x);
+	      // console.log("conn = ", conn);
+	      // console.log("N = ", N);
+	      // console.log("J = ", J);
+	      // console.log("m = ", m);
+	      Jac = gcells.jacobianInDim(conn, N, J, x, m);
+	      // console.log("Jac = ", Jac);
+	      f = fi.magn(dot(transpose(N), x), J);
+
+	      // delta = transpose(N);
+	      // console.log("delta = ", delta);
+	      // delta = dot(f, delta);
+	      // console.log("delta = ", delta);
+	      // delta = reshape(delta, dim*cellSize, 1);
+	      // console.log("delta = ", delta);
+	      // console.log("Jac*w[j] = ", Jac*w[j]);
+	      // delta = mul(delta, Jac*w[j]);
+	      // console.log("delta = ", delta);
+
+	      delta = mul(reshape(dot(f, transpose(N)), dim*cellSize, 1), Jac*w[j]);
+
+	      Fe[i] = add(Fe[i], delta);
+	    }
+	  }
+
+	  var elementVectors = Fe.map(function(mat, i) {
+	    var vec = transpose(mat)[0];
+	    return new ElementVector(vec, eqnums[i]);
+	  });
+
+	  return elementVectors;
 	};
 
 	exports.DeforSS = DeforSS;
@@ -7085,7 +7219,7 @@ var fe =
 	// when used in node, this will actually load the util module we depend on
 	// versus loading the builtin util module as happens otherwise
 	// this is a bug in node module loading as far as I am concerned
-	var util = __webpack_require__(29);
+	var util = __webpack_require__(28);
 
 	var pSlice = Array.prototype.slice;
 	var hasOwn = Object.prototype.hasOwnProperty;
@@ -14581,7 +14715,7 @@ var fe =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)(module), (function() { return this; }())))
 
 /***/ },
 /* 26 */
@@ -19620,22 +19754,6 @@ var fe =
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
 	//
 	// Permission is hereby granted, free of charge, to any person obtaining a
@@ -20224,6 +20342,22 @@ var fe =
 	}
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(31)))
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
 
 /***/ },
 /* 30 */
