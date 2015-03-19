@@ -931,4 +931,98 @@ describe('core.numeric', function() {
     });
   });
 
+  describe('ij2kColumnOrder/k2ijColumnOrder/ij2kRowOrder/k2ijRowOrder', function() {
+    var ij2kColumnOrder = numeric.ij2kColumnOrder;
+    var k2ijColumnOrder = numeric.k2ijColumnOrder;
+
+    var ij2kRowOrder = numeric.ij2kRowOrder;
+    var k2ijRowOrder = numeric.k2ijRowOrder;
+
+    var dataset = [
+      {
+        m: 2, n: 3,
+        i: 0, j:0,
+        kColumnOrder: 0,
+        kRowOrder: 0
+      },
+      {
+        m: 2, n: 3,
+        i: 1, j: 2,
+        kColumnOrder: 5,
+        kRowOrder: 5
+      },
+      {
+        m: 2, n: 3,
+        i: 0, j:2,
+        kColumnOrder: 4,
+        kRowOrder: 2
+      },
+      {
+        m: 2, n: 3,
+        i: 1, j:1,
+        kColumnOrder: 3,
+        kRowOrder: 4
+      },
+    ];
+
+    dataDriven(dataset, function() {
+      it('should work m={m},n={n},i={i},j={j}', function(ctx) {
+        var kCol = ij2kColumnOrder(ctx.i, ctx.j, ctx.m, ctx.n);
+        expect(kCol).to.equal(ctx.kColumnOrder);
+
+        var ij = k2ijColumnOrder(ctx.kColumnOrder, ctx.m, ctx.n);
+        expect(ij).to.eql([ctx.i, ctx.j]);
+
+        var kRow = ij2kRowOrder(ctx.i, ctx.j, ctx.m, ctx.n);
+        expect(kRow).to.equal(ctx.kRowOrder);
+
+        ij = k2ijRowOrder(ctx.kRowOrder, ctx.m, ctx.n);
+        expect(ij).to.eql([ctx.i, ctx.j]);
+
+      });
+    });
+  });
+
+  describe('reshape', function() {
+    var reshape = numeric.reshape;
+    var datasetThatWorks = [
+      {
+        mat: [ [1, 2, 3], [4, 5, 6] ],
+        m: 3, n: 2,
+        expected: [ [1, 5], [4, 3], [2, 6] ]
+      },
+      {
+        mat: [ [1, 2, 3], [4, 5, 6] ],
+        m: 6, n: 1,
+        expected: [ [1], [4], [2], [5], [3], [6] ]
+      },
+      {
+        mat: [ [1, 2, 3], [4, 5, 6] ],
+        m: 1, n: 6,
+        expected: [ [1, 4, 2, 5, 3, 6] ]
+      }
+    ];
+
+    var datasetThatFail = [
+      {
+        mat: [ [1, 2, 3], [4, 5, 6] ],
+        m: 5,
+        n: 1
+      }
+    ];
+
+    dataDriven(datasetThatWorks, function() {
+      it('should work m={m}, n={n}', function(ctx) {
+        var computed = reshape(ctx.mat, ctx.m, ctx.n);
+        expect(computed).to.eql(ctx.expected);
+      });
+    });
+
+    dataDriven(datasetThatFail, function() {
+      it('should not work m={m}, n={n}', function(ctx) {
+        expect(reshape.bind(null, ctx.mat, ctx.m, ctx.n)).to.throwException();
+      });
+    });
+  });
+
 });

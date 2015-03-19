@@ -582,3 +582,47 @@ exports.ones = function ones(m, n) {
 };
 
 exports.SparseVector = SparseVector;
+
+
+exports.reshape = function reshape(mat, m, n) {
+  var tmp = size(mat), oldM = tmp[0], oldN = tmp[1];
+
+  if (oldM*oldN !== m*n)
+    throw new Error('reshape(mat, m, n): can not reshape' +
+                    'matrix of ' + oldM + ' by ' + oldN +
+                    ' to ' + m + ' by ' + n);
+
+  var oldI, oldJ, newI, newJ, k;
+  var res = array2d(m, n, 0);
+  for (oldI = 0; oldI < oldM; ++oldI) {
+    for (oldJ = 0; oldJ < oldN; ++oldJ) {
+      k = ij2kColumnOrder(oldI, oldJ, oldM, oldN);
+      tmp = k2ijColumnOrder(k, m, n);
+      newI = tmp[0], newJ = tmp[1];
+      res[newI][newJ] = mat[oldI][oldJ];
+    }
+  }
+  return res;
+};
+
+exports.ij2kColumnOrder = function ij2kColumnOrder(i, j, m, n) {
+  return m*j + i;
+};
+var ij2kColumnOrder = exports.ij2kColumnOrder;
+
+exports.k2ijColumnOrder = function k2ijColumnOrder(k, m, n) {
+  var i = k%m, j = Math.floor(k/m);
+  return [i, j];
+};
+var k2ijColumnOrder = exports.k2ijColumnOrder;
+
+exports.ij2kRowOrder = function ij2kRowOrder(i, j, m, n) {
+  return n*i + j;
+};
+var ij2kRowOrder = exports.ij2kRowOrder;
+
+exports.k2ijRowOrder = function k2ijRowOrder(k, m, n) {
+  var j = k%n, i = Math.floor(k/n);
+  return [i, j];
+};
+var k2ijRowOrder = exports.k2ijRowOrder;
