@@ -61,7 +61,7 @@ function skewmat(theta) {
   if (n === 3) {
     s = [
       [0, -theta[2], theta[1] ],
-      [theta[3], 0, -theta[0] ],
+      [theta[2], 0, -theta[0] ],
       [-theta[1], theta[0], 0 ]
     ];
   } else if (n === 2) {
