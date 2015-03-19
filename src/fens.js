@@ -11,6 +11,9 @@ var isMatrixOfDimension = _.isMatrixOfDimension;
 var vectorOfDimension = _.vectorOfDimension;
 var PointSet = require('./geometry.pointset').PointSet;
 
+var feutils = require('./feutils');
+var isXyzInsideBox = feutils.isXyzInsideBox;
+
 var _input_contract_fens_options_ = defineContract(function(o) {
   assert.object(o);
   assert.assigned(o.xyz);
@@ -94,21 +97,9 @@ FeNodeSet.prototype.boxSelect = function(options) {
   var id, xyz, out = [];
   for (id = 1; id <= nfens; ++id) {
     xyz = this.xyzById(id);
-    if (isInside(xyz, bounds)) {
+    if (isXyzInsideBox(xyz, bounds)) {
       out.push(id);
     }
-  }
-
-  function isInside(xyz, bounds) {
-    var i, dim = xyz.length, res = true;
-    var val, left, right;
-    for (i = 0; i < dim; ++i) {
-      val = xyz[i];
-      left = bounds[2*i];
-      right = bounds[2*i+1];
-      if (val < left || val > right) return false;
-    }
-    return res;
   }
 
   return out;

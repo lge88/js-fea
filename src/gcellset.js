@@ -9,6 +9,7 @@ var assert = _.assert;
 var check = _.check;
 var isAssigned = check.assigned;
 var isObject = check.object;
+var isArray = check.array;
 var isa = check.instance;
 var isNumber = check.number;
 var isFunction = check.function;
@@ -27,11 +28,15 @@ var transpose = numeric.transpose;
 
 var feutils = require('./feutils');
 var skewmat = feutils.skewmat;
+var isXyzInsideBox = feutils.isXyzInsideBox;
 
 var topology = require('./geometry.topology');
 var Topology = topology.Topology;
 var hypercube = topology.hypercube;
 var hypercubeBoundary = topology.hypercubeBoundary;
+
+var fens = require('./fens');
+var FeNodeSet = fens.FeNodeSet;
 
 /**
  * @module gcellset
@@ -210,6 +215,67 @@ exports.GCellSet.prototype.boundary = function() {
   var boundaryConn = this.boundaryConn();
   return new C({ conn: boundaryConn });
 };
+
+/**
+ * @typedef module:gcellset.boxSelectOption
+ * @property {Array} bounds - [xmin, xmax, ymin, ymax, zmin, zmax]
+ * @property {Number} inflate - the amount to increase or decrease the
+ * extent of the box.
+ * @property {Boolean} any - require any or all nodes is inside the
+ * box. Default is false, means only all nodes fall inside the box
+ * will be considered.
+ */
+
+/**
+ *
+ * Return the indices of the cells that all (or any if options.any is
+ * true) of its nodes are inside the given box.
+ * @param {module:fens.FeNodeSet}
+ * @param {module:gcellset.boxSelectOption}
+ * @returns {module:gcellset.GCellSet} the boundary gcellset.
+ */
+exports.GCellSet.prototype.boxSelect = function(fens, options) {
+  if (!isa(fens, FeNodeSet))
+    throw new Error('GCellSet#boxSelect(fens, options): ' +
+                    'fens must be a FeNodeSet instance.');
+
+  if (!isObject(options) || !isArray(options.bounds))
+    throw new Error('GCellSet#boxSelect(fens, options): ' +
+                    'options is not valid boxSelectOption.');
+
+  var bounds = options.bounds;
+  if (isNumber(options.inflate))
+    bounds = bounds.map(function(x, i) {
+      if (i % 2 === 0) return x - options.inflate;
+      return x + options.inflate;
+    });
+
+  var any = false, isCellInBox;
+  if (isAssigned(options.any)) any = !!(options.any);
+
+  if (any) isCellInBox = anyNodesInBox;
+  else isCellInBox = allNodesInBox;
+
+  var conn = this.conn(), res = [];
+  conn.forEach(function(cell, idx) {
+    if (isCellInBox(fens, cell, bounds)) res.push(idx);
+  });
+  return res;
+};
+
+function allNodesInBox(fens, cell, bounds) {
+  return cell.every(function(id) {
+    var xyz = fens.xyzById(id);
+    return isXyzInsideBox(xyz, bounds);
+  });
+}
+
+function anyNodesInBox(fens, cell, bounds) {
+  return cell.some(function(id) {
+    var xyz = fens.xyzById(id);
+    return isXyzInsideBox(xyz, bounds);
+  });
+}
 
 /**
  * Returns the dimension of this geometry cell set.

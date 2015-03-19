@@ -56,6 +56,7 @@ describe('FAESOR simple_beam example', function() {
     });
 
     febIr = new GaussRule(3, 2);
+    surfaceIr = new GaussRule(2, 2);
 
     feb = new DeforSS({
       material: mater,
@@ -112,17 +113,21 @@ describe('FAESOR simple_beam example', function() {
     // console.log("bdryGcells = ", bdryGcells);
     // console.log("bdryGcells.type() = ", bdryGcells.type());
     // console.log("bdryGcells.conn() = ", bdryGcells.conn());
-    return;
 
+    // TODO: expose mesh#cellBoxSelect, mesh#vertexBoxSelect as well.
     var bcl = bdryGcells.boxSelect(fens, {
       bounds: [0, W, L, L, 0, H],
       inflate: htol
     });
+    // console.log("bcl = ", bcl);
+
     var lfeb = new DeforSS({
-      mater: mater,
+      material: mater,
       gcells: bdryGcells.subset(bcl),
       integrationRule: surfaceIr
     });
+
+    return;
 
     var elementVectors = lfeb.distributeLoads(geom, u, fi, 2);
     console.log("elementVectors = ", elementVectors);

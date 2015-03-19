@@ -103,7 +103,7 @@ function  simple_beam(n)
   fi= force_intensity(struct ('magn',[0;0; magn]));
   bdry_gcells = mesh_bdry(gcells, []);
   bcl = gcell_select(fens, bdry_gcells, ...
-                     struct ('box',[0 W L L 0 H],'inflate',htol));
+                     struct ('box',[0 W L L 0 H],'inflate',htol))
   lfeb = feblock_defor_ss(struct ('mater',mater, 'gcells',subset(bdry_gcells,bcl),...
                                   'integration_rule',eltyd(eix).surface_integration_rule));
   F = start (sysvec, get(u, 'neqns'));

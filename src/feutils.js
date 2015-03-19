@@ -6,6 +6,28 @@ var eye = numeric.eye;
 var div = numeric.div;
 var norm2 = numeric.norm2;
 
+/**
+ * @module feutils
+ */
+
+/**
+ * Returns true if the given coordinate is within the given box.
+ * @param {Array} xyz
+ * @param {Array} bounds - [xmin, xmax, ymin, ymax, zmin, zmax]
+ * @returns {Boolean}
+ */
+exports.isXyzInsideBox = function isXyzInsideBox(xyz, bounds) {
+  var i, dim = xyz.length, res = true;
+  var val, left, right;
+  for (i = 0; i < dim; ++i) {
+    val = xyz[i];
+    left = bounds[2*i];
+    right = bounds[2*i+1];
+    if (val < left || val > right) return false;
+  }
+  return res;
+};
+
 function genISORm(xyz, tangents) {
   var tmp = size(tangents);
   var sdim = tmp[0], ntan = tmp[1];
