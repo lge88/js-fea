@@ -5,6 +5,8 @@ var _ = require('./core.utils');
 var cloneDeep = _.cloneDeep;
 var array1d = _.array1d;
 var array2d = _.array2d;
+var check = _.check;
+var isAssigned = check.assigned;
 var listFromIterator = _.listFromIterator;
 
 var numeric = require('numeric');
@@ -568,5 +570,15 @@ function eye(n) {
   });
 }
 exports.eye = eye;
+
+exports.zeros = function zeros(m, n) {
+  if (!isAssigned(n)) n = m;
+  return array2d(m, n, 0);
+};
+
+exports.ones = function ones(m, n) {
+  if (!isAssigned(n)) n = m;
+  return array2d(m, n, 1);
+};
 
 exports.SparseVector = SparseVector;

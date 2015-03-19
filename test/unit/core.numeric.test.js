@@ -889,4 +889,46 @@ describe('core.numeric', function() {
     });
   });
 
+  describe('zeros', function() {
+    var zeros = numeric.zeros;
+    var dataset = [
+      {
+        m: 2,
+        expected: [ [0, 0], [0, 0] ]
+      },
+      {
+        m: 2,
+        n: 3,
+        expected: [ [0, 0, 0], [0, 0, 0] ]
+      }
+    ];
+    dataDriven(dataset, function() {
+      it('should work when m={m}, n={n}', function(ctx) {
+        var computed = zeros(ctx.m, ctx.n);
+        expect(computed).to.eql(ctx.expected);
+      });
+    });
+  });
+
+  describe('ones', function() {
+    var ones = numeric.ones;
+    var dataset = [
+      {
+        m: 2,
+        expected: [ [1, 1], [1, 1] ]
+      },
+      {
+        m: 2,
+        n: 3,
+        expected: [ [1, 1, 1], [1, 1, 1] ]
+      }
+    ];
+    dataDriven(dataset, function() {
+      it('should work when m={m}, n={n}', function(ctx) {
+        var computed = ones(ctx.m, ctx.n);
+        expect(computed).to.eql(ctx.expected);
+      });
+    });
+  });
+
 });
