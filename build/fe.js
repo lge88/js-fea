@@ -4476,7 +4476,7 @@ var fe =
 	 * @returns {module:types.Matrix} Jacob matrix.
 	 */
 	exports.GCellSet.prototype.jacobianMatrix = function(nder, x) {
-	  return mul(transpose(x), nder);
+	  return dot(transpose(x), nder);
 	};
 
 	/**
@@ -6494,14 +6494,15 @@ var fe =
 	  for (j = 0; j < npts; ++j) {
 	    N = gcells.bfun(pc[j]);
 	    Nder = gcells.bfundpar(pc[j]);
+	    // console.log("Nder = ", Nder);
 	    for (i = 0; i < ncells; ++i) {
 	      conn = conns[i];
 	      // console.log("conn = ", conn);
 	      // FIXME: this is annoying! #indexZeroVsOne
 	      x = conn.map(function(id) { return xs[id-1]; });
 
-	      // console.log("x = ", x);
 	      // console.log("Nder = ", Nder);
+	      // console.log("x = ", x);
 
 	      J = gcells.jacobianMatrix(Nder, x);
 	      // console.log("conn = ", conn);
@@ -6511,6 +6512,7 @@ var fe =
 	      Jac = gcells.jacobianInDim(conn, N, J, x, m);
 	      // console.log("Jac = ", Jac);
 	      f = fi.magn(dot(transpose(N), x), J);
+	      // console.log("f = ", f);
 
 	      // delta = transpose(N);
 	      // console.log("delta = ", delta);
@@ -6986,6 +6988,7 @@ var fe =
 	  // return 1d index from 3 index
 	  function ijkToIndex(i, j, k, ni, nj, nk) {
 	    return i*nj*nk + j*nk + k;
+	    // return k*ni*nj + j*ni + i;
 	  }
 
 	  // nodes
@@ -7219,7 +7222,7 @@ var fe =
 	// when used in node, this will actually load the util module we depend on
 	// versus loading the builtin util module as happens otherwise
 	// this is a bug in node module loading as far as I am concerned
-	var util = __webpack_require__(28);
+	var util = __webpack_require__(29);
 
 	var pSlice = Array.prototype.slice;
 	var hasOwn = Object.prototype.hasOwnProperty;
@@ -14715,7 +14718,7 @@ var fe =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)(module), (function() { return this; }())))
 
 /***/ },
 /* 26 */
@@ -19754,6 +19757,22 @@ var fe =
 /* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
 	//
 	// Permission is hereby granted, free of charge, to any person obtaining a
@@ -20342,22 +20361,6 @@ var fe =
 	}
 
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(31)))
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
 
 /***/ },
 /* 30 */
