@@ -319,7 +319,7 @@ exports.GCellSet.prototype.conn = function() {
  * @returns {module:types.Matrix} Jacob matrix.
  */
 exports.GCellSet.prototype.jacobianMatrix = function(nder, x) {
-  return mul(transpose(x), nder);
+  return dot(transpose(x), nder);
 };
 
 /**
