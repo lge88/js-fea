@@ -415,14 +415,15 @@ DeforSS.prototype.distributeLoads = function(geom, u, fi, m) {
   for (j = 0; j < npts; ++j) {
     N = gcells.bfun(pc[j]);
     Nder = gcells.bfundpar(pc[j]);
+    // console.log("Nder = ", Nder);
     for (i = 0; i < ncells; ++i) {
       conn = conns[i];
       // console.log("conn = ", conn);
       // FIXME: this is annoying! #indexZeroVsOne
       x = conn.map(function(id) { return xs[id-1]; });
 
-      // console.log("x = ", x);
       // console.log("Nder = ", Nder);
+      // console.log("x = ", x);
 
       J = gcells.jacobianMatrix(Nder, x);
       // console.log("conn = ", conn);
@@ -432,6 +433,7 @@ DeforSS.prototype.distributeLoads = function(geom, u, fi, m) {
       Jac = gcells.jacobianInDim(conn, N, J, x, m);
       // console.log("Jac = ", Jac);
       f = fi.magn(dot(transpose(N), x), J);
+      // console.log("f = ", f);
 
       // delta = transpose(N);
       // console.log("delta = ", delta);

@@ -110,6 +110,7 @@ exports.H8Block = function(w, l, h, nx, ny, nz) {
   // return 1d index from 3 index
   function ijkToIndex(i, j, k, ni, nj, nk) {
     return i*nj*nk + j*nk + k;
+    // return k*ni*nj + j*ni + i;
   }
 
   // nodes

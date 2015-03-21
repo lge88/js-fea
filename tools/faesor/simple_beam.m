@@ -62,6 +62,13 @@ function  simple_beam(n)
 
   ## Create the mesh and initialize the geometry
   [fens,gcells]= feval (eltyd(eix).mf, W, L, H, n,mult*n,2*n);
+
+  xyz = get(fens, 'xyz');
+  xyz(101:105, :)
+
+  conn = get(gcells, 'conn');
+  conn(101:105, :)
+
   ## mesh{1}=fens;
   ## mesh{2}=gcells;
   ## drawmesh(mesh,'shrink', 0.9,'facecolor','red'); view (2); pause
@@ -98,15 +105,42 @@ function  simple_beam(n)
   K = start (sparse_sysmat, get(u, 'neqns'));
                     % K = start (sparse_chol_sysmat, get(u, 'neqns'));
   K = assemble (K, stiffness(feb, geom, u));
+  ## mat = get(K, 'mat');
+  ## fprintf('k:\n')
+  ## full(mat([32,40,7,18], [32,40,7,18]))
+  ## mat(3,3)
+  ## mat(4,4)
+  ## mat(77,77)
+  ## mat(8,8)
 
   %% Assemble the load vector
   fi= force_intensity(struct ('magn',[0;0; magn]));
   bdry_gcells = mesh_bdry(gcells, []);
+
+  nbdrycells = count(bdry_gcells);
+  bdry_conn = get(bdry_gcells, 'conn');
+  ## bdry_conn = normalizedConn(bdry_conn)
+  ## bdry_conn_201_205 = bdry_conn(201:205, :)
+
   bcl = gcell_select(fens, bdry_gcells, ...
-                     struct ('box',[0 W L L 0 H],'inflate',htol))
+                     struct ('box',[0 W L L 0 H],'inflate',htol));
+
+  selected_bdry_cells = subset(bdry_gcells,bcl);
+  selected_bdry_cells_conn = get(selected_bdry_cells, 'conn');
+  ## selected_bdry_cells_conn = normalizedConn(selected_bdry_cells_conn)
+
   lfeb = feblock_defor_ss(struct ('mater',mater, 'gcells',subset(bdry_gcells,bcl),...
                                   'integration_rule',eltyd(eix).surface_integration_rule));
   F = start (sysvec, get(u, 'neqns'));
+
+  evs = distrib_loads(lfeb, geom, u, fi,2);
+  ## evs_vec = get(evs, 'vec');
+  ## evs_eqnums = get(evs, 'eqnums');
+  ## for i=1:length(evs_vec)
+  ##   i
+  ##   evs_vec{i}
+  ##   evs_eqnums{i}
+  ## end
   F = assemble (F, distrib_loads(lfeb, geom, u, fi,2));
 
 

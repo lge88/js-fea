@@ -48,6 +48,9 @@ describe('FAESOR simple_beam example', function() {
     fens = mesh.fens();
     gcells = mesh.gcells();
 
+    gcells.conn().slice(100, 105);
+    // console.log("gcells.conn().slice(100, 105) = ", gcells.conn().slice(100, 105));
+    // console.log("fens.xyz().slice(100, 105) = ", fens.xyz().slice(100, 105));
 
     prop = new LinElIso({ E: E, nu: nu });
 
@@ -96,7 +99,6 @@ describe('FAESOR simple_beam example', function() {
       ebcs: ebcs
     });
 
-
     var neqns = u.neqns();
     // console.log("neqns = ", neqns);
 
@@ -104,6 +106,13 @@ describe('FAESOR simple_beam example', function() {
 
     var K = new SparseSystemMatrix(neqns, neqns, elementMatrices);
     // console.log("K = ", K.toFull());
+    // var ids = [32,40,7,18].map(function(id) { return id-1; });
+    // ids
+    //   .forEach(function(i) {
+    //     ids.forEach(function(j) {
+    //       console.log('K(' + [i,j] + ')=', K.dokMatrix().at(i,j));
+    //     });
+    // });
 
     var fi = new ForceIntensity({ magn: [0, 0, magn] });
     // console.log("fi = ", fi);
@@ -112,7 +121,17 @@ describe('FAESOR simple_beam example', function() {
     var bdryGcells = gcells.boundary();
     // console.log("bdryGcells = ", bdryGcells);
     // console.log("bdryGcells.type() = ", bdryGcells.type());
+    // not sure whether boundary is correct or not.
     // console.log("bdryGcells.conn() = ", bdryGcells.conn());
+    // console.log("bdryGcells.count() = ", bdryGcells.count());
+    // var bdryConn = bdryGcells.conn()
+    //       .map(fe._.normalizedCell)
+    //       .sort(fe._.byLexical);
+    // console.log("bdryConn = ", bdryConn);
+
+    // return;
+    // bdryGcells.conn().slice(200, 205);
+    // console.log("bdryGcells.conn().slice(200, 205) = ", bdryGcells.conn().slice(200, 205));
 
     // TODO: expose mesh#cellBoxSelect, mesh#vertexBoxSelect as well.
     var bcl = bdryGcells.boxSelect(fens, {
@@ -120,6 +139,12 @@ describe('FAESOR simple_beam example', function() {
       inflate: htol
     });
     // console.log("bcl = ", bcl);
+
+    var selectedBclConn = bdryGcells.subset(bcl)
+          .conn()
+          .map(fe._.normalizedCell)
+          .sort(fe._.byLexical);
+    // console.log("selectedBclConn = ", selectedBclConn);
 
     var lfeb = new DeforSS({
       material: mater,
@@ -147,12 +172,12 @@ describe('FAESOR simple_beam example', function() {
 
     var uv = u.gatherValuesMatrix(freeendNids);
     var uz = sum(nthColumn(uv, 3))/freeendNids.length;
-    console.log("uz = ", uz);
+    // console.log("uz = ", uz);
 
-    var uzExpected = -9.4;
-    console.log("uzExpected = ", uzExpected);
+    var uzExpected = -9.4052;
+    // console.log("uzExpected = ", uzExpected);
 
-    // expect(Math.abs(uz - uzExpected) < 1e-4).to.be(true);
+    expect(Math.abs(uz - uzExpected) < 1e-4).to.be(true);
     return;
   });
 
