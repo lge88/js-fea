@@ -39,6 +39,11 @@ FeNodeSet.prototype.dim = function() {
   return this._xyz.getRn();
 };
 
+FeNodeSet.prototype.embed = function(n) {
+  var newXyz = this._xyz.embed(n);
+  return new FeNodeSet({ xyz: newXyz });
+};
+
 FeNodeSet.prototype.xyz = function() {
   return this._xyz.toList();
 };

@@ -116,6 +116,20 @@ describe('fens', function() {
           output: [6],
           verify: 'eql'
         }
+      ],
+      embed: [
+        {
+          input: 3,
+          output: [
+            [0, 0, 0],
+            [0, 40, 0],
+            [40, 0, 0],
+            [40, 40, 0],
+            [80, 0, 0],
+            [80, 40, 0]
+          ],
+          verify: 'fensEql'
+        }
       ]
     }
   ];
@@ -125,6 +139,9 @@ describe('fens', function() {
       var arr  = [];
       while (iter.hasNext()) arr.push(iter.next());
       expect(arr).to.eql(expected);
+    },
+    fensEql: function(fens, expected) {
+      expect(fens.xyz()).to.eql(expected);
     }
   };
 
