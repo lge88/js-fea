@@ -22,6 +22,7 @@ var inv = numeric.inv;
 var norm = numeric.norm;
 var colon = numeric.colon;
 var ixUpdate_ = numeric.ixUpdate_;
+var ix = numeric.ix;
 var zeros = numeric.zeros;
 var reshape = numeric.reshape;
 var nthColumn = numeric.nthColumn;
@@ -176,9 +177,10 @@ exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
   var nfn = size(Ndersp, 1);
   var dim = size(c, 2);
   var B = array2d(3, nfn*dim, 0);
-  var i, cols, vals;
+  var i, cols, vals, RmT;
 
   if (Rm) {
+    // console.log("nfn = ", nfn);
     for (i = 1; i <= nfn; ++i) {
       cols = colon(dim*(i-1)+1, dim*i);
       vals = [
@@ -186,11 +188,15 @@ exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
         [ 0, Ndersp[i-1][1] ],
         [ Ndersp[i-1][1], Ndersp[i-1][0] ]
       ];
+      RmT = transpose(ix(Rm, ':', [1,2]));
+      vals = dot(vals, RmT);
+
       // console.log("B = ", B);
       // console.log("cols = ", cols);
+      // console.log("i = ", i);
       // console.log("vals = ", vals);
       B = ixUpdate_(B, ':', cols, vals);
-      // console.log("B = ", B);
+      // console.log("updated B = ", B);
     }
   } else
     throw new Error('_blmat1: not implmented when !Rm');
@@ -301,6 +307,8 @@ DeforSS.prototype.stiffness = function(geom, u) {
 
       if (rm) {
         // TODO: figure out rm
+        // console.log("dot(transpose(rm), J)) = ", dot(transpose(rm), J));
+        // console.log("inv(dot(transpose(rm), J)) = ", inv(dot(transpose(rm), J)));
         Ndersp = dot(Nders[j], inv(dot(transpose(rm), J)));
       } else {
         Ndersp = dot(Nders[j], inv(J));
@@ -330,6 +338,7 @@ DeforSS.prototype.stiffness = function(geom, u) {
       // console.log("mul(D, Jac*w[j]) = ", mul(D, Jac*w[j]));
       // console.log("dot(transpose(B), mul(D, Jac*w[j])) = ", dot(transpose(B), mul(D, Jac*w[j])));
       delta = dot(dot(transpose(B), mul(D, Jac*w[j])), B);
+
       // console.log("delta = ", delta);
       // console.log("delta = ", delta);
 
@@ -367,10 +376,9 @@ DeforSS.prototype.noneZeroEBCLoads = function(geom, u) {
         rm: this._rm
       });
       // this._gcells = this._gcells.subset([i]);
+      // console.log("nzbc stiff = ");
       ems = feb.stiffness(geom, u);
-      // console.log("ems = ", ems);
       Ke = ems[0].matrix;
-      // console.log("Ke = ", Ke);
 
       f = mul(-1, dot(Ke, pu));
       // console.log("f = ", f);

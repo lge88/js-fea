@@ -4,7 +4,10 @@ var numeric = require('./core.numeric');
 var size = numeric.size;
 var eye = numeric.eye;
 var div = numeric.div;
+var dot = numeric.dot;
+var nthColumn = numeric.nthColumn;
 var norm2 = numeric.norm2;
+var norm = numeric.norm;
 
 /**
  * @module feutils
@@ -44,7 +47,22 @@ function genISORm(xyz, tangents) {
       return e1;
       break;
     case 2:
-      throw new Error('genISORm: ntan = ' + ntan + ' is not implemented.');
+      var n = dot(skewmat(e1), nthColumn(tangents, 2));
+      console.log("n = ", n);
+      n = div(n, norm(nthColumn(tangents, 2)));
+      var e2 = dot(skewmat(n), e1);
+      console.log("e2 = ", e2);
+      e2 = div(e2, norm(e2));
+      var rm = e1.map(function(row, i) {
+        row.push(e2[i][0]);
+        return row;
+      });
+      // var rm = [e1, e2];
+      console.log("e1 = ", e1);
+      console.log("e2 = ", e2);
+      console.log("rm = ", rm);
+      return rm;
+      // throw new Error('genISORm: ntan = ' + ntan + ' is not implemented.');
       break;
     default:
       throw new Error('genISORm: incorrect size of tangents, ntan = ' + ntan);
