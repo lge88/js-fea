@@ -3964,7 +3964,10 @@ var fe =
 	var size = numeric.size;
 	var eye = numeric.eye;
 	var div = numeric.div;
+	var dot = numeric.dot;
+	var nthColumn = numeric.nthColumn;
 	var norm2 = numeric.norm2;
+	var norm = numeric.norm;
 
 	/**
 	 * @module feutils
@@ -4004,7 +4007,22 @@ var fe =
 	      return e1;
 	      break;
 	    case 2:
-	      throw new Error('genISORm: ntan = ' + ntan + ' is not implemented.');
+	      var n = dot(skewmat(e1), nthColumn(tangents, 2));
+	      console.log("n = ", n);
+	      n = div(n, norm(nthColumn(tangents, 2)));
+	      var e2 = dot(skewmat(n), e1);
+	      console.log("e2 = ", e2);
+	      e2 = div(e2, norm(e2));
+	      var rm = e1.map(function(row, i) {
+	        row.push(e2[i][0]);
+	        return row;
+	      });
+	      // var rm = [e1, e2];
+	      console.log("e1 = ", e1);
+	      console.log("e2 = ", e2);
+	      console.log("rm = ", rm);
+	      return rm;
+	      // throw new Error('genISORm: ntan = ' + ntan + ' is not implemented.');
 	      break;
 	    default:
 	      throw new Error('genISORm: incorrect size of tangents, ntan = ' + ntan);
@@ -4078,6 +4096,11 @@ var fe =
 
 	FeNodeSet.prototype.dim = function() {
 	  return this._xyz.getRn();
+	};
+
+	FeNodeSet.prototype.embed = function(n) {
+	  var newXyz = this._xyz.embed(n);
+	  return new FeNodeSet({ xyz: newXyz });
 	};
 
 	FeNodeSet.prototype.xyz = function() {
@@ -6101,6 +6124,7 @@ var fe =
 	var norm = numeric.norm;
 	var colon = numeric.colon;
 	var ixUpdate_ = numeric.ixUpdate_;
+	var ix = numeric.ix;
 	var zeros = numeric.zeros;
 	var reshape = numeric.reshape;
 	var nthColumn = numeric.nthColumn;
@@ -6255,9 +6279,10 @@ var fe =
 	  var nfn = size(Ndersp, 1);
 	  var dim = size(c, 2);
 	  var B = array2d(3, nfn*dim, 0);
-	  var i, cols, vals;
+	  var i, cols, vals, RmT;
 
 	  if (Rm) {
+	    // console.log("nfn = ", nfn);
 	    for (i = 1; i <= nfn; ++i) {
 	      cols = colon(dim*(i-1)+1, dim*i);
 	      vals = [
@@ -6265,11 +6290,15 @@ var fe =
 	        [ 0, Ndersp[i-1][1] ],
 	        [ Ndersp[i-1][1], Ndersp[i-1][0] ]
 	      ];
+	      RmT = transpose(ix(Rm, ':', [1,2]));
+	      vals = dot(vals, RmT);
+
 	      // console.log("B = ", B);
 	      // console.log("cols = ", cols);
+	      // console.log("i = ", i);
 	      // console.log("vals = ", vals);
 	      B = ixUpdate_(B, ':', cols, vals);
-	      // console.log("B = ", B);
+	      // console.log("updated B = ", B);
 	    }
 	  } else
 	    throw new Error('_blmat1: not implmented when !Rm');
@@ -6380,6 +6409,8 @@ var fe =
 
 	      if (rm) {
 	        // TODO: figure out rm
+	        // console.log("dot(transpose(rm), J)) = ", dot(transpose(rm), J));
+	        // console.log("inv(dot(transpose(rm), J)) = ", inv(dot(transpose(rm), J)));
 	        Ndersp = dot(Nders[j], inv(dot(transpose(rm), J)));
 	      } else {
 	        Ndersp = dot(Nders[j], inv(J));
@@ -6409,6 +6440,7 @@ var fe =
 	      // console.log("mul(D, Jac*w[j]) = ", mul(D, Jac*w[j]));
 	      // console.log("dot(transpose(B), mul(D, Jac*w[j])) = ", dot(transpose(B), mul(D, Jac*w[j])));
 	      delta = dot(dot(transpose(B), mul(D, Jac*w[j])), B);
+
 	      // console.log("delta = ", delta);
 	      // console.log("delta = ", delta);
 
@@ -6446,10 +6478,9 @@ var fe =
 	        rm: this._rm
 	      });
 	      // this._gcells = this._gcells.subset([i]);
+	      // console.log("nzbc stiff = ");
 	      ems = feb.stiffness(geom, u);
-	      // console.log("ems = ", ems);
 	      Ke = ems[0].matrix;
-	      // console.log("Ke = ", Ke);
 
 	      f = mul(-1, dot(Ke, pu));
 	      // console.log("f = ", f);
