@@ -35,6 +35,11 @@ function FeNodeSet(options) {
   }
 }
 
+FeNodeSet.prototype.map = function(mapping) {
+  var xyz = this._xyz.map(mapping);
+  return new FeNodeSet({ xyz: xyz });
+};
+
 FeNodeSet.prototype.dim = function() {
   return this._xyz.getRn();
 };

@@ -41,23 +41,42 @@ var H8 = gcells.H8;
    });
  *
  */
-function Mesh(options) {
+exports.Mesh = function Mesh(options) {
   if (!isObject(options)) options = {};
   this._fens = options.fens;
   this._gcells = options.gcells;
-}
+};
+var Mesh = exports.Mesh;
 
 /**
  * Returns finite element node set of the mesh.
  * @returns {module:fens.FeNodeSet}
  */
-Mesh.prototype.fens = function() { return this._fens; };
+exports.Mesh.prototype.fens = function() { return this._fens; };
 
 /**
  * Returns geometry cell set of the mesh.
  * @returns {module:gcellset.GCellSet}
  */
-Mesh.prototype.gcells = function() { return this._gcells; };
+exports.Mesh.prototype.gcells = function() { return this._gcells; };
+
+/**
+ * @callback module:mesh.MapCallback
+ * @param {module:types.Vector} coords
+ * @param {Int} i
+ * @returns {module:types.Vector}
+ */
+
+/**
+ *
+ * Apply the mapping function the each vertex, return the new mesh.
+ * @param {module:mesh.MapCallback} mapping - the mapping function.
+ * @returns {module:mesh.Mesh}
+ */
+exports.Mesh.prototype.map = function(mapping) {
+  var fens = this._fens.map(mapping);
+  return new Mesh({ fens: fens, gcells: this._gcells.clone() });
+};
 
 /**
  * Creates a L-shaped domain using 3 quads.

@@ -64,4 +64,35 @@ describe('mesh', function() {
       });
     });
   });
+
+
+  describe('Mesh#map', function() {
+
+    it('should work with proper mapping function', function() {
+      var H8Block = mesh.H8Block;
+      var m1 = H8Block(1,1,1,1,1,1);
+      var m2 = m1.map(function(xyz) {
+        return [
+          xyz[0] + 1,
+          xyz[1] + 2,
+          xyz[2] + 3,
+        ];
+      });
+
+      expect(m2.fens().xyz()).to.eql([
+        [ 1, 2, 3 ],
+        [ 1, 2, 4 ],
+        [ 1, 3, 3 ],
+        [ 1, 3, 4 ],
+        [ 2, 2, 3 ],
+        [ 2, 2, 4 ],
+        [ 2, 3, 3 ],
+        [ 2, 3, 4 ]
+      ]);
+
+      expect(m2.gcells().conn()).to.eql([ [ 1, 5, 7, 3, 2, 6, 8, 4 ] ]);
+    });
+
+  });
+
 });
