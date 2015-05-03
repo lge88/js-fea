@@ -1,10 +1,5 @@
 var _ = require('./core.utils');
 
-_.assign(exports, require('./core.bimap'));
-_.assign(exports, require('./core.bipartite'));
-_.assign(exports, require('./core.setstore'));
-_.assign(exports, require('./femodel'));
-
 exports._ = _;
 exports.numeric = require('./core.numeric');
 

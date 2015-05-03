@@ -6,10 +6,6 @@ _.assign(exports, _);
 
 exports.Bimap = require('./core.bimap').Bimap;
 
-exports.Bipartite= require('./core.bipartite').Bipartite;
-
-exports.SetStore = require('./core.setstore').SetStore;
-
 /**
  * @module utils
  */
