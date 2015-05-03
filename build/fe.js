@@ -47,32 +47,27 @@ var fe =
 
 	var _ = __webpack_require__(1);
 
-	_.assign(exports, __webpack_require__(2));
-	_.assign(exports, __webpack_require__(3));
-	_.assign(exports, __webpack_require__(4));
-	_.assign(exports, __webpack_require__(5));
-
 	exports._ = _;
-	exports.numeric = __webpack_require__(6);
+	exports.numeric = __webpack_require__(2);
 
 	exports.geometry = {
-	  pointset: __webpack_require__(7),
-	  topology: __webpack_require__(8)
+	  pointset: __webpack_require__(3),
+	  topology: __webpack_require__(4)
 	};
 
-	exports.feutils = __webpack_require__(9);
-	exports.fens = __webpack_require__(10);
-	exports.gcellset = __webpack_require__(11);
-	exports.field = __webpack_require__(12);
-	exports.property = __webpack_require__(13);
-	exports.material = __webpack_require__(14);
-	exports.feblock = __webpack_require__(15);
-	exports.system = __webpack_require__(16);
-	exports.nodalload = __webpack_require__(17);
-	exports.forceintensity = __webpack_require__(18);
-	exports.integrationrule = __webpack_require__(19);
-	exports.ebc = __webpack_require__(20);
-	exports.mesh = __webpack_require__(21);
+	exports.feutils = __webpack_require__(5);
+	exports.fens = __webpack_require__(6);
+	exports.gcellset = __webpack_require__(7);
+	exports.field = __webpack_require__(8);
+	exports.property = __webpack_require__(9);
+	exports.material = __webpack_require__(10);
+	exports.feblock = __webpack_require__(11);
+	exports.system = __webpack_require__(12);
+	exports.nodalload = __webpack_require__(13);
+	exports.forceintensity = __webpack_require__(14);
+	exports.integrationrule = __webpack_require__(15);
+	exports.ebc = __webpack_require__(16);
+	exports.mesh = __webpack_require__(17);
 
 
 /***/ },
@@ -82,14 +77,10 @@ var fe =
 	/*global require*/
 
 	// var _ = require('highland');
-	var _ = __webpack_require__(25);
+	var _ = __webpack_require__(22);
 	_.assign(exports, _);
 
-	exports.Bimap = __webpack_require__(2).Bimap;
-
-	exports.Bipartite= __webpack_require__(3).Bipartite;
-
-	exports.SetStore = __webpack_require__(4).SetStore;
+	exports.Bimap = __webpack_require__(18).Bimap;
 
 	/**
 	 * @module utils
@@ -320,8 +311,8 @@ var fe =
 	var normalizedCell = exports.normalizedCell;
 
 	// Type checking & contracts:
-	var check = __webpack_require__(26);
-	var assert = __webpack_require__(24);
+	var check = __webpack_require__(23);
+	var assert = __webpack_require__(21);
 
 	exports._env = 'dev';
 
@@ -477,1753 +468,6 @@ var fe =
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
-	// core.bimap
-
-	function Bimap(pairs, getKeyOf) {
-	  this._l2r = {};
-	  this._r2l = {};
-	  if (typeof getKeyOf === 'function') { this.getKeyOf = getKeyOf; }
-	  if (Array.isArray(pairs)) {
-	    pairs.forEach(function(pair) {
-	      this.insert(pair[0], pair[1]);
-	    }, this);
-	  }
-	}
-
-	Bimap.prototype.insert= function(l, r) {
-	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
-	  var lk = this.getKeyOf(l), rk = this.getKeyOf(r);
-	  this._l2r[lk] = r;
-	  this._r2l[rk] = l;
-	  return this;
-	};
-	Bimap.prototype.add= Bimap.prototype.insert;
-
-	Bimap.prototype.size= function() { return Object.keys(this._l2r).length; };
-	Bimap.prototype.empty= function() { return this.size() === 0; };
-	Bimap.prototype.clear= function() { this._l2r = {}; this._r2l = {}; return this; };
-
-	Bimap.prototype.insertSafe= function(l, r) {
-	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
-	  var lk = this.getKeyOf(l);
-	  if (typeof this._l2r[lk] !== 'undefined') {
-	    throw new Error(l + ' with key' + lk + ' exists!');
-	  }
-	  this.add(l, r);
-	  return this;
-	};
-
-	Bimap.prototype.getKeyOf = function(item) { if (item && item._uid) return item._uid; else return item; };
-
-	Bimap.prototype.belongsTo = function(obj) {
-	  var k = this.getKeyOf(obj);
-	  if (typeof this._l2r[k] !== 'undefined') { return 'left'; }
-	  if (typeof this._r2l[k] !== 'undefined') { return 'right'; }
-	  return 'none';
-	};
-
-	Bimap.prototype.leftFind = function(l) { return this._l2r[this.getKeyOf(l)]; };
-	Bimap.prototype.rightFind = function(r) { return this._r2l[this.getKeyOf(r)]; };
-	Bimap.prototype.find = function(obj) { return this.leftFind(obj) || this.rightFind(obj); };
-	Bimap.prototype.lookup = Bimap.prototype.find;
-	Bimap.prototype.inLeft = function(obj) { return typeof this.leftFind(obj) !== 'undefined'; };
-	Bimap.prototype.inRight = function(obj) { return typeof this.rightFind(obj) !== 'undefined'; };
-	Bimap.prototype.containsObject = function(obj) { return typeof this.find(obj) !== 'undefined'; };
-	Bimap.prototype.containsPair = function(l, r) {
-	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
-	  var _r = this.leftFind(l);
-	  if (typeof _r !== 'undefined') {
-	    return this.getKeyOf(r) === this.getKeyOf(_r);
-	  }
-	  return false;
-	};
-	Bimap.prototype.contains = function() {
-	  var args = Array.prototype.slice.call(arguments), argc = args.length;
-	  if (argc <= 1) { return this.containsObject(args[0]); }
-	  else { return this.containsPair(args[0], args[1]); }
-	};
-
-	Bimap.prototype.leftRemove = function(l) {
-	  var r = this.leftFind(l);
-	  if (typeof r !== 'undefined') {
-	    delete this._l2r[this.getKeyOf(l)];
-	    this.rightRemove(r);
-	  }
-	  return this;
-	};
-
-	Bimap.prototype.rightRemove = function(r) {
-	  var l = this.rightFind(r);
-	  if (typeof l !== 'undefined') {
-	    delete this._r2l[this.getKeyOf(r)];
-	    this.leftRemove(l);
-	  }
-	  return this;
-	};
-
-	Bimap.prototype.removePair = function(l, r) {
-	  if (this.containsPair(l, r)) {
-	    delete this._l2r[this.getKeyOf(l)];
-	    delete this._r2l[this.getKeyOf(r)];
-	  }
-	  return this;
-	};
-
-	Bimap.prototype.remove = function() {
-	  var args = Array.prototype.slice.call(arguments), argc = args.length;
-	  if (argc <= 1) {
-	    var obj = args[0];
-	    if (this.inLeft(obj)) { this.leftRemove(obj); }
-	    else if (this.inRight(obj)) { this.rightRemove(obj); }
-	  } else {
-	    this.removePair(args[0], args[1]);
-	  }
-	  return this;
-	};
-
-	Bimap.prototype.erase = Bimap.prototype.remove;
-
-	Bimap.prototype.getNodes =  function(group) {
-	  if (!group) { return this.getLeftNodes().concat(this.getRightNodes()); }
-	  var table = /[lL](eft)?/.test(group) ? this._r2l : this._l2r;
-	  return Object.keys(table).map(function(k) { return table[k]; });
-	};
-	Bimap.prototype.getLeftNodes = function() { return this.getNodes('left'); };
-	Bimap.prototype.getRightNodes = function() { return this.getNodes('right'); };
-
-	Bimap.prototype.forEachNode = function(group, fn, scope) {
-	  var nodes = this.getNodes(group);
-	  nodes.forEach(fn, scope || this);
-	};
-	Bimap.prototype.forEachLeftNode = function(fn, scope) { this.forEachNode('left', fn, scope); };
-	Bimap.prototype.forEachRightNode = function(fn, scope) { this.forEachNode('right', fn, scope); };
-
-	Bimap.prototype.toJSON = function() {
-	  var out = {};
-	  this.forEachLeftNode(function(left) {
-	    var right = this.find(left);
-	    out[left] = right;
-	  }, this);
-	  return out;
-	};
-
-	exports.Bimap = Bimap;
-
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*global require*/
-	// core.bipartite
-
-	function Bipartite(edges, getKeyOf, autoRemoveIsolatedNodes) {
-	  if (typeof edges === 'undefined') { edges = []; }
-	  if (typeof getKeyOf === 'function') { this.getKeyOf = getKeyOf; }
-	  if (typeof autoRemoveIsolatedNodes === undefined) {
-	    this._autoRemoveIsolatedNodes = false;
-	  } else {
-	    this._autoRemoveIsolatedNodes = autoRemoveIsolatedNodes;
-	  }
-
-	  this._l2r = {};
-	  this._r2l = {};
-
-	  this.addEdges(edges);
-	}
-
-	Bipartite.prototype.getNumOfLeftNodes = function() { return Object.keys(this._l2r).length; };
-	Bipartite.prototype.getNumOfRightNodes = function() { return Object.keys(this._r2l).length; };
-	Bipartite.prototype.getNumOfNodes = function() { return this.getNumOfLeftNodes() + this.getNumOfRightNodes(); };
-	Bipartite.prototype.getNumOfEdges = function() { var c = 0; this.forEachLeftNode(function(n) { c += this.getDegree(n); }, this); return c; };
-	Bipartite.prototype.empty = function() { return this.getNumOfNodes() === 0; };
-	Bipartite.prototype.clear = function() { this._l2r ={}; this._r2l = {}; return this; };
-	Bipartite.prototype.getKeyOf = function(item) { if (item && item._uid) return item._uid; else return item; };
-	Bipartite.prototype.addNode = function(group, n) {
-	  var k = this.getKeyOf(n);
-	  var table = /[lL](eft)?/.test(group) ? this._l2r :this._r2l;
-	  table[k] = { node: n, neighbors: {} };
-	  return this;
-	};
-
-	Bipartite.prototype.addLeftNode = function(l) { return this.addNode('l', l); };
-	Bipartite.prototype.addRightNode = function(r) { return this.addNode('r', r); };
-
-	Bipartite.prototype.addEdges = function(edges) {
-	  edges.forEach(function(edge) {
-	    var l = edge[0], r = edge[1];
-	    this.addEdge(l, r);
-	  }, this);
-	  return this;
-	};
-
-	Bipartite.prototype.addEdge = function(l, r) {
-	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
-	  var lk = this.getKeyOf(l), rk = this.getKeyOf(r);
-
-	  if (!this._l2r[lk]) { this._l2r[lk] = { node: l, neighbors: {} }; }
-	  if (!this._r2l[rk]) { this._r2l[rk] = { node: r, neighbors: {} }; }
-
-	  this._l2r[lk].neighbors[rk] = r;
-	  this._r2l[rk].neighbors[lk] = l;
-
-	  return this;
-	};
-	Bipartite.prototype.insert = Bipartite.prototype.addEdge;
-
-	Bipartite.prototype.removeEdge = function(l, r) {
-	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
-	  if (this.hasPair(l, r)) {
-	    var lk = this.getKeyOf(l), rk = this.getKeyOf(r);
-	    delete this._l2r[lk].neighbors[rk];
-	    delete this._r2l[rk].neighbors[lk];
-
-	    if (this._autoRemoveIsolatedNodes === true ) {
-	      if (Object.keys(this._l2r[lk].neighbors).length === 0) {
-	        delete this._l2r[lk];
-	      }
-	      if (Object.keys(this._r2l[rk].neighbors).length === 0) {
-	        delete this._r2l[rk];
-	      }
-	    }
-	  }
-	  return this;
-	};
-	Bipartite.prototype.erase = Bipartite.prototype.removeEdge;
-
-	Bipartite.prototype.removeNode = function(node) {
-	  var group = this.belongsTo(node);
-	  if (group === 'none') { return this; }
-
-	  this.getNeighbors(node).forEach(function(nb) {
-	    var l, r;
-	    if (group === 'left') { l = node; r = nb; }
-	    else { l = nb; r = node; }
-	    this.removeEdge(l, r);
-	  }, this);
-	  return this;
-	};
-	Bipartite.prototype.eraseNode = Bipartite.prototype.removeNode;
-
-	Bipartite.prototype.hasNode = function(node) {
-	  var key = this.getKeyOf(node);
-	  if (this._l2r[key]) { return true; }
-	  if (this._r2l[key]) { return true; }
-	  return false;
-	};
-
-	Bipartite.prototype.hasEdge = function(l, r) {
-	  var lk = this.getKeyOf(l), rk = this.getKeyOf(r);
-	  if (this._l2r[lk]) {
-	    var flag1 = typeof this._l2r[lk].neighbors[rk] !== 'undefined';
-	    var flag2 = typeof this._r2l[rk].neighbors[lk] !== 'undefined';
-	    console.assert(flag1 === flag2);
-	    return flag1;
-	  }
-	  return false;
-	};
-
-	Bipartite.prototype.contains = function(l, r) {
-	  var argv = Array.prototype.slice.call(arguments), argc = argv.length;
-	  if (argc <= 1) { return this.hasNode(argv[0]); }
-	  else { return this.hasEdge(argv[0]), argv[1]; }
-	};
-
-	Bipartite.prototype.isAdjacent = function(a, b) { return this.hasEdge(a, b) || this.hasEdge(b, a); };
-	Bipartite.prototype.hasPair = Bipartite.prototype.isAdjacent;
-
-	// If node is not in the graph, return empty list.
-	Bipartite.prototype.getNeighbors = function(node) {
-	  var key = this.getKeyOf(node), nbs = null;
-	  if (this._l2r[key]) { nbs = this._l2r[key].neighbors; }
-	  if (this._r2l[key]) { nbs = this._r2l[key].neighbors; }
-	  if (nbs === null) { return []; }
-	  return Object.keys(nbs).map(function(k) { return nbs[k]; });
-	};
-
-	// If node is not in the graph, return -1.
-	Bipartite.prototype.getDegree = function(node) {
-	  var key = this.getKeyOf(node);
-	  if (this._l2r[key]) { return Object.keys(this._l2r[key].neighbors).length; }
-	  if (this._r2l[key]) { return Object.keys(this._r2l[key].neighbors).length; }
-	  return -1;
-	};
-
-	// Return (left|right|none).
-	Bipartite.prototype.getGroupName = function(node) {
-	  var key = this.getKeyOf(node);
-	  if (this._l2r[key]) { return 'left'; }
-	  if (this._r2l[key]) { return 'right'; }
-	  return 'none';
-	};
-	Bipartite.prototype.belongsTo = Bipartite.prototype.getGroupName;
-
-	Bipartite.prototype.getNodesOfGroup = function(group, predicate) {
-	  var table = /[lL](eft)?/.test(group) ? this._l2r : this._r2l, nodes;
-	  nodes = Object.keys(table).map(function(k) { return table[k].node; });
-	  if (typeof predicate === 'function') { nodes = nodes.filter(predicate); }
-	  return nodes;
-	};
-	Bipartite.prototype.getLeftNodes = function(predicate) { return this.getNodesOfGroup('left', predicate); };
-	Bipartite.prototype.getRightNodes = function(predicate) { return this.getNodesOfGroup('right', predicate); };
-	Bipartite.prototype.getNodes = function(predicate) { return this.getLeftNodes(predicate).concat(this.getRightNodes(predicate)); };
-	Bipartite.prototype.forEachLeftNode = function(fn, scope) { this.getLeftNodes().forEach(fn, scope || this); };
-	Bipartite.prototype.forEachRightNode = function(fn, scope) { this.getRightNodes().forEach(fn, scope || this); };
-	Bipartite.prototype.forEachNode = function(fn, scope) { this.forEachLeftNode(fn, scope); this.forEachRightNode(fn, scope); };
-
-	Bipartite.prototype.forEachEdge = function(fn, scope) {
-	  var sc = scope || this;
-	  this.forEachLeftNode(function(l) {
-	    this.getNeighbors(l).forEach(function(r) {
-	      fn.call(sc, l, r);
-	    });
-	  }, this);
-	};
-
-	Bipartite.prototype.toDot = function() {
-	  var strs = ['graph g {'];
-	  this.forEachLeftNode(function(l) {
-	    this.getNeighbors(l).forEach(function(r) {
-	      var lk = this.getKeyOf(l), rk = this.getKeyOf(r);
-	      strs.push('  ' + lk + ' -- ' + rk);
-	    }, this);
-	  }, this);
-	  strs.push('}');
-	  return strs.join('\n');
-	};
-
-	exports.Bipartite = Bipartite;
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*global require*/
-	// core.setstore
-
-	var Bimap = __webpack_require__(2).Bimap;
-
-	function SetStore(items, getKeyOf, setKeyOf, getTypeOf) {
-	  this._items = {};
-	  this._byLabels = new Bimap([], getLabelKey);
-	  this._byTypes = {};
-	  if (typeof getKeyOf === 'function') { this.getKeyOf = getKeyOf; }
-	  if (typeof setKeyOf === 'function') { this.setKeyOf = setKeyOf; }
-	  if (typeof getTypeOf === 'function') { this.getTypeOf = getTypeOf; }
-	  if (Array.isArray(items)) { items.forEach(function(x) { this.insert(x); }, this); }
-
-	  var _this = this;
-	  function getLabelKey(o) { return typeof o === 'string' ? o : _this.getKeyOf(o); }
-	}
-
-	SetStore.prototype.size = function() { return Object.keys(this._items).length; };
-	SetStore.prototype.empty = function() { return this.size() === 0; };
-	SetStore.prototype.clear = function() { this._items = {}; this._byTypes = {}; this._byLabels.clear(); };
-	SetStore.prototype.contains = function(item) { return typeof this.find(item) !== 'undefined'; };
-	SetStore.prototype.has = SetStore.prototype.contains;
-
-	SetStore.prototype.insert = function(item) {
-	  var k = this.getKeyOf(item), t = this.getTypeOf(item);
-	  if (typeof this._items[k] !== 'undefined') {
-	    return false;
-	  } else {
-	    this._items[k] = item;
-	    if (t) {
-	      if (typeof this._byTypes[t] === 'undefined') { this._byTypes[t] = {}; }
-	      this._byTypes[t][k] = item;
-	    }
-	    return true;
-	  }
-	};
-	SetStore.prototype.add = SetStore.prototype.insert;
-
-	SetStore.prototype.erase = function(item) {
-	  var k = this.getKeyOf(item), t = this.getTypeOf(item);
-	  if (typeof this._items[k] === 'undefined') {
-	    return false;
-	  } else {
-	    delete this._items[k];
-	    if (t) {
-	      delete this._byTypes[t][k];
-	      if (Object.keys(this._byTypes[t]).length === 0) { delete this._byTypes[t]; }
-	    }
-	    return true;
-	  }
-	};
-	SetStore.prototype.remove = SetStore.prototype.erase;
-
-	SetStore.prototype.find = function(obj) { var key = this.getKeyOf(obj); return this._items[key]; };
-	SetStore.prototype.get = SetStore.prototype.find;
-	SetStore.prototype.findInType = function(obj, type) {
-	  var key = this.getKeyOf(obj);
-	  var table = this._byTypes[type];
-	  if (table) { return table[key]; }
-	  else { return undefined; }
-	};
-	SetStore.prototype.getAllTypes = function() { return Object.keys(this._byTypes); };
-	SetStore.prototype.getTypeOf = function(o) { return (o && typeof o.getType === 'function') ? o.getType() : ''; };
-	SetStore.prototype.forEach = function(fn, scope) {
-	  var k, items = this._items, sc = scope || this;
-	  for (k in items) { fn.call(sc, items[k], k); }
-	};
-
-	SetStore.prototype.getKeyOf = function(o) { if (o && o._uid) return o._uid; else return o; };
-	SetStore.prototype.setKeyOf = function(v, k) { if (this.contains(v)) { this.erase(v); item._uid = k; this.insert(v); } };
-	SetStore.prototype.setLabelOf = function(item, label) {
-	  if (this.contains(item)) {
-	    if (typeof label === 'string' && label) { this._byLabels.insert(label, item); }
-	    else { this._byLabels.remove(item); }
-	  }
-	};
-	SetStore.prototype.unsetLabelOf = function(item) { this.setLabelOf(item, ''); };
-	SetStore.prototype.getLabelOf = function(item) { return this._byLabels.lookup(item) || ''; };
-	SetStore.prototype.findByLabel = function(label) { return this._byLabels.lookup(label); };
-	SetStore.prototype.isLabeled = function(item) { return this.getLabelOf(item) !== ''; };
-	SetStore.prototype.labelExists = function(label) { return this.findByLabel(label) !== undefined; };
-	SetStore.prototype.getAllLabels = function() { return this._byLabels.getLeftNodes(); };
-
-	SetStore.prototype.getItemsOfType = function(type, predicate) {
-	  var items = this._byTypes[type];
-	  items = Object.keys(items).map(function(k) { return items[k]; });
-	  if (typeof predicate === 'function') { items = items.filter(predicate); }
-	  return items;
-	};
-
-	SetStore.prototype.getItems = function(predicate) {
-	  var items = this._items;
-	  items = Object.keys(items).map(function(k) { return items[k]; });
-	  if (typeof predicate === 'function') { items = items.filter(predicate); }
-	  return items;
-	};
-
-	exports.SetStore = SetStore;
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*global require*/
-	// femodel
-
-	// FUNCTIONS:
-	//   FeObject()
-	//   __node__()
-	//   FeNode(x, y, z, model)
-	//   FeNodeProperty(feModel)
-	//   FeSPC()
-	//   FeNodalLoad()
-	//   FeElement(nodes, model)
-	//   FeElementProperty(feModel)
-	//   TrussElementProperty(fem, A, E)
-	//   FeTimeSeries(feModel)
-	//   FePattern(ts, feModel)
-	//   FePlainPattern(ts, feModel)
-	//   FeModel()
-	//   __helpers__()
-	//   uuid()
-	//   NotImplementedError(msg)
-	//   getId(obj)
-	//   setId(item, id)
-	//   getTypeOf(obj)
-	//   repeat(val, n)
-	//   addToSet(arr, item)
-	//   uniq(arr, getKey, seen)
-	//   clone(obj, shallow)
-	// //
-	// [FeObject] constructor:
-	//   FeObject()
-	// //
-	// [FeObject] instance methods:
-	//   FeObject::uid()
-	//   FeObject::getId()
-	//   FeObject::setId(id)
-	//   FeObject::getLabel()
-	//   FeObject::setLabel(t)
-	//   FeObject::getType()
-	//   FeObject::clone()
-	//   FeObject::copy(other)
-	//   FeObject::toJSON()
-	//   FeObject::setFromJSON(json)
-	// //
-	// [FeNode] constructor:
-	//   FeNode(x, y, z, model)
-	// //
-	// [FeNode] instance methods:
-	//   FeNode::getType()
-	//   FeNode::clone()
-	//   FeNode::copy(other)
-	//   FeNode::toJSON()
-	//   FeNode::setFromJSON(json)
-	//   FeNode::getElements()
-	//   FeNode::isInElement(feEle)
-	//   FeNode::isAdjacentTo(feNode)
-	//   FeNode::getAdjacentNodes()
-	//   FeNode::setConstraint()
-	//   FeNode::getNumOfConstraints()
-	//   FeNode::isFree()
-	//   FeNode::isConstrained()
-	//   FeNode::setFixedIn()
-	//   FeNode::setFreeIn()
-	//   FeNode::isFreeIn()
-	//   FeNode::isFixedIn()
-	//   FeNode::isFixedIn()
-	// //
-	// [FeNodeProperty] constructor:
-	//   FeNodeProperty(feModel)
-	// //
-	// [FeNodeProperty] class methods:
-	//   FeNodeProperty.prototype[method]()
-	// //
-	// [FeNodeProperty] instance methods:
-	//   FeNodeProperty::getType()
-	//   FeNodeProperty::clone(other)
-	//   FeNodeProperty::copy(other)
-	//   FeNodeProperty::toJSON()
-	//   FeNodeProperty::getNodes()
-	//   FeNodeProperty::getNumOfNodes()
-	//   FeNodeProperty::setNodes(nodes)
-	//   FeNodeProperty::getValues()
-	//   FeNodeProperty::method]()
-	// //
-	// [FeSPC] constructor:
-	//   FeSPC()
-	// //
-	// [FeSPC] instance methods:
-	//   FeSPC::getType()
-	//   FeSPC::copy(other)
-	//   FeSPC::clone()
-	//   FeSPC::toJSON()
-	//   FeSPC::getValue()
-	//   FeSPC::setValue(comps)
-	//   FeSPC::setConstraint(dir, val)
-	//   FeSPC::getNumOfConstraints()
-	//   FeSPC::isFree()
-	//   FeSPC::isConstrained()
-	//   FeSPC::setFixedIn(dirs)
-	//   FeSPC::setFreeIn(dirs)
-	//   FeSPC::isFreeIn(dir)
-	//   FeSPC::isFixedIn(dir)
-	// //
-	// [FeNodalLoad] constructor:
-	//   FeNodalLoad()
-	// //
-	// [FeNodalLoad] instance methods:
-	//   FeNodalLoad::getType()
-	//   FeNodalLoad::_setType(t)
-	//   FeNodalLoad::getValues()
-	//   FeNodalLoad::_setValues(vals)
-	//   FeNodalLoad::isZero()
-	//   FeNodalLoad::getValueAt(dirs)
-	//   FeNodalLoad::setValueAt(dir, val)
-	// //
-	// [FeElement] constructor:
-	//   FeElement(nodes, model)
-	// //
-	// [FeElement] instance methods:
-	//   FeElement::getType()
-	//   FeElement::toJSON()
-	//   FeElement::getNodes()
-	//   FeElement::getNumOfNodes()
-	//   FeElement::hasNode(feNode)
-	//   FeElement::isAdjacentTo(feEle)
-	//   FeElement::getAdjacentElements()
-	// //
-	// [FeElementProperty] constructor:
-	//   FeElementProperty(feModel)
-	// //
-	// [FeElementProperty] instance methods:
-	//   FeElementProperty::getType()
-	//   FeElementProperty::getElements()
-	//   FeElementProperty::setElements(eles)
-	//   FeElementProperty::getValue()
-	//   FeElementProperty::setValue(val)
-	// //
-	// [TrussElementProperty] constructor:
-	//   TrussElementProperty(fem, A, E)
-	// //
-	// [TrussElementProperty] instance methods:
-	//   TrussElementProperty::getType()
-	//   TrussElementProperty::copy(other)
-	//   TrussElementProperty::clone(other)
-	// //
-	// [FeTimeSeries] constructor:
-	//   FeTimeSeries(feModel)
-	// //
-	// [FeTimeSeries] instance methods:
-	//   FeTimeSeries::getType()
-	//   FeTimeSeries::setType(t)
-	//   FeTimeSeries::getFactor()
-	//   FeTimeSeries::setFactor(f)
-	//   FeTimeSeries::getParams()
-	//   FeTimeSeries::setParams(params)
-	//   FeTimeSeries::evalAt(time)
-	//   FeTimeSeries::toJSON()
-	// //
-	// [FePattern] constructor:
-	//   FePattern(ts, feModel)
-	// //
-	// [FePattern] instance methods:
-	//   FePattern::getType()
-	//   FePattern::getTimeSeries()
-	//   FePattern::setTimeSeries(ts)
-	//   FePattern::getFactor()
-	//   FePattern::setFactor(f)
-	//   FePattern::setAsCurrent()
-	// //
-	// [FePlainPattern] constructor:
-	//   FePlainPattern(ts, feModel)
-	// //
-	// [FePlainPattern] instance methods:
-	//   FePlainPattern::getType()
-	//   FePlainPattern::createNodalLoad(values, type)
-	//   FePlainPattern::createNodalLoad(values, type)
-	//   FePlainPattern::createBeamUniformLoad(values)
-	//   FePlainPattern::createBeamPointLoad(values)
-	//   FePlainPattern::assignNodalLoad(nodes, nodalLoad)
-	//   FePlainPattern::getNodalLoad(node)
-	//   FePlainPattern::toJSON()
-	// //
-	// [FeModel] constructor:
-	//   FeModel()
-	// //
-	// [FeModel] class methods:
-	//   FeModel.createFromJSON(json)
-	// //
-	// [FeModel] instance methods:
-	//   FeModel::find(obj)
-	//   FeModel::findInType(obj, type)
-	//   FeModel::findNode(obj)
-	//   FeModel::findElement(obj)
-	//   FeModel::setIdOf(obj, id)
-	//   FeModel::getIdOf(obj)
-	//   FeModel::setLabelOf(item, label)
-	//   FeModel::getLabelOf(item)
-	//   FeModel::findByLabel(label)
-	//   FeModel::createNode(x, y, z)
-	//   FeModel::createElement(nodes)
-	//   FeModel::assignNodeProperty(nodes, nodeProp)
-	//   FeModel::createNodalLoad(values)
-	//   FeModel::assignNodalLoad(nodes, nodalLoad)
-	//   FeModel::createElementProperty(type, args_)
-	//   FeModel::assignElementProperty(eles, eleProp)
-	//   FeModel::getNodeProperty(node)
-	//   FeModel::createSPC(dims, vals)
-	//   FeModel::assignSPC(nodes, spc)
-	//   FeModel::createPattern(type, ts)
-	//   FeModel::getCurrentPattern()
-	//   FeModel::setCurrentPattern(p)
-	//   FeModel::getNodes()
-	//   FeModel::getElements()
-	//   FeModel::forEachNode(fn, scope)
-	//   FeModel::forEachElement(fn, scope)
-	//   FeModel::getAABB()
-	//   FeModel::getXRange()
-	//   FeModel::getYRange()
-	//   FeModel::getZRange()
-	//   FeModel::getXDiff()
-	//   FeModel::getYDiff()
-	//   FeModel::getZDiff()
-	//   FeModel::getDimension()
-	//   FeModel::toJSON()
-	//   FeModel::setFromJSON(json)
-	//   FeModel::copy(other)
-	//   FeModel::clone()
-
-	var Bipartite = __webpack_require__(3).Bipartite;
-	var Bimap = __webpack_require__(2).Bimap;
-	var SetStore = __webpack_require__(4).SetStore;
-
-	function FeObject() { this._uid = this.generateUid(); }
-	FeObject.prototype.generateUid = uuid;
-	FeObject.prototype.uid = function() { return this._uid; };
-	FeObject.prototype.getId = function() { return this._model ? this._model.getIdOf(this) : this._uid; };
-	FeObject.prototype.setId = function(id) { if (this._model) { this._model.setIdOf(this, id); } return this; };
-	FeObject.prototype.getLabel = function() { return this._model ? this._model.getLabelOf(this) : ''; };
-	FeObject.prototype.setLabel = function(t) { if (this._model) { this._model.setLabelOf(this, t); } return this; };
-
-	// Return type string
-	FeObject.prototype.getType = function() { throw new NotImplementedError; };
-
-	// Return a new intance of FeObject
-	FeObject.prototype.clone = function() { throw new NotImplementedError; };
-
-	// Copy another FeObject, return this.
-	FeObject.prototype.copy = function(other) { throw new NotImplementedError; };
-
-	// Serialize object to plain json
-	FeObject.prototype.toJSON = function() { throw new NotImplementedError; };
-
-	// Set state from plain json
-	FeObject.prototype.setFromJSON = function(json) { throw new NotImplementedError; };
-
-	function __node__() {}
-	function FeNode(x, y, z, model) {
-	  FeObject.call(this);
-	  x = parseFloat(x); y = parseFloat(y); z = parseFloat(z);
-	  this.x = isNaN(x) ? 0.0 : x;
-	  this.y = isNaN(y) ? 0.0 : y;
-	  this.z = isNaN(z) ? 0.0 : z;
-	  this._model = model;
-	}
-
-	FeNode.prototype = Object.create(FeObject.prototype);
-	FeNode.prototype.constructor = FeNode;
-
-	FeNode.prototype.getType = function() { return 'fe_node'; };
-
-	FeNode.prototype.clone = function() {
-	  return new FeNode(this.x, this.y, this.z, this._model);
-	};
-
-	FeNode.prototype.copy = function(other) {
-	  this.x = other.x; this.y = other.y; this.z = other.z;
-	  return this;
-	};
-
-	FeNode.prototype.toJSON = function() {
-	  var json = {};
-	  json.x = this.x; json.y = this.y; json.z = this.z;
-	  return json;
-	};
-
-	FeNode.prototype.setFromJSON = function(json) {
-	  this.x = json.x; this.y = json.y; this.z = json.z;
-	  return this;
-	};
-
-	FeNode.prototype.getElements = function() {
-	  var model = this._model;
-	  var eles = model._nodeEleGraph.getNeighbors(this);
-	  return Array.isArray(eles) ? eles : [];
-	};
-
-	FeNode.prototype.isInElement = function(feEle) {
-	  var nodeEleGraph = this._model._nodeEleGraph;
-	  return nodeEleGraph.hasEdge(this, feEle);
-	};
-
-	FeNode.prototype.isAdjacentTo = function(feNode) {
-	  var nodes = this.getAdjacentNodes();
-	  return nodes.indexOf(feNode) !== -1;
-	};
-
-	FeNode.prototype.getAdjacentNodes = function() {
-	  var eles = this.getElements();
-	  var out = [], seen = {};
-	  seen[this.uid()] = true;
-	  eles.forEach(function(ele) {
-	    var nodes = ele.getNodes();
-	    nodes.forEach(function(n) {
-	      var nid = n.uid();
-	      if (!seen[nid]) {
-	        out.push(n);
-	        seen[nid] = true;
-	      }
-	    });
-	  });
-	  return out;
-	};
-
-	// Following methods assigns node to node property in the graph.
-	// If the property is not set up yet, it creates one first.
-
-	FeNode.prototype.setConstraint = function() {};
-	FeNode.prototype.getNumOfConstraints = function() {};
-	FeNode.prototype.isFree = function() {};
-	FeNode.prototype.isConstrained = function() {};
-	FeNode.prototype.setFixedIn = function() {};
-	FeNode.prototype.setFreeIn = function() {};
-	FeNode.prototype.isFreeIn = function() {};
-	FeNode.prototype.isFixedIn = function() {};
-	FeNode.prototype.isFixedIn = function() {};
-
-	function FeNodeProperty(feModel) {
-	  FeObject.call(this);
-
-	  // TODO: need to distinguish undefined vs defined but value is zero
-	  this._values = {
-	    spc: new FeSPC(),
-	    forceLoad: new FeNodalLoad(),
-	    dispLoad: new FeNodalLoad()
-	  };
-	  this._values.forceLoad.setType('force');
-	  this._values.dispLoad.setType('disp');
-	  this._model = feModel;
-	}
-
-	FeNodeProperty.prototype = Object.create(FeObject.prototype);
-	FeNodeProperty.prototype.constructor = FeNodeProperty;
-
-	FeNodeProperty.prototype.getType = function() { return 'fe_node_property'; };
-
-	FeNodeProperty.prototype.clone = function(other) {
-	  var np = new FeNodeProperty(this._model);
-	  np.copy(this);
-	  return this;
-	};
-
-	FeNodeProperty.prototype.copy = function(other) {
-	  this._model = other._model;
-
-	  this.setNodes(other.getNodes());
-
-	  this._values = {};
-	  this._valuse.spc = new FeSPC();
-	  this._values.spc.copy(other._values.spc);
-
-	  this._valuse.forceLoad = new FeNodalLoad();
-	  this._values.forceLoad.copy(other._values.forceLoad);
-
-	  this._valuse.dispLoad = new FeNodalLoad();
-	  this._values.dispLoad.copy(other._values.dispLoad);
-	  return this;
-	};
-
-	FeNodeProperty.prototype.toJSON = function() {
-	  var json = {};
-	  json.nodes = this.getNodes().map(getId);
-	  json.values = this.getValues();
-	  return json;
-	};
-
-	// FeNodeProperty.prototype.setFromJSON = function(json) {};
-
-	FeNodeProperty.prototype.getNodes = function() {
-	  var nodePropGraph = this._model._nodePropGraph;
-	  var out = nodePropGraph.getNeighbors(this);
-	  return Array.isArray(out) ? out : [];
-	};
-
-	FeNodeProperty.prototype.getNumOfNodes = function() {
-	  return this.getNodes().length;
-	};
-
-	FeNodeProperty.prototype.setNodes = function(nodes) {
-	  this._model.assignNodeProperty(nodes, this);
-	  return this;
-	};
-
-	FeNodeProperty.prototype.getValues = function() {
-	  var values = {};
-	  if (this._values.spc.isConstrained()) {
-	    values.spc = this._values.spc.getValue();
-	  }
-
-	  if (!this._values.forceLoad.isZero()) {
-	    values.forceLoad = this._values.forceLoad.getValue();
-	  }
-
-	  if (!this._values.dispLoad.isZero()) {
-	    values.dispLoad = this._values.dispLoad.getValue();
-	  }
-	  return values;
-	};
-	// FeNodeProperty.prototype.setValue = function(v) { return this; };
-
-	// Forward methods to spc
-
-	// Method forward:
-	var spcMethods = [
-	  'setConstraint',
-	  'getNumOfConstraints',
-	  'isFree',
-	  'isConstrained',
-	  'setFixedIn',
-	  'setFreeIn',
-	  'isFreeIn',
-	  'isFixedIn'
-	];
-
-	spcMethods.forEach(function(method) {
-	  FeNodeProperty.prototype[method] = function() {
-	    var res = this._values.spc[method].apply(this._values.spc, arguments);
-	    if (res === this._values.spc) { res = this; }
-	    return res;
-	  };
-	});
-
-	function FeSPC() {
-	  FeObject.call(this);
-
-	  // null means not constrained
-	  this._comps = repeat(null, 6);
-	}
-
-	FeSPC.prototype = Object.create(FeNodeProperty.prototype);
-	FeSPC.prototype.constructor = FeSPC;
-	FeSPC.prototype.getType = function() { return 'spc'; };
-
-	FeSPC.prototype.copy = function(other) {
-	  this._comps = clone(other._comps);
-	  return this;
-	};
-
-	FeSPC.prototype.clone = function() {
-	  var cloned = new FeSPC();
-	  cloned._comps = clone(this._comps);
-	  return cloned;
-	};
-
-	FeSPC.prototype.toJSON = function() {
-	  var json = {};
-	  json.components = clone(this._comps);
-	  return json;
-	};
-
-	FeSPC.prototype.getValue = function() { return clone(this._comps); };
-	FeSPC.prototype.setValue = function(comps) {
-	  this._comps = clone(comps);
-	  return this;
-	};
-
-	// Specific for SPC:
-	FeSPC.prototype.setConstraint = function(dir, val) {
-	  if (Array.isArray(dir)) {
-	    dir.forEach(function(d, i) {
-	      var v = Array.isArray(val) ? val[i] : val;
-	      this.setConstraint(d, v);
-	    }, this);
-	  } else {
-	    var i = this._comps.length;
-	    for (; i < dir; ++i) { this._comps[i] = null; }
-	    this._comps[dir] = val;
-	  }
-	  return this;
-	};
-
-	FeSPC.prototype.getNumOfConstraints = function() {
-	  var count = 0;
-	  this._comps.forEach(function(c) {
-	    if (c !== null) ++count;
-	  });
-	  return count;
-	};
-
-	FeSPC.prototype.isFree = function() {
-	  return this.getNumOfConstraints() === 0;
-	};
-
-	FeSPC.prototype.isConstrained = function() {
-	  return !this.isFree();
-	};
-
-	FeSPC.prototype.setFixedIn = function(dirs) {
-	  if (!Array.isArray(dirs)) { dirs = [dirs]; }
-	  var vals = dirs.map(function() { return 0; });
-	  this.setConstraint(dirs, vals);
-	  return this;
-	};
-
-	FeSPC.prototype.setFreeIn = function(dirs) {
-	  if (!Array.isArray(dirs)) { dirs = [dirs]; }
-	  var vals = dirs.map(function() { return null; });
-	  this.setConstraint(dirs, vals);
-	  return this;
-	};
-
-	FeSPC.prototype.isFreeIn = function(dir) {
-	  var val = this._comps[dir];
-	  return (val === null) || (typeof val === 'undefined');
-	};
-
-	FeSPC.prototype.isFixedIn = function(dir) { return !this.isFree(dir); };
-
-	function FeNodalLoad() {
-	  FeObject.call(this);
-
-	  this._type = '';
-	  this._values = repeat(0.0, 6);
-	}
-
-	FeNodalLoad.prototype = Object.create(FeNodeProperty.prototype);
-	FeNodalLoad.prototype.constructor = FeNodalLoad;
-
-	FeNodalLoad.prototype.getType = function() { return this._type; };
-	FeNodalLoad.prototype._setType = function(t) {
-	  this._type = /^(nodal_)?[dD]isp(lacement)?(_load)?$/.test(t) ?
-	    'nodal_displacement_load' : 'nodal_force_load';
-	  return this;
-	};
-
-	FeNodalLoad.prototype.getValues = function() { return this._values.slice(); };
-	FeNodalLoad.prototype._setValues = function(vals) {
-	  this._values = vals.slice();
-	  return this;
-	};
-
-	FeNodalLoad.prototype.isZero = function() {
-	  return this._values.reduce(function(acc, cur) {
-	    return acc + cur*cur;
-	  }, 0.0) === 0.0;
-	};
-
-	FeNodalLoad.prototype.getValueAt = function(dirs) {
-	  if (typeof dirs === 'undefined') { return this.getValues(); };
-
-	  if (!Array.isArray(dirs)) { dirs = [dirs]; }
-
-	  return dirs.map(function(d) {
-	    var val = this._values[d];
-	    return (typeof val === 'number' && !isNaN(val)) ? val : 0.0;
-	  }, this);
-	};
-
-	FeNodalLoad.prototype.setValueAt = function(dir, val) {
-	  if (Array.isArray(dir)) {
-	    dir.forEach(function(d, i) {
-	      var v = Array.isArray(val) ? val[i] : val;
-	      this.setLoad(d, v);
-	    }, this);
-	  } else {
-	    var i = this._values.length;
-	    for (; i < dir; ++i) { this._values[i] = 0.0; }
-	    this._values[dir] = val;
-	  }
-	  return this;
-	};
-
-
-	// conn is an array of FeNodes
-	// prop is an object
-	function FeElement(nodes, model) {
-	  FeObject.call(this);
-
-	  this._nodes = nodes.slice();
-	  this._model = model;
-
-	  var nodeEleGraph = model._nodeEleGraph;
-	  this._nodes.forEach(function(n) {
-	    nodeEleGraph.addEdge(n, this);
-	  }, this);
-	}
-
-	FeElement.prototype = Object.create(FeObject.prototype);
-	FeElement.prototype.constructor = FeElement;
-
-	FeElement.prototype.getType = function() { return 'fe_element'; };
-
-	// FeElement.prototype.setId = function(id) {
-	//   this._model.setElementId(this, id);
-	//   return this;
-	// };
-
-	// FeElement.prototype.getLabel = function() {
-	//   return '' + this._tag;
-	// };
-
-	// FeElement.prototype.setLabel = function(t) { this._model.setLabelOf(this, t); return this; };
-
-	FeElement.prototype.toJSON = function() {
-	  var json = {};
-	  json.id = this.uid();
-	  json.nodes = this._nodes.map(function(n) { return n.uid(); });
-	  return json;
-	};
-
-	FeElement.prototype.getNodes = function() {
-	  return this._nodes.slice();
-	};
-
-	FeElement.prototype.getNumOfNodes = function() {
-	  return this._nodes.length;
-	};
-
-	FeElement.prototype.hasNode = function(feNode) {
-	  return this._nodes.indexOf(feNode) !== -1;
-	};
-
-	FeElement.prototype.isAdjacentTo = function(feEle) {
-	  var eles = this.getAdjacentElements();
-	  return eles.indexOf(feEle) !== -1;
-	};
-
-	FeElement.prototype.getAdjacentElements = function() {
-	  var out = [], seen = {};
-	  seen[this.uid()] = true;
-	  var nodes = this._nodes;
-	  nodes.forEach(function(n) {
-	    var eles = n.getElements();
-	    eles.forEach(function(ele) {
-	      var eid = ele.uid();
-	      if (!seen[eid]) {
-	        out.push(ele);
-	        seen[eid] = true;
-	      }
-	    });
-	  });
-	  return out;
-	};
-
-	function FeElementProperty(feModel) {
-	  FeObject.call(this);
-	  this._model = feModel;
-	}
-	FeElementProperty.prototype = Object.create(FeObject.prototype);
-	FeElementProperty.prototype.constructor = FeElementProperty;
-	FeElementProperty.prototype.getType = function() { return ''; };
-
-	FeElementProperty.prototype.getElements = function() {
-	  // var propEleMap = this._model._propEleMap;
-	  var elePropGraph = this._model._elePropGraph;
-	  // var out = eleNodeMap[this.uid()];
-	  var out = elePropGraph.getNeighbors(this);
-	  return Array.isArray(out) ? out : [];
-	};
-
-	FeElementProperty.prototype.setElements = function(eles) {
-	  var id = this.uid();
-	  var elePropGraph = this._model._elePropGraph;
-
-	  if (!Array.isArray(eles)) { eles = [eles]; }
-	  eles.forEach(function(ele) {
-	    elePropGraph.addEdge(ele, this);
-	  }, this);
-
-	  return this;
-	};
-
-	FeElementProperty.prototype.getValue = function() { return null; };
-	FeElementProperty.prototype.setValue = function(val) { return this; };
-
-	function TrussElementProperty(fem, A, E) {
-	  FeElementProperty.call(this, fem);
-	  this.A = A;
-	  this.E = E;
-	}
-	TrussElementProperty.prototype = Object.create(FeElementProperty.prototype);
-	TrussElementProperty.prototype.constructor = TrussElementProperty;
-	TrussElementProperty.prototype.getType = function() { return 'truss'; };
-	TrussElementProperty.prototype.copy = function(other) {
-	  this._model = other._model;
-	  this.A = other.A;
-	  this.E = other.E;
-	  return this;
-	};
-	TrussElementProperty.prototype.clone = function(other) {
-	  return new TrussElementProperty(this._model, this.A, this.E);
-	};
-
-
-	function FeTimeSeries(feModel) {
-	  FeObject.call(this);
-	  this._model = feModel;
-	  this._type = '';
-	  this._factor = 1.0;
-	  this._params = {};
-
-	  this.setType('Linear');
-	}
-	FeTimeSeries.prototype = Object.create(FeObject.prototype);
-	FeTimeSeries.prototype.constructor = FeTimeSeries;
-
-	FeTimeSeries.prototype.getType = function() { return this._type; };
-	FeTimeSeries.prototype.setType = function(t) {
-	  // TODO:
-	  if (/^[lL]inear$/.test(t)) {
-	    this._type = 'linear';
-	  } else if (/^[cC]onstant$/.test(t)) {
-	    this._type = 'constant';
-	  } else {
-	    throw new Error('Unknown time series type' + t + '!');
-	  }
-	  return this;
-	};
-	FeTimeSeries.prototype.getFactor = function() { return this._factor; };
-	FeTimeSeries.prototype.setFactor = function(f) {
-	  f = parseFloat(f);
-	  this._factor = isNaN(f) ? 1.0 : f;
-	  return this;
-	};
-	FeTimeSeries.prototype.getParams = function() { return clone(this._params); };
-	FeTimeSeries.prototype.setParams = function(params) {
-	  this._params = clone(params);
-	  return this;
-	};
-	FeTimeSeries.prototype.evalAt = function(time) {
-	  var type = this._type;
-	  var params = this._params;
-	  var f = this._factor;
-
-	  switch(type) {
-	  case 'linear':
-	    return f * time;
-	    break;
-	  case 'constant':
-	  default:
-	    return f;
-	  }
-	};
-	FeTimeSeries.prototype.toJSON = function() {
-	  var json = {};
-	  json.id = this.uid();
-	  json.type = this.getType();
-	  json.factor = this.getFactor();
-	  json.params = this.getParams();
-	  return json;
-	};
-
-	function FePattern(ts, feModel) {
-	  FeObject.call(this);
-
-	  this._ts = ts;
-	  this._model = feModel;
-	}
-	FePattern.prototype = Object.create(FeObject.prototype);
-	FePattern.prototype.constructor = FePattern;
-
-	FePattern.prototype.getType = function() { return ''; };
-
-	FePattern.prototype.getTimeSeries = function() { return this._ts; };
-	FePattern.prototype.setTimeSeries = function(ts) {
-	  this._ts = ts;
-	  return this;
-	};
-
-	FePattern.prototype.getFactor = function() { return this._ts.getFactor(); };
-	FePattern.prototype.setFactor = function(f) {
-	  this._ts.setFactor(f);
-	  return this;
-	};
-
-	FePattern.prototype.setAsCurrent = function() {
-	  this._model.setCurrentPattern(this);
-	  return this;
-	};
-
-	function FePlainPattern(ts, feModel) {
-	  FePattern.call(this, ts, feModel);
-
-	  this._nodeProps = {};
-	  this._eleProps = {};
-
-	  this._nodalLoads = {};
-	  this._nodalLoadGraph = new Bipartite([], getId, false);
-
-	  this._eleLoads = {};
-	  this._eleLoadGraph = new Bipartite([], getId, false);
-	}
-	FePlainPattern.prototype = Object.create(FePattern.prototype);
-	FePlainPattern.prototype.constructor = FePlainPattern;
-
-	FePlainPattern.prototype.getType = function() { return 'plain'; };
-
-	// FePlainPattern.prototype.createNodeProperty = function(nodes) {
-	//   var nodeProp = new FeNodeProperty(this._model);
-	//   if (typeof nodes !== 'undefined') {
-	//     this.assignNodeProperty(nodes, nodeProp);
-	//   }
-	//   var id = nodeProp.uid();
-	//   this._nodeProps[id] = nodeProp;
-	//   return nodeProp;
-	// };
-
-	// // TODO: make sure each node has at most only one nodeProp.
-	// FePlainPattern.prototype.assignNodeProperty = function(nodes, nodeProp) {
-	//   var id = nodeProp.uid();
-	//   // var propNodeMap = this._model._propNodeMap;
-	//   var nodePropGraph = this._model._nodePropGraph;
-
-	//   if (!Array.isArray(nodes)) { nodes = [nodes]; }
-	//   // propNodeMap[id] = uniq(nodes, getId);
-	//   nodes.forEach(function(n) {
-	//     nodePropGraph.addEdge(n, nodeProp);
-	//   });
-
-	//   return this;
-	// };
-
-	FePlainPattern.prototype.createNodalLoad = function(values, type) {
-	  var load = new FeNodalLoad();
-	  load._setType(type);
-	  load._setValues(values);
-	  this._nodalLoads[load.uid()] = load;
-	  return load;
-	};
-
-	FePlainPattern.prototype.createNodalLoad = function(values, type) {
-	  var load = new FeNodalLoad();
-	  load._setType(type);
-	  load._setValues(values);
-	  this._nodalLoads[load.uid()] = load;
-	  return load;
-	};
-
-	FePlainPattern.prototype.createBeamUniformLoad = function(values) {
-	  return null;
-	};
-
-	FePlainPattern.prototype.createBeamPointLoad = function(values) {
-	  return null;
-	};
-
-
-
-
-	// FIXME: make sure each node has at most one nodalLoad
-	FePlainPattern.prototype.assignNodalLoad = function(nodes, nodalLoad) {
-	  var nodalLoadGraph = this._nodalLoadGraph;
-
-	  if (!Array.isArray(nodes)) { nodes = [nodes]; }
-	  nodes.forEach(function(n) {
-	    nodalLoadGraph.addEdge(n, nodalLoad);
-	  });
-	  return this;
-	};
-
-	// FePlainPattern.prototype.assignElementProperty = function(eles, eleProp) {
-
-	// };
-
-	// TODO: handle multiple nodes
-	FePlainPattern.prototype.getNodalLoad = function(node) {
-	  var nodalLoadGraph = this._nodalLoadGraph;
-	  var res = {}, load;
-	  if (nodalLoadGraph.hasNode(node)) {
-	    load = nodalLoadGraph.getNeighbors()[0];
-	  } else {
-	    load = new FeNodalLoad();
-	  }
-	  res.type = load.getType();
-	  res.values = load.getValues();
-	  return res;
-	};
-
-	// FePlainPattern.prototype.getNodeProperty = function(node) {
-	//   var key, nodeProps = this._nodeProps;
-	//   var prop, nodes;
-
-	//   for (key in nodeProps) {
-	//     prop = nodeProps[key];
-	//     nodes = prop.getNodes();
-	//     if (nodes.indexOf(node) !== -1) { return prop; }
-	//   }
-
-	//   return null;
-	// };
-
-	FePlainPattern.prototype.toJSON = function() {
-	  var json = {};
-	  json.id = this.uid();
-	  json.type = this.getType();
-
-	  json.nodalLoads = Object.keys(this._nodeProps).map(function(k) {
-	    return this[k].toJSON();
-	  }, this._nodeProps);
-
-	  json.eleProps = Object.keys(this._eleProps).map(function(k) {
-	    return this[k].toJSON();
-	  }, this._eleProps);
-
-	  return json;
-	};
-
-
-	function FeModel() {
-	  FeObject.call(this);
-
-	  // A set of objects grouped by type info.
-	  this._objects = new SetStore([], getId, setId, getTypeOf);
-
-	  // Data structures that support extra queries:
-	  //   node->elements, element->elements, node->nodes.
-	  this._nodeEleGraph = new Bipartite([], getId, false);
-
-	  // Associate property to a list of nodes/elements/patterns
-	  this._nodePropGraph = new Bipartite([], getId, false);
-	  this._elePropGraph = new Bipartite([], getId, false);
-	  this._patternPropGraph = new Bipartite([], getId, false);
-	  this._timeSeriesPatternMap = new Bimap([], getId);
-
-	  // Init default objects:
-	  // var defaultTimeSeries = new FeTimeSeries(this);
-	  // var defaultPattern = new FePlainPattern(defaultTimeSeries, this);
-	  // var defaultPattern = this.createPattern('Plain');
-
-	  // `Current' pointers
-	  // this._currentPattern = defaultPattern;
-	  // this._patterns = {};
-	  // this._patterns[this._currentPattern.uid()] = this._currentPattern;
-	}
-
-	FeModel.prototype = Object.create(FeObject.prototype);
-	FeModel.prototype.constructor = FeModel;
-
-	FeModel.prototype.find = function(obj) { return this._objects.find(obj); };
-	FeModel.prototype.getObject = FeModel.prototype.find;
-	FeModel.prototype.findInType = function(obj, type) { return this._objects.findInType(obj, type); };
-	FeModel.prototype.findNode = function(obj) { return this.findInType(obj, 'fe_node'); };
-	FeModel.prototype.findElement = function(obj) { return this.findInType(obj, 'fe_element'); };
-	FeModel.prototype.setIdOf = function(obj, id) { this._objects.setKeyOf(obj, id); };
-	FeModel.prototype.getIdOf = function(obj) { return this._objects.getKeyOf(obj); };
-	FeModel.prototype.setLabelOf = function(item, label) { this._objects.setLabelOf(item, label); };
-	FeModel.prototype.getLabelOf = function(item) { return this._objects.getLabelOf(item); };
-	FeModel.prototype.findByLabel = function(label) { return this._objects.findByLabel(label); };
-
-	FeModel.prototype.createNode = function(x, y, z) {
-	  if (Array.isArray(x)) { y = x[1]; z = x[2]; x = x[0]; }
-	  var n = new FeNode(x, y, z, this);
-	  this._objects.insert(n);
-	  return n;
-	};
-
-	FeModel.prototype.createElement = function(nodes) {
-	  var e = new FeElement(nodes, this);
-	  this._objects.insert(e);
-	  return e;
-	};
-
-	// FeModel.prototype.setNodeTag = function(feNode, tag) { this.setLabelOf(feNode, tag); };
-	// FeModel.prototype.setElementTag = function(feEle, tag) { this.setLabelOf(feEle, tag); };
-
-	// TODO: refactor this method to FePattern
-	// FeModel.prototype.createNodeProperty = function(nodes) {
-	//   var pattern = this.getCurrentPattern();
-	//   return pattern.createNodeProperty(nodes);
-	// };
-
-	FeModel.prototype.assignNodeProperty = function(nodes, nodeProp) {
-	  var pattern = this.getCurrentPattern();
-	  pattern.assignNodeProperty(nodes, nodeProp);
-	  return this;
-	};
-
-	FeModel.prototype.createNodalLoad = function(values) {
-	  var pattern = this.getCurrentPattern();
-	  return pattern.createNodalLoad(values);
-	};
-
-	FeModel.prototype.assignNodalLoad = function(nodes, nodalLoad) {
-	  var pattern = this.getCurrentPattern();
-	  pattern.assignNodalLoad(nodes, nodeLoad);
-	  return this;
-	};
-
-	FeModel.prototype.createElementProperty = function(type, args_) {
-	  var args =  Array.prototype.slice.call(arguments);
-	  args.shift();
-
-	  var prop;
-
-	  // parse args, call constructors based on type
-	  if (/[tT]russ/.test(type)) {
-	    var A = args.shift();
-	    var E = args.shift();
-	    prop = new TrussElementProperty(this, A, E);
-	  }
-
-	};
-
-	FeModel.prototype.assignElementProperty = function(eles, eleProp) {
-	  // var id = nodeProp.uid();
-	  // var propNodeMap = this._model._propNodeMap;
-	  var elePropGraph = this._elePropGraph;
-
-	  if (!Array.isArray(eles)) { eles = [eles]; }
-	  // propNodeMap[id] = uniq(nodes, getId);
-	  eles.forEach(function(ele) {
-	    elePropGraph.addEdge(ele, eleProp);
-	  });
-
-	  return this;
-
-	  var pattern = this.getCurrentPattern();
-	  pattern.assignElementProperty(eles, eleProp);
-	  return this;
-	};
-
-	FeModel.prototype.getNodeProperty = function(node) {
-	  var pattern = this.getCurrentPattern();
-	  return pattern.getNodeProperty(node);
-	};
-
-	FeModel.prototype.createSPC = function(dims, vals) {
-	  var spc = this.createNodeProperty();
-
-	  spc.setConstraint(dims, vals);
-	  return spc;
-	};
-
-	FeModel.prototype.assignSPC = function(nodes, spc) {
-	  this.assignNodeProperty(nodes, spc);
-	  return this;
-	};
-
-	FeModel.prototype.createPattern = function(type, ts) {
-	  var pattern;
-	  if (/^[pP]lain$/.test(type)) {
-	    pattern = new PlainPattern(ts, this);
-	  } else if (/^[uU]niform(Excitation)?$/.test(type)) {
-	    pattern = new UniformPattern(ts, this);
-	  } else {
-	    throw new Error('Unknown load pattern type ' + type + '!');
-	  }
-
-	  this.setCurrentPattern(pattern);
-	  return pattern;
-	};
-
-	FeModel.prototype.getCurrentPattern = function() {
-	  return this._currentPattern;
-	};
-
-	FeModel.prototype.setCurrentPattern = function(p) {
-	  var pid = getId(p);
-	  if (typeof this._patterns[pid] === 'undefined') {
-	    this._patterns[pid] = p;
-	  }
-	  this._currentPattern = p;
-	  return this;
-	};
-
-	FeModel.prototype.getNodes = function() {
-	  return this._nodeEleGraph.getLeftNodes();
-	};
-
-	FeModel.prototype.getElements = function() {
-	  return this._nodeEleGraph.getRightNodes();
-	};
-
-	FeModel.prototype.forEachNode = function(fn, scope) {
-	  var k, items = this._nodes, s = scope || this;
-	  this._nodeEleGraph.forEachLeftNode(fn, scope);
-	};
-
-	FeModel.prototype.forEachElement = function(fn, scope) {
-	  var k, items = this._elements, s = scope || this;
-	  this._nodeEleGraph.forEachRightNode(fn, scope);
-	};
-
-	// return [xmin, xmax, ymin, ymax, zmin, zmax]
-	FeModel.prototype.getAABB = function() {
-	  var aabb = [
-	    Infinity, -Infinity,
-	    Infinity, -Infinity,
-	    Infinity, -Infinity
-	  ];
-	  this.forEachNode(function(n) {
-	    if (n.x < aabb[0]) aabb[0] = n.x;
-	    else if (n.x > aabb[1]) aabb[1] = n.x;
-
-	    if (n.y < aabb[2]) aabb[2] = n.y;
-	    else if (n.y > aabb[3]) aabb[3] = n.y;
-
-	    if (n.z < aabb[4]) aabb[4] = n.z;
-	    else if (n.z > aabb[5]) aabb[5] = n.z;
-	  });
-	  return aabb;
-	};
-
-	FeModel.prototype.getXRange = function() { return this.getAABB().slice(0, 2); };
-	FeModel.prototype.getYRange = function() { return this.getAABB().slice(2, 4); };
-	FeModel.prototype.getZRange = function() { return this.getAABB().slice(4); };
-
-	FeModel.prototype.getXDiff = function() {
-	  var r = this.getXRange();
-	  return r[1] - r[0];
-	};
-
-	FeModel.prototype.getYDiff = function() {
-	  var r = this.getYRange();
-	  return r[1] - r[0];
-	};
-
-	FeModel.prototype.getZDiff = function() {
-	  var r = this.getZRange();
-	  return r[1] - r[0];
-	};
-
-	FeModel.TOL = 1e-8;
-	FeModel.prototype.getDimension = function() {
-	  var tol = FeModel.TOL;
-	  var dim = 0;
-	  dim += this.getXDiff() > tol ? 1 : 0;
-	  dim += this.getYDiff() > tol ? 1 : 0;
-	  dim += this.getZDiff() > tol ? 1 : 0;
-	  return dim;
-	};
-
-	FeModel.prototype.toJSON = function() {
-	  var json = {};
-	  json.id = this.uid();
-
-	  json.nodes = Object.keys(this._nodes).map(function(k) {
-	    var node = this[k];
-	    var json = node.toJSON();
-	    json.id = node.uid();
-	    return json;
-	  }, this._nodes);
-
-	  json.elements = Object.keys(this._elements).map(function(k) {
-	    var ele = this[k];
-	    var json = ele.toJSON();
-	    json.id = ele.uid();
-	    return json;
-	  }, this._elements);
-
-	  json.currentPattern = this._currentPattern.uid();
-	  json.patterns = Object.keys(this._patterns).map(function(k) {
-	    return this[k].toJSON();
-	  }, this._patterns);
-
-	  return json;
-	};
-
-	FeModel.prototype.setFromJSON = function(json) {
-	  return this;
-	};
-
-	FeModel.prototype.copy = function(other) {
-	  this.setFromJSON(other.toJSON());
-	};
-
-	FeModel.prototype.clone = function() {
-	  this.setFromJSON(other.toJSON());
-	};
-
-	// TODO: nodes and elements are duplicate
-	FeModel.createFromJSON = function(json) {
-	  var m = new FeModel();
-	  json.id && (m._uid = json.id);
-
-	  // Some meta info:
-	  // refType can be by tag or by id;
-	  var refType = json.refType || 'id';
-
-	  var nodes = json.nodes;
-	  if (Array.isArray(nodes)) {
-	    nodes.forEach(function(n) {
-	      var newNode = m.createNode(n.x, n.y, n.z);
-	      n.id && (newNode.setId(n.id));
-	    });
-	  }
-
-	  var eles = json.elements;
-	  if (Array.isArray(eles)) {
-	    eles.forEach(function(ele) {
-	      var nodes = ele.nodes.map(function(nid) {
-	        return m.getObject(nid);
-	      });
-
-	      var newEle = m.createElement(nodes);
-	      ele.id && (newEle.setId(ele.id));
-	    });
-	  }
-
-	  // var nodeProps = json.nodeProps;
-	  // if (Array.isArray(nodeProps)) {
-	  //   nodeProps.forEach(function(prop) {
-	  //     var nodes = ele.nodes.map(function(nid) { return m.getObject(nid); });
-	  //     var newEle = m.createElement(nodes);
-	  //     ele.id && (newEle.setId(ele.id));
-	  //   });
-	  // }
-
-	  return m;
-	};
-
-	function __helpers__() {}
-
-	function uuid() {
-	  var res = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
-	  return res.replace(/[xy]/g, function(c) {
-	    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-	    return v.toString(16);
-	  });
-	};
-
-	function NotImplementedError(msg) {
-	  this.name = 'NotImplementedError';
-	  this.message = msg;
-	  this.stack = (new Error()).stack;
-	}
-	NotImplementedError.prototype = new Error;
-
-	function getId(obj) {
-	  if (typeof obj === 'string' || typeof obj === 'number') { return obj; }
-	  if (obj && typeof obj === 'object' && typeof obj.uid === 'function') { return obj.uid(); }
-	  if (typeof obj._uid !== 'undefined') { return obj._uid; }
-	  return '';
-	}
-
-	function setId(item, id) {
-	  if (this.contains(item)) {
-	    this.erase(item);
-	    item._uid = id;
-	    this.insert(item);
-	  }
-	}
-
-	function getTypeOf(obj) {
-	  if (obj && typeof obj.getType === 'function') { return obj.getType(); }
-	  if (typeof obj === 'string') { return 'string'; }
-	  if (typeof obj === 'number') { return 'number'; }
-	  if (Array.isArray(obj)) { return 'array'; }
-	  if (typeof obj === 'function') { return 'function'; }
-	  if (typeof obj === 'object') { return 'object'; }
-	  return '';
-	}
-
-	function repeat(val, n) {
-	  var arr = new Array(n);
-	  while (n--) { arr[n] = val; }
-	  return arr;
-	}
-
-	function addToSet(arr, item) {
-	  if (-1 === arr.indexOf(item)) {
-	    arr.push(item);
-	    return true;
-	  }
-	  return false;
-	}
-
-	function uniq(arr, getKey, seen) {
-	  getKey || (getKey = function(x) { return x; });
-	  seen || (seen = {});
-	  return arr.filter(function(x) {
-	    var key = getKey(x);
-	    if (!seen[key]) {
-	      seen[key] = true;
-	      return true;
-	    } else {
-	      return false;
-	    }
-	  });
-	}
-
-	function clone(obj, shallow) {
-	  if (obj && typeof obj.clone === 'function') { return obj.clone(); }
-	  if (Array.isArray(obj)) { return obj.slice(); }
-	  if (typeof obj === 'object') {
-	    var cloned = {}, key;
-	    if (shallow === true) {
-	      for (key in obj) {
-	        if (obj.hasOwnProperty(key)) { cloned[key] = obj[key]; }
-	      }
-	    } else {
-	      for (key in obj) {
-	        if (obj.hasOwnProperty(key)) { cloned[key] = clone(obj[key]); }
-	      }
-	    }
-	    return cloned;
-	  }
-	  return obj;
-	}
-
-	exports.FeObject = FeObject;
-	exports.FeNode = FeNode;
-	exports.FeElement = FeElement;
-	exports.FeSPC = FeSPC;
-	exports.FeModel = FeModel;
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*global require*/
 	// core.numeric
 
 	var _ = __webpack_require__(1);
@@ -2234,7 +478,7 @@ var fe =
 	var isAssigned = check.assigned;
 	var listFromIterator = _.listFromIterator;
 
-	var numeric = __webpack_require__(27);
+	var numeric = __webpack_require__(24);
 	var ccsSparse = numeric.ccsSparse;
 	var ccsFull = numeric.ccsFull;
 	var ccsLUP = numeric.ccsLUP;
@@ -2854,7 +1098,7 @@ var fe =
 
 
 /***/ },
-/* 7 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -2891,7 +1135,7 @@ var fe =
 	//   PointSet::prod(other)
 
 	var _ = __webpack_require__(1);
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var norm2 = numeric.norm2;
 	var sub = numeric.sub;
 
@@ -3170,7 +1414,7 @@ var fe =
 
 
 /***/ },
-/* 8 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -3955,12 +2199,12 @@ var fe =
 
 
 /***/ },
-/* 9 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
 	// feutils
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var size = numeric.size;
 	var eye = numeric.eye;
 	var div = numeric.div;
@@ -4054,7 +2298,7 @@ var fe =
 
 
 /***/ },
-/* 10 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -4068,9 +2312,9 @@ var fe =
 	var defineContract = _.defineContract;
 	var isMatrixOfDimension = _.isMatrixOfDimension;
 	var vectorOfDimension = _.vectorOfDimension;
-	var PointSet = __webpack_require__(7).PointSet;
+	var PointSet = __webpack_require__(3).PointSet;
 
-	var feutils = __webpack_require__(9);
+	var feutils = __webpack_require__(5);
 	var isXyzInsideBox = feutils.isXyzInsideBox;
 
 	var _input_contract_fens_options_ = defineContract(function(o) {
@@ -4093,6 +2337,11 @@ var fe =
 	    this._xyz = new PointSet(options.xyz);
 	  }
 	}
+
+	FeNodeSet.prototype.map = function(mapping) {
+	  var xyz = this._xyz.map(mapping);
+	  return new FeNodeSet({ xyz: xyz });
+	};
 
 	FeNodeSet.prototype.dim = function() {
 	  return this._xyz.getRn();
@@ -4175,7 +2424,7 @@ var fe =
 
 
 /***/ },
-/* 11 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -4196,7 +2445,7 @@ var fe =
 	var matrixOfDimension = assert.matrixOfDimension;
 	var vectorOfDimension = assert.vectorOfDimension;
 
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var size = numeric.size;
 	var norm = numeric.norm;
 	var nthColumn = numeric.nthColumn;
@@ -4206,16 +2455,16 @@ var fe =
 	var det = numeric.det;
 	var transpose = numeric.transpose;
 
-	var feutils = __webpack_require__(9);
+	var feutils = __webpack_require__(5);
 	var skewmat = feutils.skewmat;
 	var isXyzInsideBox = feutils.isXyzInsideBox;
 
-	var topology = __webpack_require__(8);
+	var topology = __webpack_require__(4);
 	var Topology = topology.Topology;
 	var hypercube = topology.hypercube;
 	var hypercubeBoundary = topology.hypercubeBoundary;
 
-	var fens = __webpack_require__(10);
+	var fens = __webpack_require__(6);
 	var FeNodeSet = fens.FeNodeSet;
 
 	/**
@@ -5413,7 +3662,7 @@ var fe =
 
 
 /***/ },
-/* 12 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -5428,8 +3677,8 @@ var fe =
 	var array1d = _.array1d;
 	var defineContract = _.defineContract;
 	var matrixOfDimension = assert.ensureMatrixOfDimension;
-	var PointSet = __webpack_require__(7).PointSet;
-	var FeNodeSet = __webpack_require__(10).FeNodeSet;
+	var PointSet = __webpack_require__(3).PointSet;
+	var FeNodeSet = __webpack_require__(6).FeNodeSet;
 
 	var _input_contract_field_option_ = defineContract(function(o) {
 	  assert.object(o);
@@ -5866,7 +4115,7 @@ var fe =
 
 
 /***/ },
-/* 13 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -5877,7 +4126,7 @@ var fe =
 	var check = _.check;
 	var matrixOfDimension = assert.ensureMatrixOfDimension;
 	var mat6x6 = matrixOfDimension(6, 6);
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var diag = numeric.diag;
 	var transpose = numeric.transpose;
 	var add = numeric.add;
@@ -5940,7 +4189,7 @@ var fe =
 
 
 /***/ },
-/* 14 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -5951,7 +4200,7 @@ var fe =
 	var isa = check.instance;
 	var assert = _.assert;
 
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var ix = numeric.ix;
 	var ixUpdate_ = numeric.ixUpdate_;
 	var mul = numeric.mul;
@@ -5959,7 +4208,7 @@ var fe =
 	var dot = numeric.dot;
 	var add = numeric.add;
 
-	var property = __webpack_require__(13);
+	var property = __webpack_require__(9);
 	var LinElIso = property.LinElIso;
 
 	/**
@@ -6097,7 +4346,7 @@ var fe =
 
 
 /***/ },
-/* 15 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6114,7 +4363,7 @@ var fe =
 	var array1d = _.array1d;
 	var defineContract = _.defineContract;
 
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var size = numeric.size;
 	var transpose = numeric.transpose;
 	var dot = numeric.dot;
@@ -6129,11 +4378,11 @@ var fe =
 	var reshape = numeric.reshape;
 	var nthColumn = numeric.nthColumn;
 
-	var Material = __webpack_require__(14).Material;
-	var GCellSet = __webpack_require__(11).GCellSet;
-	var IntegrationRule = __webpack_require__(19).IntegrationRule;
-	var ElementMatrix = __webpack_require__(22).ElementMatrix;
-	var ElementVector = __webpack_require__(23).ElementVector;
+	var Material = __webpack_require__(10).Material;
+	var GCellSet = __webpack_require__(7).GCellSet;
+	var IntegrationRule = __webpack_require__(15).IntegrationRule;
+	var ElementMatrix = __webpack_require__(19).ElementMatrix;
+	var ElementVector = __webpack_require__(20).ElementVector;
 
 	/**
 	 * @module feblock
@@ -6573,15 +4822,15 @@ var fe =
 
 
 /***/ },
-/* 16 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
 	// system
 	var _ = __webpack_require__(1);
 	var isVector = _.isArray;
-	var matrix = __webpack_require__(22);
-	var vector = __webpack_require__(23);
+	var matrix = __webpack_require__(19);
+	var vector = __webpack_require__(20);
 	var SparseSystemMatrix = matrix.SparseSystemMatrix;
 	var SparseSystemVector = vector.SparseSystemVector;
 
@@ -6603,14 +4852,14 @@ var fe =
 
 
 /***/ },
-/* 17 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
 	// nodalload
 	var _  = __webpack_require__(1);
 	var check = _.check;
-	var ElementVector = __webpack_require__(23).ElementVector;
+	var ElementVector = __webpack_require__(20).ElementVector;
 
 	function NodalLoad(options) {
 	  var ids = options.ids || options.id;
@@ -6648,7 +4897,7 @@ var fe =
 
 
 /***/ },
-/* 18 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6659,7 +4908,7 @@ var fe =
 	var isAssigned = check.assigned;
 	var isFunction = check.function;
 
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var transpose = numeric.transpose;
 
 	/**
@@ -6708,14 +4957,14 @@ var fe =
 
 
 /***/ },
-/* 19 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
 	// core.numeric.integrationrule
 
 	var _ = __webpack_require__(1);
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var transpose = numeric.transpose;
 	var cloneDeep = _.cloneDeep;
 
@@ -6837,7 +5086,7 @@ var fe =
 
 
 /***/ },
-/* 20 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6904,7 +5153,7 @@ var fe =
 
 
 /***/ },
-/* 21 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -6913,9 +5162,9 @@ var fe =
 	var check = _.check;
 	var isObject = check.object;
 	var array2d = _.array2d;
-	var fens = __webpack_require__(10);
+	var fens = __webpack_require__(6);
 	var FeNodeSet = fens.FeNodeSet;
-	var gcells = __webpack_require__(11);
+	var gcells = __webpack_require__(7);
 	var Q4 = gcells.Q4;
 	var H8 = gcells.H8;
 
@@ -6950,23 +5199,42 @@ var fe =
 	   });
 	 *
 	 */
-	function Mesh(options) {
+	exports.Mesh = function Mesh(options) {
 	  if (!isObject(options)) options = {};
 	  this._fens = options.fens;
 	  this._gcells = options.gcells;
-	}
+	};
+	var Mesh = exports.Mesh;
 
 	/**
 	 * Returns finite element node set of the mesh.
 	 * @returns {module:fens.FeNodeSet}
 	 */
-	Mesh.prototype.fens = function() { return this._fens; };
+	exports.Mesh.prototype.fens = function() { return this._fens; };
 
 	/**
 	 * Returns geometry cell set of the mesh.
 	 * @returns {module:gcellset.GCellSet}
 	 */
-	Mesh.prototype.gcells = function() { return this._gcells; };
+	exports.Mesh.prototype.gcells = function() { return this._gcells; };
+
+	/**
+	 * @callback module:mesh.MapCallback
+	 * @param {module:types.Vector} coords
+	 * @param {Int} i
+	 * @returns {module:types.Vector}
+	 */
+
+	/**
+	 *
+	 * Apply the mapping function the each vertex, return the new mesh.
+	 * @param {module:mesh.MapCallback} mapping - the mapping function.
+	 * @returns {module:mesh.Mesh}
+	 */
+	exports.Mesh.prototype.map = function(mapping) {
+	  var fens = this._fens.map(mapping);
+	  return new Mesh({ fens: fens, gcells: this._gcells.clone() });
+	};
 
 	/**
 	 * Creates a L-shaped domain using 3 quads.
@@ -7063,7 +5331,145 @@ var fe =
 
 
 /***/ },
-/* 22 */
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*global require*/
+	// core.bimap
+
+	function Bimap(pairs, getKeyOf) {
+	  this._l2r = {};
+	  this._r2l = {};
+	  if (typeof getKeyOf === 'function') { this.getKeyOf = getKeyOf; }
+	  if (Array.isArray(pairs)) {
+	    pairs.forEach(function(pair) {
+	      this.insert(pair[0], pair[1]);
+	    }, this);
+	  }
+	}
+
+	Bimap.prototype.insert= function(l, r) {
+	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
+	  var lk = this.getKeyOf(l), rk = this.getKeyOf(r);
+	  this._l2r[lk] = r;
+	  this._r2l[rk] = l;
+	  return this;
+	};
+	Bimap.prototype.add= Bimap.prototype.insert;
+
+	Bimap.prototype.size= function() { return Object.keys(this._l2r).length; };
+	Bimap.prototype.empty= function() { return this.size() === 0; };
+	Bimap.prototype.clear= function() { this._l2r = {}; this._r2l = {}; return this; };
+
+	Bimap.prototype.insertSafe= function(l, r) {
+	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
+	  var lk = this.getKeyOf(l);
+	  if (typeof this._l2r[lk] !== 'undefined') {
+	    throw new Error(l + ' with key' + lk + ' exists!');
+	  }
+	  this.add(l, r);
+	  return this;
+	};
+
+	Bimap.prototype.getKeyOf = function(item) { if (item && item._uid) return item._uid; else return item; };
+
+	Bimap.prototype.belongsTo = function(obj) {
+	  var k = this.getKeyOf(obj);
+	  if (typeof this._l2r[k] !== 'undefined') { return 'left'; }
+	  if (typeof this._r2l[k] !== 'undefined') { return 'right'; }
+	  return 'none';
+	};
+
+	Bimap.prototype.leftFind = function(l) { return this._l2r[this.getKeyOf(l)]; };
+	Bimap.prototype.rightFind = function(r) { return this._r2l[this.getKeyOf(r)]; };
+	Bimap.prototype.find = function(obj) { return this.leftFind(obj) || this.rightFind(obj); };
+	Bimap.prototype.lookup = Bimap.prototype.find;
+	Bimap.prototype.inLeft = function(obj) { return typeof this.leftFind(obj) !== 'undefined'; };
+	Bimap.prototype.inRight = function(obj) { return typeof this.rightFind(obj) !== 'undefined'; };
+	Bimap.prototype.containsObject = function(obj) { return typeof this.find(obj) !== 'undefined'; };
+	Bimap.prototype.containsPair = function(l, r) {
+	  if (Array.isArray(l)) { r = l[1]; l = l[0]; }
+	  var _r = this.leftFind(l);
+	  if (typeof _r !== 'undefined') {
+	    return this.getKeyOf(r) === this.getKeyOf(_r);
+	  }
+	  return false;
+	};
+	Bimap.prototype.contains = function() {
+	  var args = Array.prototype.slice.call(arguments), argc = args.length;
+	  if (argc <= 1) { return this.containsObject(args[0]); }
+	  else { return this.containsPair(args[0], args[1]); }
+	};
+
+	Bimap.prototype.leftRemove = function(l) {
+	  var r = this.leftFind(l);
+	  if (typeof r !== 'undefined') {
+	    delete this._l2r[this.getKeyOf(l)];
+	    this.rightRemove(r);
+	  }
+	  return this;
+	};
+
+	Bimap.prototype.rightRemove = function(r) {
+	  var l = this.rightFind(r);
+	  if (typeof l !== 'undefined') {
+	    delete this._r2l[this.getKeyOf(r)];
+	    this.leftRemove(l);
+	  }
+	  return this;
+	};
+
+	Bimap.prototype.removePair = function(l, r) {
+	  if (this.containsPair(l, r)) {
+	    delete this._l2r[this.getKeyOf(l)];
+	    delete this._r2l[this.getKeyOf(r)];
+	  }
+	  return this;
+	};
+
+	Bimap.prototype.remove = function() {
+	  var args = Array.prototype.slice.call(arguments), argc = args.length;
+	  if (argc <= 1) {
+	    var obj = args[0];
+	    if (this.inLeft(obj)) { this.leftRemove(obj); }
+	    else if (this.inRight(obj)) { this.rightRemove(obj); }
+	  } else {
+	    this.removePair(args[0], args[1]);
+	  }
+	  return this;
+	};
+
+	Bimap.prototype.erase = Bimap.prototype.remove;
+
+	Bimap.prototype.getNodes =  function(group) {
+	  if (!group) { return this.getLeftNodes().concat(this.getRightNodes()); }
+	  var table = /[lL](eft)?/.test(group) ? this._r2l : this._l2r;
+	  return Object.keys(table).map(function(k) { return table[k]; });
+	};
+	Bimap.prototype.getLeftNodes = function() { return this.getNodes('left'); };
+	Bimap.prototype.getRightNodes = function() { return this.getNodes('right'); };
+
+	Bimap.prototype.forEachNode = function(group, fn, scope) {
+	  var nodes = this.getNodes(group);
+	  nodes.forEach(fn, scope || this);
+	};
+	Bimap.prototype.forEachLeftNode = function(fn, scope) { this.forEachNode('left', fn, scope); };
+	Bimap.prototype.forEachRightNode = function(fn, scope) { this.forEachNode('right', fn, scope); };
+
+	Bimap.prototype.toJSON = function() {
+	  var out = {};
+	  this.forEachLeftNode(function(left) {
+	    var right = this.find(left);
+	    out[left] = right;
+	  }, this);
+	  return out;
+	};
+
+	exports.Bimap = Bimap;
+
+
+/***/ },
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -7072,7 +5478,7 @@ var fe =
 	var iteratorFromList = _.iteratorFromList;
 	var isArray = _.isArray;
 	var isIterator = _.isIterator;
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var mldivide = numeric.mldivide;
 	var DokSparseMatrix = numeric.DokSparseMatrix;
 
@@ -7155,7 +5561,7 @@ var fe =
 
 
 /***/ },
-/* 23 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global require*/
@@ -7164,7 +5570,7 @@ var fe =
 	var iteratorFromList = _.iteratorFromList;
 	var isArray = _.isArray;
 	var isIterator = _.isIterator;
-	var numeric = __webpack_require__(6);
+	var numeric = __webpack_require__(2);
 	var SparseVector = numeric.SparseVector;
 	// var mldivide = numeric.mldivide;
 
@@ -7223,7 +5629,7 @@ var fe =
 
 
 /***/ },
-/* 24 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// http://wiki.commonjs.org/wiki/Unit_Testing/1.0
@@ -7253,7 +5659,7 @@ var fe =
 	// when used in node, this will actually load the util module we depend on
 	// versus loading the builtin util module as happens otherwise
 	// this is a bug in node module loading as far as I am concerned
-	var util = __webpack_require__(29);
+	var util = __webpack_require__(26);
 
 	var pSlice = Array.prototype.slice;
 	var hasOwn = Object.prototype.hasOwnProperty;
@@ -7588,7 +5994,7 @@ var fe =
 
 
 /***/ },
-/* 25 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
@@ -14749,10 +13155,10 @@ var fe =
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25)(module), (function() { return this; }())))
 
 /***/ },
-/* 26 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -15354,7 +13760,7 @@ var fe =
 
 
 /***/ },
-/* 27 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {"use strict";
@@ -19785,7 +18191,7 @@ var fe =
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 28 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module) {
@@ -19801,7 +18207,7 @@ var fe =
 
 
 /***/ },
-/* 29 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -20329,7 +18735,7 @@ var fe =
 	}
 	exports.isPrimitive = isPrimitive;
 
-	exports.isBuffer = __webpack_require__(30);
+	exports.isBuffer = __webpack_require__(27);
 
 	function objectToString(o) {
 	  return Object.prototype.toString.call(o);
@@ -20373,7 +18779,7 @@ var fe =
 	 *     prototype.
 	 * @param {function} superCtor Constructor function to inherit prototype from.
 	 */
-	exports.inherits = __webpack_require__(32);
+	exports.inherits = __webpack_require__(29);
 
 	exports._extend = function(origin, add) {
 	  // Don't do anything if add isn't an object
@@ -20391,10 +18797,10 @@ var fe =
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(31)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(28)))
 
 /***/ },
-/* 30 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function isBuffer(arg) {
@@ -20405,7 +18811,7 @@ var fe =
 	}
 
 /***/ },
-/* 31 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// shim for using process in browser
@@ -20469,7 +18875,7 @@ var fe =
 
 
 /***/ },
-/* 32 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	if (typeof Object.create === 'function') {
