@@ -267,16 +267,9 @@ exports.Field.prototype.div = function(other) {
   return this._bop(other, function(a,b) { return a / b; }, 'div');
 };
 
-// Get value vector by Id
-// Return: vec:this.dim()
-exports.Field.prototype.getById = function(id) {
-  var idx = id - 1;
-  return this._values.get(idx);
-};
-
 /**
  * Get value at index.
- * @param {Number} idx - index
+ * @param {Number} idx - index, zero-based
  * @return {Vector:this.dim()}
  */
 exports.Field.prototype.at = function(idx) {

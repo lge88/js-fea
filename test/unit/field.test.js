@@ -99,14 +99,6 @@ describe('field', function() {
         }
       ],
       _desc: 'construct from pointset.',
-      getById: [
-        { input: 1, output: [0, 0], verify: 'eql' },
-        { input: 2, output: [0, 0], verify: 'eql' },
-        { input: 3, output: [40, 0], verify: 'eql' },
-        { input: 4, output: [40, 40], verify: 'eql' },
-        { input: 5, output: [80, 0], verify: 'eql' },
-        { input: 6, output: [80, 40], verify: 'eql' }
-      ],
       at: [
         { input: 0, output: [0, 0], verify: 'eql' },
         { input: 1, output: [0, 0], verify: 'eql' },
