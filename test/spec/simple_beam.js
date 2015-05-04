@@ -148,7 +148,7 @@ describe('FAESOR simple_beam example', function() {
     });
 
     var uv = u.gatherValuesMatrix(freeendNids);
-    var uz = sum(nthColumn(uv, 3))/freeendNids.length;
+    var uz = sum(nthColumn(uv, 2))/freeendNids.length;
     // console.log("uz = ", uz);
 
     var uzExpected = -9.4052;

@@ -22,15 +22,13 @@ function norm(x) {
 }
 exports.norm = norm;
 
-// A(i, :), i starts from 1;
-function nthRow(A, i) { return A[i-1]; }
+// A[i, :], 0-based
+function nthRow(A, i) { return A[i]; }
 exports.nthRow = nthRow;
 
-// A(:, i), i starts from 1;
+// A[:, i], 0-based
 function nthColumn(A, i) {
-  return A.map(function(x) {
-    return [x[i-1]];
-  });
+  return A.map(function(x) { return [x[i]]; });
 }
 exports.nthColumn = nthColumn;
 
