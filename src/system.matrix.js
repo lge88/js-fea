@@ -41,12 +41,9 @@ function assemble_(dest, sources) {
     });
 
     validIndices.forEach(function(item0) {
-      // Notice the equation number starts from 1.
-      // var globalRowIndex = item0.globalIndex - 1;
       var globalRowIndex = item0.globalIndex;
       var localRowIndex = item0.localIndex;
       validIndices.forEach(function(item1) {
-        // var globalColIndex = item1.globalIndex - 1;
         var globalColIndex = item1.globalIndex;
         var localColIndex = item1.localIndex;
 

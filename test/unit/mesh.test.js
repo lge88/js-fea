@@ -87,7 +87,6 @@ describe('mesh', function() {
         [ 2, 3, 4 ]
       ]);
 
-      // expect(m2.gcells().conn()).to.eql([ [ 1, 5, 7, 3, 2, 6, 8, 4 ] ]);
       expect(m2.gcells().conn()).to.eql([ [ 0, 4, 6, 2, 1, 5, 7, 3 ] ]);
     });
 

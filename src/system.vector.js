@@ -44,7 +44,6 @@ SparseSystemVector.prototype._assemble_ = function() {
     ens.forEach(function(en, i) {
       if (en !== INVALID_EQUATION_NUM) {
         var val = vec[i];
-        // var idx = en - 1;
         var was = dest.at(en);
         dest.set_(en, was + val);
       }

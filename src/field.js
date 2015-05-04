@@ -83,9 +83,6 @@ exports.Field = function Field(options) {
 
   if (check.assigned(options.ebcs)) {
     // TODO: merge ebcs
-    // +1 because the id and direction index starts from 1;
-    // var prescribed = array2d(this.nfens() + 1, this.dim() + 1, false);
-    // var prescribedValues =  array2d(this.nfens() + 1, this.dim() + 1, 0);
     var prescribed = array2d(this.nfens(), this.dim(), false);
     var prescribedValues =  array2d(this.nfens(), this.dim(), 0);
     this._prescribed = prescribed;

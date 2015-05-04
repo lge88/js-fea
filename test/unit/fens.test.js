@@ -45,11 +45,6 @@ describe('fens', function() {
           verify: 'eql'
         }
       ],
-      // xyzById: [
-      //   { input: [0], exception: true, desc: 'id out of range.' },
-      //   { input: [1], output: [0, 0], verify: 'eql' },
-      //   { input: [4], output: [40, 40], verify: 'eql' },
-      // ],
       xyzAt: [
         { input: [-1], exception: true, desc: 'id out of range.' },
         { input: [0], output: [0, 0], verify: 'eql' },
@@ -84,16 +79,9 @@ describe('fens', function() {
           verify: 'eql'
         }
       ],
-      // xyz3ById: [
-      //   { input: [0], exception: true, desc: 'id out of range.' },
-      //   { input: [1], output: [0, 0, 0], verify: 'eql' },
-      //   { input: [4], output: [40, 40, 0], verify: 'eql' }
-      // ],
       xyz3At: [
         { input: [-1], exception: true, desc: 'id out of range.' },
-        // { input: [1], output: [0, 0, 0], verify: 'eql' },
         { input: [0], output: [0, 0, 0], verify: 'eql' },
-        // { input: [4], output: [40, 40, 0], verify: 'eql' }
         { input: [3], output: [40, 40, 0], verify: 'eql' },
         { input: [6], exception: true, desc: 'id out of range.' }
       ],

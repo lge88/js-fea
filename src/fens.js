@@ -53,10 +53,6 @@ FeNodeSet.prototype.xyz = function() {
   return this._xyz.toList();
 };
 
-// FeNodeSet.prototype.xyzById = function(id) {
-//   return this._xyz.get(id - 1);
-// };
-
 FeNodeSet.prototype.xyzAt = function(index) {
   return this._xyz.get(index);
 };
@@ -74,10 +70,6 @@ FeNodeSet.prototype.xyzIter = function() {
 FeNodeSet.prototype.xyz3 = function() {
   return this._xyz.embed(3).toList();
 };
-
-// FeNodeSet.prototype.xyz3ById = function(id) {
-//   return embed(this._xyz.get(id-1), 3);
-// };
 
 FeNodeSet.prototype.xyz3At = function(index) {
   return embed(this._xyz.get(index), 3);

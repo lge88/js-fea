@@ -41,14 +41,6 @@ describe('FAESOR Planar_truess_with_anim 3d', function() {
 
     gcells = new L2({
       conn: [
-        // [ 1, 3 ],
-        // [ 1, 4 ],
-        // [ 2, 4 ],
-        // [ 3, 4 ],
-        // [ 3, 5 ],
-        // [ 5, 4 ],
-        // [ 6, 4 ],
-        // [ 5, 6 ]
         [ 0, 2 ],
         [ 0, 3 ],
         [ 1, 3 ],

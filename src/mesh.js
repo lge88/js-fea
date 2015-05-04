@@ -99,9 +99,6 @@ exports.L2x2 = function L2x2() {
 
   gcells = new Q4({
     conn: [
-      // [1, 2, 3, 4],
-      // [4, 3, 5, 6],
-      // [4, 6, 7, 8]
       [0, 1, 2, 3],
       [3, 2, 4, 5],
       [3, 5, 6, 7]
@@ -160,12 +157,6 @@ exports.H8Block = function(w, l, h, nx, ny, nz) {
       ijkToIndex(i, j+1, k+1, nx+1, ny+1, nz+1)
     ];
   }
-
-  // FIXME: should be a better way to unify zero-based vs one-based
-  // indices madness :(
-  // conn.forEach(function(cell) {
-  //   cell.forEach(function(x, i) { cell[i] = x + 1; });
-  // });
 
   var fens = new FeNodeSet({ xyz: xyz });
   var gcells = new H8({ conn: conn });
