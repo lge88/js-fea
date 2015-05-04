@@ -799,8 +799,10 @@ describe('core.numeric', function() {
           [7,8,9],
           [10,11,12]
         ],
-        rows: [1,2],
-        cols: [2],
+        // rows: [1,2],
+        // cols: [2],
+        rows: [0, 1],
+        cols: [1],
         val: [ [0], [0] ],
         desc: '',
         expected: [
@@ -818,7 +820,8 @@ describe('core.numeric', function() {
           [10,11,12]
         ],
         rows: ':',
-        cols: [3],
+        // cols: [3],
+        cols: [2],
         val: 0,
         desc: 'colon syntax',
         expected: [
@@ -835,7 +838,8 @@ describe('core.numeric', function() {
           [7,8,9],
           [10,11,12]
         ],
-        rows: [4],
+        // rows: [4],
+        rows: [3],
         cols: ':',
         val: [[1,2,3]],
         desc: 'colon syntax',

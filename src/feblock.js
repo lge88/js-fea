@@ -181,12 +181,19 @@ exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
 
   if (Rm) {
     // console.log("nfn = ", nfn);
-    for (i = 1; i <= nfn; ++i) {
-      cols = colon(dim*(i-1)+1, dim*i);
+    // for (i = 1; i <= nfn; ++i) {
+    for (i = 0; i < nfn; ++i) {
+      // cols = colon(dim*(i-1)+1, dim*i);
+      cols = colon(dim*i, dim*(i+1)-1);
+      // vals = [
+      //   [ Ndersp[i-1][0], 0 ],
+      //   [ 0, Ndersp[i-1][1] ],
+      //   [ Ndersp[i-1][1], Ndersp[i-1][0] ]
+      // ];
       vals = [
-        [ Ndersp[i-1][0], 0 ],
-        [ 0, Ndersp[i-1][1] ],
-        [ Ndersp[i-1][1], Ndersp[i-1][0] ]
+        [ Ndersp[i][0], 0 ],
+        [ 0, Ndersp[i][1] ],
+        [ Ndersp[i][1], Ndersp[i][0] ]
       ];
 
       RmT = transpose(ix(Rm, ':', [0, 1]));
@@ -231,15 +238,25 @@ exports.DeforSS.prototype._blmat3 = function(N, Ndersp, c, Rm) {
     }
   } else {
     RmT = transpose(Rm);
-    for (i = 1; i <= nfn; ++i) {
-      indices = colon(3*(i-1)+1, 3*i);
+    // for (i = 1; i <= nfn; ++i) {
+    for (i = 0; i < nfn; ++i) {
+      // indices = colon(3*(i-1)+1, 3*i);
+      indices = colon(3*i, 3*(i+1)-1);
+      // part = [
+      //   [ Ndersp[i-1][0], 0, 0 ],
+      //   [ 0, Ndersp[i-1][1], 0 ],
+      //   [ 0, 0, Ndersp[i-1][2] ],
+      //   [ Ndersp[i-1][1], Ndersp[i-1][0], 0 ],
+      //   [ Ndersp[i-1][2], 0, Ndersp[i-1][0] ],
+      //   [ 0, Ndersp[i-1][2], Ndersp[i-1][1] ]
+      // ];
       part = [
-        [ Ndersp[i-1][0], 0, 0 ],
-        [ 0, Ndersp[i-1][1], 0 ],
-        [ 0, 0, Ndersp[i-1][2] ],
-        [ Ndersp[i-1][1], Ndersp[i-1][0], 0 ],
-        [ Ndersp[i-1][2], 0, Ndersp[i-1][0] ],
-        [ 0, Ndersp[i-1][2], Ndersp[i-1][1] ]
+        [ Ndersp[i][0], 0, 0 ],
+        [ 0, Ndersp[i][1], 0 ],
+        [ 0, 0, Ndersp[i][2] ],
+        [ Ndersp[i][1], Ndersp[i][0], 0 ],
+        [ Ndersp[i][2], 0, Ndersp[i][0] ],
+        [ 0, Ndersp[i][2], Ndersp[i][1] ]
       ];
       part = dot(part, RmT);
       ixUpdate_(B, ':', indices, part);

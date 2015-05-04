@@ -113,7 +113,8 @@ exports.DeforSSLinElBiax.prototype.tangentModuli = function() {
     Dt = ix(D, [0, 1], [0, 1]);
     Dt = add(Dt, mul(-1, div(dot(ix(D, [0, 1], [2]), ix(D, [2], [0, 1])), D[2][2])));
     reduced = ix(D, [0, 1, 3], [0, 1, 3]);
-    reduced = ixUpdate_(reduced, [1,2], [1,2], Dt);
+    // reduced = ixUpdate_(reduced, [1,2], [1,2], Dt);
+    reduced = ixUpdate_(reduced, [0, 1], [0, 1], Dt);
   } else {
     throw new Error('DeforSSLinElBiax::tangentModuli() is ');
   }

@@ -58,9 +58,11 @@ exports.ix = ix;
 
 function ixUpdate_(A, rows, cols, val) {
   // check A, rows, cols
-  var mA = size(A, 1), nA = size(A, 2);
-  if (rows === ':') rows = array1d(mA, function(i) { return i+1; });
-  if (cols === ':') cols = array1d(nA, function(i) { return i+1; });
+  var sTmp = size(A), mA = sTmp[0], nA = sTmp[1];
+  // if (rows === ':') rows = array1d(mA, function(i) { return i+1; });
+  // if (cols === ':') cols = array1d(nA, function(i) { return i+1; });
+  if (rows === ':') rows = array1d(mA, function(i) { return i; });
+  if (cols === ':') cols = array1d(nA, function(i) { return i; });
   var m = rows.length, n = cols.length;
 
   if (typeof val === 'number')
@@ -68,10 +70,11 @@ function ixUpdate_(A, rows, cols, val) {
 
   var out = A;
   rows.forEach(function(row, i) {
-    var rowIndx = row - 1;
+    // var rowIndx = row - 1;
     cols.forEach(function(col, j) {
-      var colIndx = col - 1;
-      out[rowIndx][colIndx] = val[i][j];
+      // var colIndx = col - 1;
+      // out[rowIndx][colIndx] = val[i][j];
+      out[row][col] = val[i][j];
     });
   });
   return out;
