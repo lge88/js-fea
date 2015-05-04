@@ -790,7 +790,7 @@ describe('core.numeric', function() {
     });
   });
 
-  describe('ixUpdate', function() {
+  describe('matUpdate', function() {
     var dataset = [
       {
         A: [
@@ -849,8 +849,8 @@ describe('core.numeric', function() {
     ];
 
     dataDriven(dataset, function() {
-      it('ixUpdate() should work {desc}', function(ctx) {
-        var computed = numeric.ixUpdate(ctx.A, ctx.rows, ctx.cols, ctx.val);
+      it('matUpdate() should work {desc}', function(ctx) {
+        var computed = numeric.matUpdate(ctx.A, ctx.rows, ctx.cols, ctx.val);
         var expected = ctx.expected;
 
         expect(computed).to.eql(expected);

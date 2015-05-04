@@ -56,7 +56,7 @@ function matSelect(A, rows, cols) {
 }
 exports.matSelect = matSelect;
 
-function ixUpdate_(A, rows, cols, val) {
+function matUpdate_(A, rows, cols, val) {
   // check A, rows, cols
   var sTmp = size(A), mA = sTmp[0], nA = sTmp[1];
   if (rows === ':') rows = array1d(mA, function(i) { return i; });
@@ -74,14 +74,14 @@ function ixUpdate_(A, rows, cols, val) {
   });
   return out;
 }
-exports.ixUpdate_ = ixUpdate_;
+exports.matUpdate_ = matUpdate_;
 
-function ixUpdate(A, rows, cols, val) {
+function matUpdate(A, rows, cols, val) {
   var copy = cloneDeep(A);
-  return ixUpdate_(copy, rows, cols, val);
+  return matUpdate_(copy, rows, cols, val);
 }
 
-exports.ixUpdate = ixUpdate;
+exports.matUpdate = matUpdate;
 
 function colon(from, to, step) {
   if (typeof step !== 'number') step = 1;

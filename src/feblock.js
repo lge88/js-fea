@@ -21,8 +21,8 @@ var mul = numeric.mul;
 var inv = numeric.inv;
 var norm = numeric.norm;
 var colon = numeric.colon;
-var ixUpdate_ = numeric.ixUpdate_;
 var matSelect = numeric.matSelect;
+var matUpdate_ = numeric.matUpdate_;
 var zeros = numeric.zeros;
 var reshape = numeric.reshape;
 var nthColumn = numeric.nthColumn;
@@ -197,7 +197,7 @@ exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
       // console.log("vals = ", vals);
 
       // console.log("B = ", B);
-      B = ixUpdate_(B, ':', cols, vals);
+      B = matUpdate_(B, ':', cols, vals);
       // console.log("updated B = ", B);
     }
   } else
@@ -243,7 +243,7 @@ exports.DeforSS.prototype._blmat3 = function(N, Ndersp, c, Rm) {
         [ 0, Ndersp[i][2], Ndersp[i][1] ]
       ];
       part = dot(part, RmT);
-      ixUpdate_(B, ':', indices, part);
+      matUpdate_(B, ':', indices, part);
     }
   }
 
