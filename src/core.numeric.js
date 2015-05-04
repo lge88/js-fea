@@ -168,7 +168,8 @@ exports.matEql = array2dEquals;
 // input: ccs representation
 // output: iterator that emits a sequence of (i, j, value) tuple.
 function ccsValueListIterator(ccs) {
-  var indicesForFirstNonZeroElementInEachColumn = ccs[0];
+  // indices for first non-zero element in each column
+  var nzIndices = ccs[0];
   var rowIndices = ccs[1];
   var values = ccs[2], len = values.length;
   var i = 0, currentColumn = 0;
@@ -184,7 +185,7 @@ function ccsValueListIterator(ccs) {
       res = [ row, col, val ];
 
       // update:
-      var indexAtNewColumn = indicesForFirstNonZeroElementInEachColumn[currentColumn + 1];
+      var indexAtNewColumn = nzIndices[currentColumn + 1];
       ++i;
       if (i >= indexAtNewColumn) {
         ++currentColumn;
