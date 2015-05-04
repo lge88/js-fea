@@ -188,7 +188,8 @@ exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
         [ 0, Ndersp[i-1][1] ],
         [ Ndersp[i-1][1], Ndersp[i-1][0] ]
       ];
-      RmT = transpose(ix(Rm, ':', [1,2]));
+      // RmT = transpose(ix(Rm, ':', [1,2]));
+      RmT = transpose(ix(Rm, ':', [0, 1]));
       vals = dot(vals, RmT);
 
       // console.log("B = ", B);

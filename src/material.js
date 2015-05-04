@@ -106,13 +106,18 @@ exports.DeforSSLinElBiax.prototype.tangentModuli = function() {
   var D = this._prop.D();
   var reduced, Dt;
   if (this._reduction === 'strain') {
-    reduced = ix(D, [1, 2, 4], [1, 2, 4]);
+    // reduced = ix(D, [1, 2, 4], [1, 2, 4]);
+    reduced = ix(D, [0, 1, 3], [0, 1, 3]);
   } else if (this._reduction === 'axisSymm') {
-    reduced = ix(D, [1, 2, 3, 4], [1, 2, 3, 4]);
+    // reduced = ix(D, [1, 2, 3, 4], [1, 2, 3, 4]);
+    reduced = ix(D, [0, 1, 2, 3], [0, 1, 2, 3]);
   } else if (this._reduction === 'stress') {
-    Dt = ix(D, [1,2], [1,2]);
-    Dt = add(Dt, mul(-1, div(dot(ix(D, [1,2], [3]), ix(D, [3], [1,2])), D[2][2])));
-    reduced = ix(D, [1,2,4], [1,2,4]);
+    // Dt = ix(D, [1,2], [1,2]);
+    Dt = ix(D, [0, 1], [0, 1]);
+    // Dt = add(Dt, mul(-1, div(dot(ix(D, [1,2], [3]), ix(D, [3], [1,2])), D[2][2])));
+    Dt = add(Dt, mul(-1, div(dot(ix(D, [0, 1], [2]), ix(D, [2], [0, 1])), D[2][2])));
+    // reduced = ix(D, [1,2,4], [1,2,4]);
+    reduced = ix(D, [0, 1, 3], [0, 1, 3]);
     reduced = ixUpdate_(reduced, [1,2], [1,2], Dt);
   } else {
     throw new Error('DeforSSLinElBiax::tangentModuli() is ');

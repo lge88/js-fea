@@ -738,8 +738,10 @@ describe('core.numeric', function() {
     var dataset = [
       {
         A: A,
-        rows: [1,2,3,4],
-        cols: [2,4],
+        // rows: [1,2,3,4],
+        // cols: [2,4],
+        rows: [0, 1, 2, 3],
+        cols: [1, 3],
         desc: '',
         expected: [
           [2,4],
@@ -750,8 +752,10 @@ describe('core.numeric', function() {
       },
       {
         A: A,
-        rows: [1,2],
-        cols: [1],
+        // rows: [1,2],
+        // cols: [1],
+        rows: [0, 1],
+        cols: [0],
         desc: '',
         expected: [
           [1],
@@ -761,7 +765,8 @@ describe('core.numeric', function() {
       {
         A: A,
         rows: ':',
-        cols: [3],
+        // cols: [3],
+        cols: [2],
         desc: ': syntax for rows',
         expected: [
           [3],
@@ -772,7 +777,8 @@ describe('core.numeric', function() {
       },
       {
         A: A,
-        rows: [2,1],
+        // rows: [2,1],
+        rows: [1, 0],
         cols: ':',
         desc: ': syntax for cols',
         expected: [
