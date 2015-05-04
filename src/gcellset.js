@@ -264,15 +264,15 @@ exports.GCellSet.prototype.boxSelect = function(fens, options) {
 };
 
 function allNodesInBox(fens, cell, bounds) {
-  return cell.every(function(id) {
-    var xyz = fens.xyzById(id);
+  return cell.every(function(idx) {
+    var xyz = fens.xyzAt(idx);
     return isXyzInsideBox(xyz, bounds);
   });
 }
 
 function anyNodesInBox(fens, cell, bounds) {
-  return cell.some(function(id) {
-    var xyz = fens.xyzById(id);
+  return cell.some(function(idx) {
+    var xyz = fens.xyzAt(idx);
     return isXyzInsideBox(xyz, bounds);
   });
 }

@@ -290,13 +290,15 @@ DeforSS.prototype.stiffness = function(geom, u) {
     Ke[i] = zeros(dim*cellSize, dim*cellSize);
   }
 
-  var allIds = array1d(geom.nfens(), function(i) { return i + 1; });
+  // var allIds = array1d(geom.nfens(), function(i) { return i + 1; });
+  var allIds = array1d(geom.nfens(), function(i) { return i; });
   var xs = geom.gatherValuesMatrix(allIds);
 
   var conn, x, c, J, Ndersp, Jac, B, D, delta;
   for (i = 0; i < numCells; ++i) {
     conn = conns[i];
-    x = conn.map(function(id) { return xs[id-1]; });
+    // x = conn.map(function(id) { return xs[id-1]; });
+    x = conn.map(function(i) { return xs[i]; });
 
     for (j = 0; j < npts; ++j) {
       c = dot(transpose(Ns[j]), x);
@@ -428,7 +430,8 @@ DeforSS.prototype.distributeLoads = function(geom, u, fi, m) {
       conn = conns[i];
       // console.log("conn = ", conn);
       // FIXME: this is annoying! #indexZeroVsOne
-      x = conn.map(function(id) { return xs[id-1]; });
+      // x = conn.map(function(id) { return xs[id-1]; });
+      x = conn.map(function(i) { return xs[i]; });
 
       // console.log("Nder = ", Nder);
       // console.log("x = ", x);

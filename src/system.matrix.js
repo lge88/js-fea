@@ -7,6 +7,7 @@ var isIterator = _.isIterator;
 var numeric = require('./core.numeric');
 var mldivide = numeric.mldivide;
 var DokSparseMatrix = numeric.DokSparseMatrix;
+var INVALID_EQUATION_NUM = require('./field').Field.INVALID_EQUATION_NUM;
 
 function ElementMatrix(mat, eqnums) {
   // TODO: input check
@@ -30,21 +31,23 @@ function assemble_(dest, sources) {
     Ke = sources.next();
     var mat = Ke.matrix, eqnums = Ke.eqnums;
 
-    var noneZeroIndices = eqnums.map(function(globalIndex, localIndex) {
+    var validIndices = eqnums.map(function(globalIndex, localIndex) {
       return {
         globalIndex: globalIndex,
         localIndex: localIndex
       };
     }).filter(function(item) {
-      return item.globalIndex !== 0;
+      return item.globalIndex !== INVALID_EQUATION_NUM;
     });
 
-    noneZeroIndices.forEach(function(item0) {
+    validIndices.forEach(function(item0) {
       // Notice the equation number starts from 1.
-      var globalRowIndex = item0.globalIndex - 1;
+      // var globalRowIndex = item0.globalIndex - 1;
+      var globalRowIndex = item0.globalIndex;
       var localRowIndex = item0.localIndex;
-      noneZeroIndices.forEach(function(item1) {
-        var globalColIndex = item1.globalIndex - 1;
+      validIndices.forEach(function(item1) {
+        // var globalColIndex = item1.globalIndex - 1;
+        var globalColIndex = item1.globalIndex;
         var localColIndex = item1.localIndex;
 
         var oldVal = dest.at(globalRowIndex, globalColIndex);

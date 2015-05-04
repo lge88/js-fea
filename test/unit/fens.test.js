@@ -45,10 +45,16 @@ describe('fens', function() {
           verify: 'eql'
         }
       ],
-      xyzById: [
-        { input: [0], exception: true, desc: 'id out of range.' },
-        { input: [1], output: [0, 0], verify: 'eql' },
-        { input: [4], output: [40, 40], verify: 'eql' },
+      // xyzById: [
+      //   { input: [0], exception: true, desc: 'id out of range.' },
+      //   { input: [1], output: [0, 0], verify: 'eql' },
+      //   { input: [4], output: [40, 40], verify: 'eql' },
+      // ],
+      xyzAt: [
+        { input: [-1], exception: true, desc: 'id out of range.' },
+        { input: [0], output: [0, 0], verify: 'eql' },
+        { input: [3], output: [40, 40], verify: 'eql' },
+        { input: [6], exception: true, desc: 'id out of range.' }
       ],
       xyzIter: [
         {
@@ -78,10 +84,18 @@ describe('fens', function() {
           verify: 'eql'
         }
       ],
-      xyz3ById: [
-        { input: [0], exception: true, desc: 'id out of range.' },
-        { input: [1], output: [0, 0, 0], verify: 'eql' },
-        { input: [4], output: [40, 40, 0], verify: 'eql' }
+      // xyz3ById: [
+      //   { input: [0], exception: true, desc: 'id out of range.' },
+      //   { input: [1], output: [0, 0, 0], verify: 'eql' },
+      //   { input: [4], output: [40, 40, 0], verify: 'eql' }
+      // ],
+      xyz3At: [
+        { input: [-1], exception: true, desc: 'id out of range.' },
+        // { input: [1], output: [0, 0, 0], verify: 'eql' },
+        { input: [0], output: [0, 0, 0], verify: 'eql' },
+        // { input: [4], output: [40, 40, 0], verify: 'eql' }
+        { input: [3], output: [40, 40, 0], verify: 'eql' },
+        { input: [6], exception: true, desc: 'id out of range.' }
       ],
       xyz3Iter: [
         {
@@ -104,7 +118,7 @@ describe('fens', function() {
               inflate: 1e-4
             }
           ],
-          output: [1, 2],
+          output: [0, 1],
           verify: 'eql'
         },
         {
@@ -113,7 +127,7 @@ describe('fens', function() {
               bounds: [80-2, 80+2, 40-2, 40+2]
             }
           ],
-          output: [6],
+          output: [5],
           verify: 'eql'
         }
       ],

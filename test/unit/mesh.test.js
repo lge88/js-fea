@@ -4,9 +4,6 @@ var expect = require('expect.js');
 var dataDriven = require('data-driven');
 var mesh = require(SRC + '/mesh.js');
 
-// FIXME: index start zero vs one madness
-function addOne(x) { return x+1; }
-
 describe('mesh', function() {
   describe('H8Block', function() {
     var H8Block = mesh.H8Block;
@@ -26,7 +23,7 @@ describe('mesh', function() {
           [ 1, 1, 1 ]
         ],
         expectedConn: [
-          [ 0, 4, 6, 2, 1, 5, 7, 3 ].map(addOne) // index start from 1
+          [ 0, 4, 6, 2, 1, 5, 7, 3 ]
         ]
       },
       {
@@ -48,8 +45,8 @@ describe('mesh', function() {
           [ 1, 1, 1 ]
         ],
         expectedConn: [
-          [ 0, 6, 9, 3, 1, 7, 10, 4 ].map(addOne), // index start from 1
-          [ 1, 7, 10, 4, 2, 8, 11, 5 ].map(addOne) // index start from 1
+          [ 0, 6, 9, 3, 1, 7, 10, 4 ],
+          [ 1, 7, 10, 4, 2, 8, 11, 5 ]
         ]
       }
     ];
@@ -90,7 +87,8 @@ describe('mesh', function() {
         [ 2, 3, 4 ]
       ]);
 
-      expect(m2.gcells().conn()).to.eql([ [ 1, 5, 7, 3, 2, 6, 8, 4 ] ]);
+      // expect(m2.gcells().conn()).to.eql([ [ 1, 5, 7, 3, 2, 6, 8, 4 ] ]);
+      expect(m2.gcells().conn()).to.eql([ [ 0, 4, 6, 2, 1, 5, 7, 3 ] ]);
     });
 
   });

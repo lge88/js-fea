@@ -84,8 +84,10 @@ exports.Field = function Field(options) {
   if (check.assigned(options.ebcs)) {
     // TODO: merge ebcs
     // +1 because the id and direction index starts from 1;
-    var prescribed = array2d(this.nfens() + 1, this.dim() + 1, false);
-    var prescribedValues =  array2d(this.nfens() + 1, this.dim() + 1, 0);
+    // var prescribed = array2d(this.nfens() + 1, this.dim() + 1, false);
+    // var prescribedValues =  array2d(this.nfens() + 1, this.dim() + 1, 0);
+    var prescribed = array2d(this.nfens(), this.dim(), false);
+    var prescribedValues =  array2d(this.nfens(), this.dim(), 0);
     this._prescribed = prescribed;
     this._prescribedValues = prescribedValues;
 
@@ -269,7 +271,7 @@ exports.Field.prototype.div = function(other) {
 
 /**
  * Get value at index.
- * @param {Number} idx - index, zero-based
+ * @param {Number} idx - index, 0-based
  * @return {Vector:this.dim()}
  */
 exports.Field.prototype.at = function(idx) {
@@ -286,57 +288,56 @@ exports.Field.prototype.pointset = function() {
 
 /**
  * Returns whether node at given direction is prescribed.
- * @param {Number} id - integer ID of the node. Index start from 1.
- * @param {Number} direction - dimension index. Index start from 1.
+ * @param {Number} index - integer index of the node, 0-based.
+ * @param {Number} direction - dimension index, 0-based.
  * @returns {Boolean}
  */
-exports.Field.prototype.isPrescribed = function(id, direction) {
+exports.Field.prototype.isPrescribed = function(index, direction) {
   if (!this._prescribed) return false;
-  return this._prescribed[id][direction];
+  return this._prescribed[index][direction];
 };
 
 /**
  * Returns prescribed value of the node at given direction. Return 0
  * if the dof is not prescribed.
- * @param {Number} id - integer ID of the node. Index start from 1.
- * @param {Number} direction - dimension index. Index start from 1.
+ * @param {Number} index - integer index of the node, 0-based.
+ * @param {Number} direction - dimension index, 0-based.
  * @returns {Number}
  */
-exports.Field.prototype.prescribedValue = function(id, direction) {
-  if (this.isPrescribed(id, direction))
-    return this._prescribedValues[id][direction];
+exports.Field.prototype.prescribedValue = function(index, direction) {
+  if (this.isPrescribed(index, direction))
+    return this._prescribedValues[index][direction];
   return 0;
 };
 
 /**
  * Set prescribed value of the node at given direction.
  * if the dof is not prescribed.
- * @param {Number} id - integer ID of the node. Index start from 1.
- * @param {Number} dir - dimension index. Index start from 1.
+ * @param {Number} index - integer index of the node, 0-based.
+ * @param {Number} dir - dimension index. 0-based.
  * @param {Number} val - value.
  */
-exports.Field.prototype.setPrescribedValue_ = function(id, dir, val) {
+exports.Field.prototype.setPrescribedValue_ = function(index, dir, val) {
   // console.log("val = ", val);
   // console.log("dir = ", dir);
   // console.log("id = ", id);
   // console.log("this._prescribed = ", this._prescribed);
-  this._prescribed[id][dir] = true;
-  this._prescribedValues[id][dir] = val;
-  this._values.setAtDir_(id-1, dir-1, val);
+  this._prescribed[index][dir] = true;
+  this._prescribedValues[index][dir] = val;
+  this._values.setAtDir_(index, dir, val);
 };
 
+exports.Field.INVALID_EQUATION_NUM = -1;
+
 exports.Field.prototype._numberEqnums_ = function() {
-  var eqnums = array2d(this.nfens() + 1, this.dim() + 1, 0);
+  var eqnums = array2d(this.nfens(), this.dim(), exports.Field.INVALID_EQUATION_NUM);
 
   var count = 0, nfens = this.nfens(), dim = this.dim();
   var i, j;
-  for (i = 1; i <= nfens; ++i) {
-    for (j = 1; j <= dim; ++j) {
+  for (i = 0; i < nfens; ++i) {
+    for (j = 0; j < dim; ++j) {
       if (!this.isPrescribed(i, j)) {
-        count++;
-        eqnums[i][j] = count;
-      } else {
-        eqnums[i][j] = 0;
+        eqnums[i][j] = count++;
       }
     }
   }
@@ -346,15 +347,15 @@ exports.Field.prototype._numberEqnums_ = function() {
 
 /**
  * Returns the eqnum number at node with given direction.
- * @param {Number} id - integer ID of the node. Index start from 1.
- * @param {Number} direction - dimension index. Index start from 1.
- * @returns {Number} - equation number.
+ * @param {Number} index - integer index of the node, 0-based.
+ * @param {Number} direction - dimension index, 0-based.
+ * @returns {Number} - equation number, 0-based.
  */
-exports.Field.prototype.eqnum = function(id, direction) {
+exports.Field.prototype.eqnum = function(index, direction) {
   if (!this._eqnums) this._numberEqnums_();
-  if (id < 1 || id > this.nfens()) throw new Error('Field::eqnum(): id out of range.');
-  if (direction < 1 || direction > this.dim()) throw new Error('Field::eqnum(): direction out of range.');
-  return this._eqnums[id][direction];
+  if (index < 0 || index >= this.nfens()) throw new Error('Field::eqnum(): index out of range.');
+  if (direction < 0 || direction >= this.dim()) throw new Error('Field::eqnum(): direction out of range.');
+  return this._eqnums[index][direction];
 };
 
 /**
@@ -367,7 +368,7 @@ exports.Field.prototype.gatherEqnumsVector = function(conn) {
   var vec = [], dim = this.dim();
   conn.forEach(function(fenid) {
     var i, eqnum;
-    for (i = 1; i <= dim; ++i) {
+    for (i = 0; i < dim; ++i) {
       vec.push(this.eqnum(fenid, i));
     }
   }, this);
@@ -383,8 +384,7 @@ exports.Field.prototype.gatherEqnumsVector = function(conn) {
 exports.Field.prototype.gatherValuesMatrix = function(conn) {
   var len = conn.length, dim = this.dim();
   var mat = array1d(len, null);
-  conn.forEach(function(fenid, i) {
-    var idx = fenid - 1;
+  conn.forEach(function(idx, i) {
     mat[i] = this._values.get(idx);
   }, this);
   return mat;
@@ -398,10 +398,10 @@ exports.Field.prototype.gatherValuesMatrix = function(conn) {
  */
 exports.Field.prototype.gatherPrescirbedValues = function(conn) {
   var vec = [], dim = this.dim();
-  conn.forEach(function(id) {
+  conn.forEach(function(idx) {
     var dir;
-    for (dir = 1; dir <= dim; ++dir) {
-      vec.push(this.prescribedValue(id, dir));
+    for (dir = 0; dir < dim; ++dir) {
+      vec.push(this.prescribedValue(idx, dir));
     }
   }, this);
   return vec;
@@ -426,12 +426,12 @@ exports.Field.prototype.scatterSystemVector_ = function(vec) {
   var values = this._values;
   var i, j, en, val;
 
-  for (i = 1; i <= nfens; ++i) {
-    for (j = 1; j <= dim; ++j) {
+  for (i = 0; i < nfens; ++i) {
+    for (j = 0; j < dim; ++j) {
       en = eqnums[i][j];
-      if (en !== 0) {
-        val = vec[en - 1];
-        values.setAtDir_(i-1, j-1, val);
+      if (en !== exports.Field.INVALID_EQUATION_NUM) {
+        val = vec[en];
+        values.setAtDir_(i, j, val);
       }
     }
   }

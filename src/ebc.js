@@ -14,7 +14,7 @@ function EBC(options) {
       var i = 0, nfens = u.nfens();
       return {
         hasNext: function() { return i < nfens; },
-        next: function() { return ++i; }
+        next: function() { return i++; }
       };
     };
   else if (check.array(options.id))

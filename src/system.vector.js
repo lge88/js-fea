@@ -6,6 +6,7 @@ var isArray = _.isArray;
 var isIterator = _.isIterator;
 var numeric = require('./core.numeric');
 var SparseVector = numeric.SparseVector;
+var INVALID_EQUATION_NUM = require('./field').Field.INVALID_EQUATION_NUM;
 // var mldivide = numeric.mldivide;
 
 function ElementVector(vec, eqnums) {
@@ -41,11 +42,11 @@ SparseSystemVector.prototype._assemble_ = function() {
     vec = ev.vector;
     ens = ev.eqnums;
     ens.forEach(function(en, i) {
-      if (en !== 0) {
+      if (en !== INVALID_EQUATION_NUM) {
         var val = vec[i];
-        var idx = en - 1;
-        var was = dest.at(idx);
-        dest.set_(idx, was + val);
+        // var idx = en - 1;
+        var was = dest.at(en);
+        dest.set_(en, was + val);
       }
     });
   }
