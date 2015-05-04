@@ -111,6 +111,11 @@ PointSet.prototype.equals = function(other) {
 };
 PointSet.prototype.isEqualTo = PointSet.prototype.equals;
 
+/**
+ *
+ * @param {Int} index - zero-based index
+ * @returns {Array} Coordinates
+ */
 PointSet.prototype.get = function(index) {
   if (index >= 0 && index < this._points.length) {
     return this._points[index].slice();

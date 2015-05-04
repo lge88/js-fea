@@ -41,14 +41,14 @@ describe('FAESOR Planar_truess_with_anim 3d', function() {
 
     gcells = new L2({
       conn: [
+        [ 0, 2 ],
+        [ 0, 3 ],
         [ 1, 3 ],
-        [ 1, 4 ],
+        [ 2, 3 ],
         [ 2, 4 ],
-        [ 3, 4 ],
-        [ 3, 5 ],
-        [ 5, 4 ],
-        [ 6, 4 ],
-        [ 5, 6 ]
+        [ 4, 3 ],
+        [ 5, 3 ],
+        [ 4, 5 ]
       ],
       otherDimension: 1.5
     });
@@ -68,15 +68,15 @@ describe('FAESOR Planar_truess_with_anim 3d', function() {
     // console.log("geom.dim() = ", geom.dim());
 
     var fixedSupports = new EBC({
-      id: [1, 2],
-      dir: [1, 2, 3],
+      id: [0, 1],
+      dir: [0, 1, 2],
       value: 0
     });
 
     //  zero out-of-plane displacement
     var inPlaneConstraints = new EBC({
       id: 'all',
-      dir: 3,
+      dir: 2,
       value: 0
     });
 
@@ -100,10 +100,10 @@ describe('FAESOR Planar_truess_with_anim 3d', function() {
     // console.log("K = ", K.toFull());
 
     var nodalLoads = [
-      { id: 3, dir: 2, magn: -2000 },
-      { id: 5, dir: 1, magn: +2000 },
-      { id: 6, dir: 1, magn: +4000 },
-      { id: 6, dir: 2, magn: +6000 },
+      { id: 2, dir: 1, magn: -2000 },
+      { id: 4, dir: 0, magn: +2000 },
+      { id: 5, dir: 0, magn: +4000 },
+      { id: 5, dir: 1, magn: +6000 },
     ].map(function(item) {
       return new NodalLoad(item);
     });

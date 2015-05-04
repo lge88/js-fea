@@ -21,8 +21,8 @@ var mul = numeric.mul;
 var inv = numeric.inv;
 var norm = numeric.norm;
 var colon = numeric.colon;
-var ixUpdate_ = numeric.ixUpdate_;
-var ix = numeric.ix;
+var matSelect = numeric.matSelect;
+var matUpdate_ = numeric.matUpdate_;
 var zeros = numeric.zeros;
 var reshape = numeric.reshape;
 var nthColumn = numeric.nthColumn;
@@ -181,21 +181,23 @@ exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
 
   if (Rm) {
     // console.log("nfn = ", nfn);
-    for (i = 1; i <= nfn; ++i) {
-      cols = colon(dim*(i-1)+1, dim*i);
+    for (i = 0; i < nfn; ++i) {
+      cols = colon(dim*i, dim*(i+1)-1);
       vals = [
-        [ Ndersp[i-1][0], 0 ],
-        [ 0, Ndersp[i-1][1] ],
-        [ Ndersp[i-1][1], Ndersp[i-1][0] ]
+        [ Ndersp[i][0], 0 ],
+        [ 0, Ndersp[i][1] ],
+        [ Ndersp[i][1], Ndersp[i][0] ]
       ];
-      RmT = transpose(ix(Rm, ':', [1,2]));
+
+      RmT = transpose(matSelect(Rm, ':', [0, 1]));
       vals = dot(vals, RmT);
 
-      // console.log("B = ", B);
       // console.log("cols = ", cols);
       // console.log("i = ", i);
       // console.log("vals = ", vals);
-      B = ixUpdate_(B, ':', cols, vals);
+
+      // console.log("B = ", B);
+      B = matUpdate_(B, ':', cols, vals);
       // console.log("updated B = ", B);
     }
   } else
@@ -230,18 +232,18 @@ exports.DeforSS.prototype._blmat3 = function(N, Ndersp, c, Rm) {
     }
   } else {
     RmT = transpose(Rm);
-    for (i = 1; i <= nfn; ++i) {
-      indices = colon(3*(i-1)+1, 3*i);
+    for (i = 0; i < nfn; ++i) {
+      indices = colon(3*i, 3*(i+1)-1);
       part = [
-        [ Ndersp[i-1][0], 0, 0 ],
-        [ 0, Ndersp[i-1][1], 0 ],
-        [ 0, 0, Ndersp[i-1][2] ],
-        [ Ndersp[i-1][1], Ndersp[i-1][0], 0 ],
-        [ Ndersp[i-1][2], 0, Ndersp[i-1][0] ],
-        [ 0, Ndersp[i-1][2], Ndersp[i-1][1] ]
+        [ Ndersp[i][0], 0, 0 ],
+        [ 0, Ndersp[i][1], 0 ],
+        [ 0, 0, Ndersp[i][2] ],
+        [ Ndersp[i][1], Ndersp[i][0], 0 ],
+        [ Ndersp[i][2], 0, Ndersp[i][0] ],
+        [ 0, Ndersp[i][2], Ndersp[i][1] ]
       ];
       part = dot(part, RmT);
-      ixUpdate_(B, ':', indices, part);
+      matUpdate_(B, ':', indices, part);
     }
   }
 
@@ -290,13 +292,13 @@ DeforSS.prototype.stiffness = function(geom, u) {
     Ke[i] = zeros(dim*cellSize, dim*cellSize);
   }
 
-  var allIds = array1d(geom.nfens(), function(i) { return i + 1; });
+  var allIds = array1d(geom.nfens(), function(i) { return i; });
   var xs = geom.gatherValuesMatrix(allIds);
 
   var conn, x, c, J, Ndersp, Jac, B, D, delta;
   for (i = 0; i < numCells; ++i) {
     conn = conns[i];
-    x = conn.map(function(id) { return xs[id-1]; });
+    x = conn.map(function(i) { return xs[i]; });
 
     for (j = 0; j < npts; ++j) {
       c = dot(transpose(Ns[j]), x);
@@ -427,8 +429,7 @@ DeforSS.prototype.distributeLoads = function(geom, u, fi, m) {
     for (i = 0; i < ncells; ++i) {
       conn = conns[i];
       // console.log("conn = ", conn);
-      // FIXME: this is annoying! #indexZeroVsOne
-      x = conn.map(function(id) { return xs[id-1]; });
+      x = conn.map(function(i) { return xs[i]; });
 
       // console.log("Nder = ", Nder);
       // console.log("x = ", x);

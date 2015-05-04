@@ -91,22 +91,14 @@ describe('field', function() {
           ],
           ebcs: [
             new EBC({
-              id: [1, 2],
-              dir: [1, 2],
+              id: [0, 1],
+              dir: [0, 1],
               value: 0
             })
           ]
         }
       ],
       _desc: 'construct from pointset.',
-      getById: [
-        { input: 1, output: [0, 0], verify: 'eql' },
-        { input: 2, output: [0, 0], verify: 'eql' },
-        { input: 3, output: [40, 0], verify: 'eql' },
-        { input: 4, output: [40, 40], verify: 'eql' },
-        { input: 5, output: [80, 0], verify: 'eql' },
-        { input: 6, output: [80, 40], verify: 'eql' }
-      ],
       at: [
         { input: 0, output: [0, 0], verify: 'eql' },
         { input: 1, output: [0, 0], verify: 'eql' },
@@ -118,36 +110,36 @@ describe('field', function() {
       dim: [ { output: 2 } ],
       nfens: [ { output: 6 } ],
       isPrescribed: [
+        { input: [0,0], output: true },
+        { input: [0,1], output: true },
         { input: [1,1], output: true },
-        { input: [1,2], output: true },
-        { input: [2,2], output: true },
-        { input: [2,1], output: true },
-        { input: [3,1], output: false },
-        { input: [4,2], output: false }
+        { input: [1,0], output: true },
+        { input: [2,0], output: false },
+        { input: [3,1], output: false }
       ],
       prescribedValue: [
+        { input: [0,0], output: 0 },
+        { input: [0,1], output: 0 },
         { input: [1,1], output: 0 },
-        { input: [1,2], output: 0 },
-        { input: [2,2], output: 0 },
-        { input: [2,1], output: 0 },
-        { input: [3,1], output: null },
-        { input: [4,2], output: null }
+        { input: [1,0], output: 0 },
+        { input: [2,0], output: null },
+        { input: [3,1], output: null }
       ],
       eqnum: [
-        { input: [1,1], output: 0 },
-        { input: [1,2], output: 0 },
-        { input: [2,1], output: 0 },
-        { input: [2,2], output: 0 },
-        { input: [3,1], output: 1 },
-        { input: [3,2], output: 2 },
-        { input: [4,1], output: 3 },
-        { input: [4,2], output: 4 },
-        { input: [5,1], output: 5 },
-        { input: [5,2], output: 6 },
-        { input: [6,1], output: 7 },
-        { input: [6,2], output: 8 },
-        { input: [7,1], exception: true },
-        { input: [6,3], exception: true },
+        { input: [0,0], output: -1 },
+        { input: [0,1], output: -1 },
+        { input: [1,0], output: -1 },
+        { input: [1,1], output: -1 },
+        { input: [2,0], output: 0 },
+        { input: [2,1], output: 1 },
+        { input: [3,0], output: 2 },
+        { input: [3,1], output: 3 },
+        { input: [4,0], output: 4 },
+        { input: [4,1], output: 5 },
+        { input: [5,0], output: 6 },
+        { input: [5,1], output: 7 },
+        { input: [6,0], exception: true },
+        { input: [5,2], exception: true },
       ],
       neqns: [
         { output: 8 }
@@ -155,22 +147,22 @@ describe('field', function() {
       gatherEqnumsVector: [
         {
           input: [
-            [1, 3]
+            [0, 2]
           ],
-          output: [0, 0, 1, 2],
+          output: [-1, -1, 0, 1],
           verify: 'eql'
         },
         {
           input: [
-            [1, 4]
+            [0, 3]
           ],
-          output: [0, 0, 3, 4],
+          output: [-1, -1, 2, 3],
           verify: 'eql'
         }
       ],
       gatherValuesMatrix: [
         {
-          input: [ [1,3,5] ],
+          input: [ [0,2,4] ],
           output: [
             [0, 0],
             [40, 0],

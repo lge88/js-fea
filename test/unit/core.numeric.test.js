@@ -727,7 +727,7 @@ describe('core.numeric', function() {
     });
   });
 
-  describe('ix', function() {
+  describe('matSelect', function() {
     var A = [
       [1,2,3,4],
       [5,6,7,8],
@@ -738,8 +738,8 @@ describe('core.numeric', function() {
     var dataset = [
       {
         A: A,
-        rows: [1,2,3,4],
-        cols: [2,4],
+        rows: [0, 1, 2, 3],
+        cols: [1, 3],
         desc: '',
         expected: [
           [2,4],
@@ -750,8 +750,8 @@ describe('core.numeric', function() {
       },
       {
         A: A,
-        rows: [1,2],
-        cols: [1],
+        rows: [0, 1],
+        cols: [0],
         desc: '',
         expected: [
           [1],
@@ -761,7 +761,7 @@ describe('core.numeric', function() {
       {
         A: A,
         rows: ':',
-        cols: [3],
+        cols: [2],
         desc: ': syntax for rows',
         expected: [
           [3],
@@ -772,7 +772,7 @@ describe('core.numeric', function() {
       },
       {
         A: A,
-        rows: [2,1],
+        rows: [1, 0],
         cols: ':',
         desc: ': syntax for cols',
         expected: [
@@ -782,15 +782,15 @@ describe('core.numeric', function() {
       }
     ];
     dataDriven(dataset, function() {
-      it('ix() should work {desc}', function(ctx) {
+      it('matSelect() should work {desc}', function(ctx) {
         var expected = ctx.expected;
-        var computed = numeric.ix(ctx.A, ctx.rows, ctx.cols);
+        var computed = numeric.matSelect(ctx.A, ctx.rows, ctx.cols);
         expect(expected).to.eql(computed);
       });
     });
   });
 
-  describe('ixUpdate', function() {
+  describe('matUpdate', function() {
     var dataset = [
       {
         A: [
@@ -799,8 +799,8 @@ describe('core.numeric', function() {
           [7,8,9],
           [10,11,12]
         ],
-        rows: [1,2],
-        cols: [2],
+        rows: [0, 1],
+        cols: [1],
         val: [ [0], [0] ],
         desc: '',
         expected: [
@@ -818,7 +818,7 @@ describe('core.numeric', function() {
           [10,11,12]
         ],
         rows: ':',
-        cols: [3],
+        cols: [2],
         val: 0,
         desc: 'colon syntax',
         expected: [
@@ -835,7 +835,7 @@ describe('core.numeric', function() {
           [7,8,9],
           [10,11,12]
         ],
-        rows: [4],
+        rows: [3],
         cols: ':',
         val: [[1,2,3]],
         desc: 'colon syntax',
@@ -849,8 +849,8 @@ describe('core.numeric', function() {
     ];
 
     dataDriven(dataset, function() {
-      it('ixUpdate() should work {desc}', function(ctx) {
-        var computed = numeric.ixUpdate(ctx.A, ctx.rows, ctx.cols, ctx.val);
+      it('matUpdate() should work {desc}', function(ctx) {
+        var computed = numeric.matUpdate(ctx.A, ctx.rows, ctx.cols, ctx.val);
         var expected = ctx.expected;
 
         expect(computed).to.eql(expected);

@@ -264,15 +264,15 @@ exports.GCellSet.prototype.boxSelect = function(fens, options) {
 };
 
 function allNodesInBox(fens, cell, bounds) {
-  return cell.every(function(id) {
-    var xyz = fens.xyzById(id);
+  return cell.every(function(idx) {
+    var xyz = fens.xyzAt(idx);
     return isXyzInsideBox(xyz, bounds);
   });
 }
 
 function anyNodesInBox(fens, cell, bounds) {
-  return cell.some(function(id) {
-    var xyz = fens.xyzById(id);
+  return cell.some(function(idx) {
+    var xyz = fens.xyzAt(idx);
     return isXyzInsideBox(xyz, bounds);
   });
 }
@@ -703,8 +703,8 @@ exports.GCellSetManifold2.prototype.jacobianSurface = function(conn, N, J, x) {
     if (sdim === ntan) {
       jac = J[0][0]*J[1][1] - J[1][0]*J[0][1];
     } else {
-      jac = skewmat(nthColumn(J, 1));
-      jac = dot(jac, nthColumn(J, 2));
+      jac = skewmat(nthColumn(J, 0));
+      jac = dot(jac, nthColumn(J, 1));
       jac = norm(jac);
     }
   } else {

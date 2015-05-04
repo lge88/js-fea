@@ -75,7 +75,7 @@ describe('FAESOR simple_beam example', function() {
           bounds: [0, W, 0, 0, 0, H],
           inflate: 1e-4
         }),
-        dir: [1, 2, 3],
+        dir: [0, 1, 2],
         value: 0
       },
       {
@@ -83,7 +83,7 @@ describe('FAESOR simple_beam example', function() {
           bounds: [W, W, 0, L, 0, H],
           inflate: 1e-4
         }),
-        dir: 1,
+        dir: 0,
         value: 0
       }
     ].map(function(o) { return new EBC(o); });
@@ -148,7 +148,7 @@ describe('FAESOR simple_beam example', function() {
     });
 
     var uv = u.gatherValuesMatrix(freeendNids);
-    var uz = sum(nthColumn(uv, 3))/freeendNids.length;
+    var uz = sum(nthColumn(uv, 2))/freeendNids.length;
     // console.log("uz = ", uz);
 
     var uzExpected = -9.4052;

@@ -22,42 +22,45 @@ function norm(x) {
 }
 exports.norm = norm;
 
-// A(i, :), i starts from 1;
-function nthRow(A, i) { return A[i-1]; }
+// A[i, :], 0-based
+function nthRow(A, i) { return A[i]; }
 exports.nthRow = nthRow;
 
-// A(:, i), i starts from 1;
+// A[:, i], 0-based
 function nthColumn(A, i) {
-  return A.map(function(x) {
-    return [x[i-1]];
-  });
+  return A.map(function(x) { return [x[i]]; });
 }
 exports.nthColumn = nthColumn;
 
-function ix(A, rows, cols) {
+/**
+ * Return a sub matrix with selected indices.
+ * @param {Matrix} A - master matrix
+ * @param {Array|String} rows - 0-based row indices
+ * @param {Array|String} cols - 0-based column indices
+ * @returns {Matrix} - sub matrix
+ */
+function matSelect(A, rows, cols) {
   // check A, rows, cols
-  var mA = size(A, 1), nA = size(A, 2);
-  if (rows === ':') rows = array1d(mA, function(i) { return i+1; });
-  if (cols === ':') cols = array1d(nA, function(i) { return i+1; });
+  var sTmp = size(A), mA = sTmp[0], nA = sTmp[1];
+  if (rows === ':') rows = array1d(mA, function(i) { return i; });
+  if (cols === ':') cols = array1d(nA, function(i) { return i; });
   var m = rows.length, n = cols.length;
 
   var out = array2d(m, n, 0);
   rows.forEach(function(row, i) {
-    var rowIndx = row - 1;
     cols.forEach(function(col, j) {
-      var colIndx = col - 1;
-      out[i][j] = A[rowIndx][colIndx];
+      out[i][j] = A[row][col];
     });
   });
   return out;
 }
-exports.ix = ix;
+exports.matSelect = matSelect;
 
-function ixUpdate_(A, rows, cols, val) {
+function matUpdate_(A, rows, cols, val) {
   // check A, rows, cols
-  var mA = size(A, 1), nA = size(A, 2);
-  if (rows === ':') rows = array1d(mA, function(i) { return i+1; });
-  if (cols === ':') cols = array1d(nA, function(i) { return i+1; });
+  var sTmp = size(A), mA = sTmp[0], nA = sTmp[1];
+  if (rows === ':') rows = array1d(mA, function(i) { return i; });
+  if (cols === ':') cols = array1d(nA, function(i) { return i; });
   var m = rows.length, n = cols.length;
 
   if (typeof val === 'number')
@@ -65,22 +68,20 @@ function ixUpdate_(A, rows, cols, val) {
 
   var out = A;
   rows.forEach(function(row, i) {
-    var rowIndx = row - 1;
     cols.forEach(function(col, j) {
-      var colIndx = col - 1;
-      out[rowIndx][colIndx] = val[i][j];
+      out[row][col] = val[i][j];
     });
   });
   return out;
 }
-exports.ixUpdate_ = ixUpdate_;
+exports.matUpdate_ = matUpdate_;
 
-function ixUpdate(A, rows, cols, val) {
+function matUpdate(A, rows, cols, val) {
   var copy = cloneDeep(A);
-  return ixUpdate_(copy, rows, cols, val);
+  return matUpdate_(copy, rows, cols, val);
 }
 
-exports.ixUpdate = ixUpdate;
+exports.matUpdate = matUpdate;
 
 function colon(from, to, step) {
   if (typeof step !== 'number') step = 1;
@@ -167,7 +168,8 @@ exports.matEql = array2dEquals;
 // input: ccs representation
 // output: iterator that emits a sequence of (i, j, value) tuple.
 function ccsValueListIterator(ccs) {
-  var indicesForFirstNonZeroElementInEachColumn = ccs[0];
+  // indices for first non-zero element in each column
+  var nzIndices = ccs[0];
   var rowIndices = ccs[1];
   var values = ccs[2], len = values.length;
   var i = 0, currentColumn = 0;
@@ -183,7 +185,7 @@ function ccsValueListIterator(ccs) {
       res = [ row, col, val ];
 
       // update:
-      var indexAtNewColumn = indicesForFirstNonZeroElementInEachColumn[currentColumn + 1];
+      var indexAtNewColumn = nzIndices[currentColumn + 1];
       ++i;
       if (i >= indexAtNewColumn) {
         ++currentColumn;
