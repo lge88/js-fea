@@ -39,7 +39,7 @@ exports.nthColumn = nthColumn;
  * @param {Array|String} cols - 0-based column indices
  * @returns {Matrix} - sub matrix
  */
-function ix(A, rows, cols) {
+function matSelect(A, rows, cols) {
   // check A, rows, cols
   var sTmp = size(A), mA = sTmp[0], nA = sTmp[1];
   if (rows === ':') rows = array1d(mA, function(i) { return i; });
@@ -54,7 +54,7 @@ function ix(A, rows, cols) {
   });
   return out;
 }
-exports.ix = ix;
+exports.matSelect = matSelect;
 
 function ixUpdate_(A, rows, cols, val) {
   // check A, rows, cols

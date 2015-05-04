@@ -727,7 +727,7 @@ describe('core.numeric', function() {
     });
   });
 
-  describe('ix', function() {
+  describe('matSelect', function() {
     var A = [
       [1,2,3,4],
       [5,6,7,8],
@@ -782,9 +782,9 @@ describe('core.numeric', function() {
       }
     ];
     dataDriven(dataset, function() {
-      it('ix() should work {desc}', function(ctx) {
+      it('matSelect() should work {desc}', function(ctx) {
         var expected = ctx.expected;
-        var computed = numeric.ix(ctx.A, ctx.rows, ctx.cols);
+        var computed = numeric.matSelect(ctx.A, ctx.rows, ctx.cols);
         expect(expected).to.eql(computed);
       });
     });

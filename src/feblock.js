@@ -22,7 +22,7 @@ var inv = numeric.inv;
 var norm = numeric.norm;
 var colon = numeric.colon;
 var ixUpdate_ = numeric.ixUpdate_;
-var ix = numeric.ix;
+var matSelect = numeric.matSelect;
 var zeros = numeric.zeros;
 var reshape = numeric.reshape;
 var nthColumn = numeric.nthColumn;
@@ -189,7 +189,7 @@ exports.DeforSS.prototype._blmat2 = function(N, Ndersp, c, Rm) {
         [ Ndersp[i][1], Ndersp[i][0] ]
       ];
 
-      RmT = transpose(ix(Rm, ':', [0, 1]));
+      RmT = transpose(matSelect(Rm, ':', [0, 1]));
       vals = dot(vals, RmT);
 
       // console.log("cols = ", cols);
