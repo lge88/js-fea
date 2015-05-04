@@ -42,18 +42,13 @@ exports.nthColumn = nthColumn;
 function ix(A, rows, cols) {
   // check A, rows, cols
   var sTmp = size(A), mA = sTmp[0], nA = sTmp[1];
-  // if (rows === ':') rows = array1d(mA, function(i) { return i+1; });
-  // if (cols === ':') cols = array1d(nA, function(i) { return i+1; });
   if (rows === ':') rows = array1d(mA, function(i) { return i; });
   if (cols === ':') cols = array1d(nA, function(i) { return i; });
   var m = rows.length, n = cols.length;
 
   var out = array2d(m, n, 0);
   rows.forEach(function(row, i) {
-    // var rowIndx = row - 1;
     cols.forEach(function(col, j) {
-      // var colIndx = col - 1;
-      // out[i][j] = A[rowIndx][colIndx];
       out[i][j] = A[row][col];
     });
   });
