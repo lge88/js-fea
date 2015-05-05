@@ -757,7 +757,7 @@ function hypercube(conn, dim) {
 // dim = 2 -> triangle, dim = 3 -> tetrahedron
 function simplex(conn, dim) {
   var complexes = [];
-  return new Topology(complexes);
+  return new Topology(complexes, 'P1L2T3T4');
 };
 
 simplex.prototype = Object.create(Topology.prototype);
