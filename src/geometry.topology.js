@@ -74,7 +74,9 @@ Topology.prototype.getNumOfCellsInDim = function(dim) {
 Topology.FAMILY = {
   P1L2T3T4: {
     cellSizes: [1, 2, 3, 4],
-    cellTypes: ['P1', 'L2', 'T3', 'T4']
+    cellTypes: ['P1', 'L2', 'T3', 'T4'],
+    extrude: function(hlist) {},
+    extractBoundary: function() {}
   },
 
   P1L3T6T10: {
@@ -84,7 +86,9 @@ Topology.FAMILY = {
 
   P1L2Q4H8: {
     cellSizes: [1, 2, 4, 8],
-    cellTypes: ['P1', 'L2', 'Q4', 'H8']
+    cellTypes: ['P1', 'L2', 'Q4', 'H8'],
+    extrude: function(hlist) {},
+    extractBoundary: function() {}
   },
 
   P1L3Q8H20: {
