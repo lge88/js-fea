@@ -1,35 +1,5 @@
 /*global require*/
-// geometry.topology
-// FUNCTIONS:
-//   Topology(complexes)
-//   hypercube(conn, dim)
-//   simplex(conn, dim)
-// //
-// [Topology] constructor:
-//   Topology(complexes)
-// //
-// [Topology] instance methods:
-//   Topology::getDim()
-//   Topology::toList()
-//   Topology::toJSON()
-//   Topology::clone()
-//   Topology::equals(other)
-//   Topology::cells0d()
-//   Topology::getPointIndices()
-//   Topology::getEdgeIndices()
-//   Topology::getFaceIndices()
-//   Topology::getConnectivity()
-//   Topology::remap(mapping)
-//   Topology::unique()
-//   Topology::fuse(other)
-//   Topology::invert()
-//   Topology::skeleton(ord)
-//   Topology::boundary()
-// //
-// [hypercube] class methods:
-//   hypercube.getCellType(dim)
-//   hypercube.getCellSize(dim)
-
+// dependencies
 var _ = require('./core.utils');
 var check = _.check;
 var isAssigned = check.assigned;
@@ -37,9 +7,7 @@ var array1d = _.array1d;
 var cloneDeep = _.cloneDeep;
 var normalizedCell = _.normalizedCell;
 var byLexical = _.byLexical;
-
 var Bimap = _.Bimap;
-
 
 // dim = 0 -> point, dim = 1 -> curve,
 // dim = 2 -> surface, dim = 4 -> volumn'
@@ -48,12 +16,20 @@ var Bimap = _.Bimap;
 // complexes[n]: ConnectivityList for dimension n
 // ConnectivityList: [ CellIndexList ]
 // CellIndexList: [ i_1, i_2, ..., i_CellSize ]
-function Topology(complexes, cellSizes) {
-  // check complexes
+function Topology(complexes, family) {
+  if (typeof family === 'undefined') family = 'P1L2Q4H8';
+  if (family == 'P1L2T3T4' ||
+      family == 'P1L3T6T10' ||
+      family == 'P1L2Q4H8' ||
+      family == 'P1L3Q8H20')
+    this._family = family;
+  else
+    throw new Error('Topology(): Unknow topology family ' + family);
+
   if (!_.isArray(complexes))
     throw new Error('Topology(): complexes must be a list of connectiviy list.');
 
-  var i, j, k, n, connList, ncells, cellSize, cell, cidx;
+  var i, j, k, n, connList, ncells, expectedCellSize, cell, cidx;
   n = complexes.length;
   for (i = 0; i < n; ++i) {
     connList = complexes[i];
@@ -61,60 +37,32 @@ function Topology(complexes, cellSizes) {
       throw new Error('Topology(): connectivity list must be an array.');
 
     ncells = connList.length;
+    expectedCellSize = this.getFamilyCellSizeInDim(i);
     if (ncells > 0) {
-      cell = connList[0];
-      if (!_.isArray(cell))
-        throw new Error('Topology(): cell index list must be an array.');
-
-      cellSize = cell.length;
       for (j = 0; j < ncells; ++j) {
         cell = connList[j];
         if (!_.isArray(cell))
           throw new Error('Topology(): cell index list must be an array.');
 
-        if (cell.length !== cellSize)
+        if (cell.length !== expectedCellSize)
           throw new Error('Topology(): inconsist cell size.');
 
-        for (k = 0; k < cellSize; ++k) {
+        for (k = 0; k < expectedCellSize; ++k) {
           cidx = cell[k];
-          if ((cidx | 0) !== cidx)
-            throw new Error('Topology: cell index must be an integer.');
+          if ((cidx | 0) !== cidx || cidx < 0)
+            throw new Error('Topology: cell index must be a non-neg integer.');
         }
       }
     }
   }
 
   var _complexes = _.cloneDeep(complexes);
-  // _(_complexes).each(function(x, i) {
-  //   _(_complexes[i]).each(function(y, j) {
-  //     _complexes[i][j] = normalizedCell(y);
-  //     // var offset = _.minIndex(y);
-  //     // _complexes[i][j] = _.rotateLeft(y, offset);
-  //   });
-  //   _complexes[i].sort(_.byLexical);
-  // });
   this._complexes = _complexes;
-
-  var errs = [];
-  if (_.isArray(cellSizes) && cellSizes.length === this._complexes.length) {
-    this._cellSizes = _.clone(cellSizes);
-  } else {
-    this._cellSizes = this._complexes.map(function(connList, i) {
-      if (connList.length === 0) {
-        errs.push('Topology(): Can not determine the dim of cells in dim ' + i);
-        return -1;
-      }
-
-      return connList[0].length;
-    });
-    if (errs.length > 0) throw new Error(errs.join('\n'));
-  }
 };
 
 Topology.prototype.getDim = function() {
   return this._complexes.length - 1;
 };
-Topology.prototype.__defineGetter__('dim', Topology.prototype.getDim);
 
 Topology.prototype.getNumOfCellsInDim = function(dim) {
   if (dim < 0 || dim > this.getDim())
@@ -123,11 +71,50 @@ Topology.prototype.getNumOfCellsInDim = function(dim) {
   return this._complexes[dim].length;
 };
 
+Topology.FAMILY = {
+  P1L2T3T4: {
+    cellSizes: [1, 2, 3, 4],
+    cellTypes: ['P1', 'L2', 'T3', 'T4']
+  },
+
+  P1L3T6T10: {
+    cellSizes: [1, 3, 6, 10],
+    cellTypes: ['P1', 'L3', 'T6', 'T10']
+  },
+
+  P1L2Q4H8: {
+    cellSizes: [1, 2, 4, 8],
+    cellTypes: ['P1', 'L2', 'Q4', 'H8']
+  },
+
+  P1L3Q8H20: {
+    cellSizes: [1, 3, 8, 20],
+    cellTypes: ['P1', 'L3', 'Q8', 'H20']
+  }
+};
+
+Topology.prototype.getFamilyType = function() {
+  return this._family;
+};
+
+Topology.prototype.getFamilyCellSizeInDim = function(dim) {
+  return Topology.FAMILY[this._family].cellTypes[dim];
+};
+
+Topology.prototype.getFamilyCellSizeInDim = function(dim) {
+  return Topology.FAMILY[this._family].cellSizes[dim];
+};
+
+Topology.prototype.getCellTypeInDim = function(dim) {
+  if (dim < 0 || dim > this.getDim())
+    throw new Error('Topology::getCellTypeInDim(): dim out of bound.');
+  return this.getFamilyCellTypeInDim(dim);
+};
+
 Topology.prototype.getCellSizeInDim = function(dim) {
   if (dim < 0 || dim > this.getDim())
     throw new Error('Topology::getCellSizeInDim(): dim out of bound.');
-
-  return this._cellSizes[dim];
+  return this.getFamilyCellSizeInDim(dim);
 };
 
 Topology.prototype.toList = function() {
@@ -143,7 +130,7 @@ Topology.prototype.toJSON = function() {
 Topology.prototype.clone = function() {
   var copy = new Topology([]);
   copy._complexes = this.toList();
-  copy._cellSizes = _.cloneDeep(this._cellSizes);
+  copy._family = this._family;
   return copy;
 };
 
@@ -155,10 +142,11 @@ Topology.prototype.normalized = function() {
     });
     x.sort(byLexical);
   });
-  return new Topology(copy, this._cellSizes);
+  return new Topology(copy, this._family);
 };
 
 Topology.prototype.equals = function(other) {
+  if (this._family != other._family) return false;
   if (this.getDim() !== other.getDim())
     return false;
 
@@ -612,12 +600,12 @@ Topology.prototype.getPointIndices = function() {
 
 // dim = 0 -> point, dim = 1 -> line
 // dim = 2 -> quad, dim = 3 -> hexahedron
-var HYPERCUBE_DIM_CELLSIZE_BIMAP = new Bimap([
-  [0, 1],
-  [1, 2],
-  [2, 4],
-  [3, 8]
-]);
+// var HYPERCUBE_DIM_CELLSIZE_BIMAP = new Bimap([
+//   [0, 1],
+//   [1, 2],
+//   [2, 4],
+//   [3, 8]
+// ]);
 
 // line -> two points
 function hypercubeCellBoundary1(cell) {
@@ -664,6 +652,7 @@ exports.hypercubeBoundary = function hypercubeBoundary(conn, dim) {
     return cellCopy.join(',');
   };
 
+  // TODO: can be done by one pass, using only seen {}
   var res = [];
 
   conn.forEach(function(cell) {
@@ -752,13 +741,13 @@ function hypercube3_(conn) {
 
 function hypercube(conn, dim) {
   if (dim === 0) {
-    return new Topology(hypercube0_(conn));
+    return new Topology(hypercube0_(conn), 'P1L2Q4H8');
   } else if (dim === 1) {
-    return new Topology(hypercube1_(conn));
+    return new Topology(hypercube1_(conn), 'P1L2Q4H8');
   } else if (dim === 2) {
-    return new Topology(hypercube2_(conn));
+    return new Topology(hypercube2_(conn), 'P1L2Q4H8');
   } else if (dim === 3) {
-    return new Topology(hypercube3_(conn));
+    return new Topology(hypercube3_(conn), 'P1L2Q4H8');
   }
 
   throw new Error('hypercube(conn, dim): dim must be one of 0,1,2,3.');

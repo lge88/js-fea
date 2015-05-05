@@ -122,6 +122,7 @@ PointSet.prototype.get = function(index) {
   }
   throw new Error('PointSet::get() index outof bounds.');
 };
+PointSet.prototype.at = PointSet.prototype.get;
 
 PointSet.prototype.set_ = function(index, point) {
   if (index >= 0 && index < this._points.length) {

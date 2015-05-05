@@ -119,6 +119,7 @@ var L2x2 = exports.L2x2;
  * @param {Int} nz - number of divisions in z direction.
  * @returns {module:mesh.Mesh}
  */
+// TODO: use extrudeP1L2, extrudeL2Q4 extrudeQ4H8 to implement this.
 exports.H8Block = function(w, l, h, nx, ny, nz) {
   var dx = w/nx, dy = l/ny, dz = h/nz;
   var nn = (nx+1)*(ny+1)*(nz+1);

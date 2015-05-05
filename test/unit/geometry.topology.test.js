@@ -35,9 +35,9 @@ describe('geometry.topology', function() {
       expect(f.bind(null, [
         [ [0], [1], [2.3] ]
       ])).to.throwException();
-      expect(f.bind(null, [
-        []
-      ])).to.throwException();
+      // expect(f.bind(null, [
+      //   []
+      // ])).to.throwException();
     });
 
     it('should create isolated points', function() {
@@ -68,7 +68,7 @@ describe('geometry.topology', function() {
         [ [0], [1], [2], [3] ],
         [ [0, 1], [1, 2], [2, 0], [2, 3], [3, 0] ],
         [ [0, 1, 2], [2, 3, 0]]
-      ]);
+      ], 'P1L2T3T4');
       expect(t.getDim()).to.be(2);
       expect(t.getNumOfCellsInDim(0)).to.be(4);
       expect(t.getNumOfCellsInDim(1)).to.be(5);
@@ -87,7 +87,7 @@ describe('geometry.topology', function() {
         [ [0, 1], [1, 2], [2, 0], [3, 0], [3, 1], [3, 2] ],
         [ [0, 2, 1], [3, 0, 1], [3, 1, 2], [3, 2, 0] ],
         [ [0, 1, 2, 3] ]
-      ]);
+      ], 'P1L2T3T4');
       expect(t.getDim()).to.be(3);
       expect(t.getNumOfCellsInDim(0)).to.be(4);
       expect(t.getNumOfCellsInDim(1)).to.be(6);
@@ -159,8 +159,14 @@ describe('geometry.topology', function() {
 
   describe('Topology::equals(other)', function() {
     it('should work for empty sets', function() {
-      var t1 = new Topology([[]], [1]), t2 = new Topology([[]], [1]);
+      var t1 = new Topology([[]]), t2 = new Topology([[]]);
       expect(t1.equals(t2)).to.be(true);
+    });
+
+    it('should work for different family', function() {
+      var t1 = new Topology([[ [0] ]], 'P1L2T3T4');
+      var t2 = new Topology([[ [0] ]], 'P1L2Q4H8');
+      expect(t1.equals(t2)).to.be(false);
     });
 
     it('should work for points', function() {
@@ -194,7 +200,7 @@ describe('geometry.topology', function() {
           [3, 0, 4, 7]
         ],
         [
-          [0, 1, 2, 3, 4, 5, 6, 7, 8]
+          [0, 1, 2, 3, 4, 5, 6, 7]
         ]
       ]);
       expect(t1.equals(t1.clone())).to.be(true);
@@ -211,7 +217,7 @@ describe('geometry.topology', function() {
         [ [0], [1], [2], [3] ],
         [ [0, 1], [1, 2], [2, 0], [1, 3], [3, 0] ],
         [ [0, 1, 2], [2, 3, 0]]
-      ]);
+      ], 'P1L2T3T4');
       var t2 = f([
         [ [0], [1], [2], [3] ],
         [ [0, 1], [1, 2], [2, 3], [3, 0] ],
@@ -225,12 +231,12 @@ describe('geometry.topology', function() {
         [ [0], [1], [2], [3] ],
         [ [0, 1], [1, 2], [2, 0], [1, 3], [3, 0] ],
         [ [0, 1, 2], [2, 3, 0]]
-      ]);
+      ], 'P1L2T3T4');
       var t2 = f([
         [ [0], [1], [2], [4] ],
         [ [0, 1], [1, 2], [2, 0], [1, 4], [4, 0] ],
         [ [0, 1, 2], [2, 4, 0]]
-      ]);
+      ], 'P1L2T3T4');
       expect(t1.equals(t2)).to.be(false);
     });
   });
