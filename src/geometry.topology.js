@@ -3,6 +3,7 @@
 var _ = require('./core.utils');
 var check = _.check;
 var isAssigned = check.assigned;
+var isArray = _.isArray;
 var array1d = _.array1d;
 var cloneDeep = _.cloneDeep;
 var normalizedCell = _.normalizedCell;
@@ -17,6 +18,12 @@ var Bimap = _.Bimap;
 // ConnectivityList: [ CellIndexList ]
 // CellIndexList: [ i_1, i_2, ..., i_CellSize ]
 function Topology(complexes, family) {
+  if (typeof complexes === 'object' &&
+      isArray(complexes.complexes)) {
+    family = complexes.family;
+    complexes = complexes.complexes;
+  }
+
   if (typeof family === 'undefined') family = 'P1L2Q4H8';
   if (family == 'P1L2T3T4' ||
       family == 'P1L3T6T10' ||
@@ -100,16 +107,11 @@ Topology.prototype.toList = function() {
 };
 
 Topology.prototype.toJSON = function() {
-  return {
-    complexes: this.toList()
-  };
+  return { complexes: this.toList(), family: this._family };
 };
 
 Topology.prototype.clone = function() {
-  var copy = new Topology([]);
-  copy._complexes = this.toList();
-  copy._family = this._family;
-  return copy;
+  return new Topology(this.toJSON());
 };
 
 Topology.prototype.normalized = function() {
@@ -603,6 +605,12 @@ function simplex(conn, dim) {
 simplex.prototype = Object.create(Topology.prototype);
 simplex.prototype.constructor = simplex;
 
+// Topology family protocol:
+// cellSizes: [Int]
+// cellTypes: [String]
+// extrude: [Number] -> Complexes
+// create: Connectivity -> Int -> Complexes
+// boundaryConn: Connectivity -> Int -> Connectivity
 Topology.FAMILY = {
   P1L2T3T4: {
     cellSizes: [1, 2, 3, 4],

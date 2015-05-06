@@ -1,7 +1,5 @@
 /*global require*/
 var _ = require('./core.utils');
-var check = _.check;
-var isAssigned = check.assigned;
 var array1d = _.array1d;
 var cloneDeep = _.cloneDeep;
 var normalizedCell = _.normalizedCell;
@@ -63,7 +61,7 @@ function hypercubeBoundary(conn, dim) {
   var nonBoundaryIndexMask = {}, seen = {};
   res.forEach(function(cell, i) {
     var key = hashCell(cell);
-    if (!isAssigned(seen[key])) {
+    if (typeof seen[key] === 'undefined') {
       seen[key] = i;
     } else {
       nonBoundaryIndexMask[i] = true;
@@ -99,7 +97,7 @@ function hypercubeSkeleton(conn, dim) {
     var boundaryCells = getCellBoundary(cell);
     boundaryCells.forEach(function(bdryCell) {
       var key = hashCell(bdryCell);
-      if (!isAssigned(seen[key])) {
+      if (!seen[key]) {
         skeleton.push(bdryCell);
         seen[key] = true;
       }
@@ -136,20 +134,6 @@ function hypercube3(conn) {
   complexes[1] = hypercubeSkeleton(complexes[2], 2);
   complexes[0] = hypercubeSkeleton(complexes[1], 1);
   return complexes;
-}
-
-function hypercube(conn, dim) {
-  if (dim === 0) {
-    return hypercube0(conn);
-  } else if (dim === 1) {
-    return hypercube1(conn);
-  } else if (dim === 2) {
-    return hypercube2(conn);
-  } else if (dim === 3) {
-    return hypercube3(conn);
-  }
-
-  throw new Error('hypercube(conn, dim): dim must be one of 0,1,2,3.');
 }
 
 exports.name = 'P1L2Q4H8';
