@@ -672,7 +672,6 @@ function hypercubeBoundary(conn, dim) {
 
   return res;
 };
-// var hypercubeBoundary = exports.hypercubeBoundary;
 
 function hypercubeSkeleton(conn, dim) {
   var getCellBoundary;
@@ -792,7 +791,9 @@ Topology.FAMILY = {
   }
 };
 
-
 exports.Topology = Topology;
 exports.hypercube = hypercube;
 exports.simplex = simplex;
+// TODO:
+// exports.hypercubeHO = hypercubeHO;
+// exports.simplexHO = simplexHO;

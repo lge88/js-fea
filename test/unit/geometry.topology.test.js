@@ -425,67 +425,6 @@ describe('geometry.topology', function() {
 
   });
 
-
-  // describe('hypercubeBoundary(conn, dim)', function() {
-
-  //   it('should work for hybercube0', function() {
-  //     var bdry = hypercubeBoundary([ [1] ], 0);
-  //     expect(bdry).to.eql([]);
-  //   });
-
-  //   it('should work for hybercube1', function() {
-  //     var bdry = hypercubeBoundary([ [1, 2] ], 1);
-  //     expect(bdry).to.eql([ [1], [2] ]);
-  //   });
-
-  //   it('should work for one hybercube2', function() {
-  //     var bdry = hypercubeBoundary([ [1, 2, 3, 4] ], 2);
-  //     normalizeEql(bdry, [
-  //       [1, 2], [2, 3], [3, 4], [1, 4]
-  //     ]);
-  //   });
-
-  //   it('should work for two hybercube2', function() {
-  //     var bdry = hypercubeBoundary([ [1, 2, 3, 4], [4, 3, 6, 5] ], 2);
-  //     normalizeEql(bdry, [
-  //       [1, 2], [2, 3], [1, 4], [3, 6], [5, 6], [5, 4]
-  //     ]);
-  //   });
-
-  //   it('should work for one hybercube3', function() {
-  //     var bdry = hypercubeBoundary([ [1, 2, 3, 4, 5, 6, 7, 8] ], 3);
-  //     normalizeEql(bdry, [
-  //       [2, 1, 4, 3],
-  //       [5, 6, 7, 8],
-  //       [2, 3, 7, 6],
-  //       [3, 4, 8, 7],
-  //       [4, 1, 5, 8],
-  //       [2, 6, 5, 1]
-  //     ]);
-  //   });
-
-  //   it('should work for two hybercube3', function() {
-  //     var bdry = hypercubeBoundary([
-  //       [1, 2, 3, 4, 5, 6, 7, 8],
-  //       [5, 6, 7, 8, 9, 10, 11, 12]
-  //     ], 3);
-  //     normalizeEql(bdry, [
-  //       [2, 1, 4, 3],
-
-  //       [2, 3, 7, 6],
-  //       [3, 4, 8, 7],
-  //       [4, 1, 5, 8],
-  //       [2, 6, 5, 1],
-
-  //       [6, 7, 11, 10],
-  //       [7, 8, 12, 11],
-  //       [8, 5, 9, 12],
-  //       [5, 6, 10, 9],
-
-  //       [9, 10, 11, 12]
-  //     ]);
-  //   });
-
   describe('Topology#skeleton', function() {
     var t = hypercube([ [0,1,2,3,4,5,6,7] ], 3).normalized();
 
@@ -608,7 +547,6 @@ describe('geometry.topology', function() {
       });
 
     });
-    // });
 
   });
 });
