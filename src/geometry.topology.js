@@ -200,9 +200,11 @@ Topology.prototype.getPointIndices = function() {
 
 // };
 
-// Topology.prototype.skeleton = function(ord) {
-
-// };
+Topology.prototype.skeleton = function(dim) {
+  if (typeof dim === 'undefined') dim = this.getDim() - 1;
+  var complexes = this._complexes.slice(0, dim + 1);
+  return new Topology(complexes, this._family);
+};
 
 // Topology.prototype.boundaryConn = function() {
 //   var lowerDim = this.getDim() - 1;

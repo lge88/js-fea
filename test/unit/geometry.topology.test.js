@@ -486,6 +486,61 @@ describe('geometry.topology', function() {
       ]);
     });
 
+    describe('Topology#skeleton', function() {
+      var t = hypercube([ [0,1,2,3,4,5,6,7] ], 3).normalized();
+
+      it('#skeleton(3+)', function() {
+        expect(t.skeleton(3).equals(t)).to.be(true);
+        expect(t.skeleton(4).equals(t)).to.be(true);
+      });
+
+      it('#skeleton()/#skeleton(2)', function() {
+        var expected = hypercube([
+          [0, 3, 2, 1],
+          [1, 2, 6, 5],
+          [2, 3, 7, 6],
+          [3, 0, 4, 7],
+          [0, 1, 5, 4],
+          [4, 5, 6, 7]
+        ] ,2).normalized();
+        expect(t.skeleton().equals(expected)).to.be(true);
+        expect(t.skeleton(2).equals(expected)).to.be(true);
+      });
+
+      it('#skeleton(1)', function() {
+        var expected = hypercube([
+          [0, 1],
+          [1, 2],
+          [2, 3],
+          [3, 0],
+
+          [4, 5],
+          [5, 6],
+          [6, 7],
+          [7, 4],
+
+          [0, 4],
+          [1, 5],
+          [2, 6],
+          [3, 7]
+        ] ,1).normalized();
+        expect(t.skeleton(1).equals(expected)).to.be(true);
+      });
+
+      it('#skeleton(0)', function() {
+        var expected = hypercube([
+          [0],
+          [1],
+          [2],
+          [3],
+          [4],
+          [5],
+          [6],
+          [7]
+        ] ,0).normalized();
+        expect(t.skeleton(0).equals(expected)).to.be(true);
+      });
+    });
 
   });
 });
