@@ -19,6 +19,7 @@ var gcellset = require(SRC + '/gcellset.js');
 var P1 = gcellset.P1;
 var L2 = gcellset.L2;
 var Q4 = gcellset.Q4;
+var H8 = gcellset.H8;
 
 var VERIFIES = {
   'id': function(computed) {
@@ -459,5 +460,41 @@ describe('gcellset', function() {
 
   var tester = new ModuleTester(gcellset, fixtures, VERIFIES);
   tester.run();
+
+});
+
+describe('GCellSet#extrude', function() {
+  it('P1 -> L2 -> Q4 -> H8 should work', function() {
+    var p = new P1({
+      conn: [ [0] ]
+    });
+
+    var l = p.extrude([1, 1]);
+    var lExpected = new L2({
+      conn: [
+        [0, 1], [1, 2]
+      ]
+    });
+
+    expect(l.equals(lExpected)).to.be(true);
+
+    var q = l.extrude([1]);
+    var qExpected = new Q4({
+      conn: [
+        [0, 1, 4, 3],
+        [1, 2, 5, 4]
+      ]
+    });
+    expect(q.equals(qExpected)).to.be(true);
+
+    var h = q.extrude([1]);
+    var hExpected = new H8({
+      conn: [
+        [0, 1, 4, 3, 6, 7, 10, 9],
+        [1, 2, 5, 4, 7, 8, 11, 10]
+      ]
+    });
+    expect(h.equals(hExpected)).to.be(true);
+  });
 
 });

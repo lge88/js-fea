@@ -182,6 +182,7 @@ exports.extrude = function(cells, dim, flags) {
         var newGlobalConn = [];
         // bottom
         for (i = 0; i < len; ++i) newGlobalConn.push(base + cell[i]);
+
         // top
         for (i = 0; i < len; ++i) newGlobalConn.push(base + numPoints + cell[i]);
 

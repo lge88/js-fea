@@ -116,7 +116,7 @@ exports.GCellSet.prototype.equals = function(other) {
       this.otherDimension() !== other.otherDimension())
     return false;
 
-  if (!this._topology.equals(other._topology))
+  if (!this._topology.normalized().equals(other._topology.normalized()))
     return false;
 
   return true;
@@ -214,6 +214,54 @@ exports.GCellSet.prototype.boundary = function() {
   var C = this.boundaryGCellSetConstructor();
   var conn = this.boundaryConn();
   return new C({ conn: conn });
+};
+
+
+/**
+ * Returns the constructor of extruded gcellset. For example, Q4
+ * should return H8, L2 should return Q4.
+ * @abstract
+ * @returns {Function} the constructor of boundary gcellset.
+ */
+exports.GCellSet.prototype.extrudedGCellSetConstructor = function() {
+  var family = this._topology.getFamilyType();
+  var cellTypes = Topology.FAMILY[family].cellTypes;
+  var type = this.type();
+  var idx = cellTypes.indexOf(type);
+  if (idx < 0)
+    throw new Error('GCellSet::extrudedGCellSetConstructor(): unknow type ' +
+                    type);
+  var idxNext = idx + 1;
+  if (idxNext >= cellTypes.length)
+    throw new Error('GCellSet::extrudedGCellSetConstructor(): unknow extruded type ' +
+                    'for ' + type);
+  var nextType = cellTypes[idxNext];
+  return exports[nextType];
+};
+
+/**
+ * Set the topological family for gcellset.
+ * @param {String} name - name of the family: 'P1L2T3T4', 'P1L3T6T10',
+ * 'P1L2Q4H8', 'P1L3Q8H20'
+ */
+exports.GCellSet.prototype.setFamily_ = function(name) {
+  if (name === 'P1L2T3T4' || name === 'P1L3T6T10' ||
+      name === 'P1L2Q4H8' || name === 'P1L3Q8H20')
+    this._topology._family = name;
+};
+
+/**
+ * Return extruded gcellset.
+ * @param {Array} flags - A list of flags, falsy value means skip this layer.
+ * @returns {module:gcellset.GCellSet} - extruded gcellset
+ */
+exports.GCellSet.prototype.extrude = function(flags) {
+  var C = this.extrudedGCellSetConstructor();
+  return new C({
+    topology: this._topology.extrude(flags),
+    axisSymm: this._axisSymm,
+    otherDimension: this._otherDimension
+  });
 };
 
 /**
