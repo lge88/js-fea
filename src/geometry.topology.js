@@ -71,32 +71,6 @@ Topology.prototype.getNumOfCellsInDim = function(dim) {
   return this._complexes[dim].length;
 };
 
-Topology.FAMILY = {
-  P1L2T3T4: {
-    cellSizes: [1, 2, 3, 4],
-    cellTypes: ['P1', 'L2', 'T3', 'T4'],
-    extrude: function(hlist) {},
-    extractBoundary: function() {}
-  },
-
-  P1L3T6T10: {
-    cellSizes: [1, 3, 6, 10],
-    cellTypes: ['P1', 'L3', 'T6', 'T10']
-  },
-
-  P1L2Q4H8: {
-    cellSizes: [1, 2, 4, 8],
-    cellTypes: ['P1', 'L2', 'Q4', 'H8'],
-    extrude: function(hlist) {},
-    extractBoundary: function() {}
-  },
-
-  P1L3Q8H20: {
-    cellSizes: [1, 3, 8, 20],
-    cellTypes: ['P1', 'L3', 'Q8', 'H20']
-  }
-};
-
 Topology.prototype.getFamilyType = function() {
   return this._family;
 };
@@ -204,6 +178,20 @@ Topology.prototype.skeleton = function(dim) {
   if (typeof dim === 'undefined') dim = this.getDim() - 1;
   var complexes = this._complexes.slice(0, dim + 1);
   return new Topology(complexes, this._family);
+};
+
+Topology.prototype.boundaryConn = function() {
+  var boundaryConn = Topology.FAMILY[this._family].boundaryConn;
+  var dim = this.getDim();
+  var conn = this.getCellsInDim(dim);
+  return boundaryConn(conn, dim);
+};
+
+Topology.prototype.boundary = function() {
+  var create = Topology.FAMILY[this._family].create;
+  var conn = this.boundaryConn();
+  var dim = this.getDim();
+  return create(conn, dim - 1);
 };
 
 // Topology.prototype.boundaryConn = function() {
@@ -642,7 +630,7 @@ function hypercubeCellBoundary3(cell) {
   return [ f1, f2, f3, f4, f5, f6 ];
 };
 
-exports.hypercubeBoundary = function hypercubeBoundary(conn, dim) {
+function hypercubeBoundary(conn, dim) {
   var getCellBoundary;
   if (dim === 1)
     getCellBoundary = hypercubeCellBoundary1;
@@ -684,6 +672,7 @@ exports.hypercubeBoundary = function hypercubeBoundary(conn, dim) {
 
   return res;
 };
+// var hypercubeBoundary = exports.hypercubeBoundary;
 
 function hypercubeSkeleton(conn, dim) {
   var getCellBoundary;
@@ -768,6 +757,41 @@ function simplex(conn, dim) {
 
 simplex.prototype = Object.create(Topology.prototype);
 simplex.prototype.constructor = simplex;
+
+Topology.FAMILY = {
+  P1L2T3T4: {
+    cellSizes: [1, 2, 3, 4],
+    cellTypes: ['P1', 'L2', 'T3', 'T4'],
+    extrude: function(hlist) {},
+    create: function(conn, dim) {},
+    boundaryConn: function(conn, dim) {}
+  },
+
+  P1L3T6T10: {
+    cellSizes: [1, 3, 6, 10],
+    cellTypes: ['P1', 'L3', 'T6', 'T10'],
+    extrude: function(hlist) {},
+    create: function(conn, dim) {},
+    boundaryConn: function(conn, dim) {}
+  },
+
+  P1L2Q4H8: {
+    cellSizes: [1, 2, 4, 8],
+    cellTypes: ['P1', 'L2', 'Q4', 'H8'],
+    extrude: function(hlist) {},
+    create: hypercube,
+    boundaryConn: hypercubeBoundary
+  },
+
+  P1L3Q8H20: {
+    cellSizes: [1, 3, 8, 20],
+    cellTypes: ['P1', 'L3', 'Q8', 'H20'],
+    extrude: function(hlist) {},
+    create: function(conn, dim) {},
+    boundaryConn: function(conn, dim) {}
+  }
+};
+
 
 exports.Topology = Topology;
 exports.hypercube = hypercube;

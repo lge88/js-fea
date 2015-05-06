@@ -426,121 +426,189 @@ describe('geometry.topology', function() {
   });
 
 
-  describe('hypercubeBoundary(conn, dim)', function() {
+  // describe('hypercubeBoundary(conn, dim)', function() {
 
-    it('should work for hybercube0', function() {
-      var bdry = hypercubeBoundary([ [1] ], 0);
-      expect(bdry).to.eql([]);
+  //   it('should work for hybercube0', function() {
+  //     var bdry = hypercubeBoundary([ [1] ], 0);
+  //     expect(bdry).to.eql([]);
+  //   });
+
+  //   it('should work for hybercube1', function() {
+  //     var bdry = hypercubeBoundary([ [1, 2] ], 1);
+  //     expect(bdry).to.eql([ [1], [2] ]);
+  //   });
+
+  //   it('should work for one hybercube2', function() {
+  //     var bdry = hypercubeBoundary([ [1, 2, 3, 4] ], 2);
+  //     normalizeEql(bdry, [
+  //       [1, 2], [2, 3], [3, 4], [1, 4]
+  //     ]);
+  //   });
+
+  //   it('should work for two hybercube2', function() {
+  //     var bdry = hypercubeBoundary([ [1, 2, 3, 4], [4, 3, 6, 5] ], 2);
+  //     normalizeEql(bdry, [
+  //       [1, 2], [2, 3], [1, 4], [3, 6], [5, 6], [5, 4]
+  //     ]);
+  //   });
+
+  //   it('should work for one hybercube3', function() {
+  //     var bdry = hypercubeBoundary([ [1, 2, 3, 4, 5, 6, 7, 8] ], 3);
+  //     normalizeEql(bdry, [
+  //       [2, 1, 4, 3],
+  //       [5, 6, 7, 8],
+  //       [2, 3, 7, 6],
+  //       [3, 4, 8, 7],
+  //       [4, 1, 5, 8],
+  //       [2, 6, 5, 1]
+  //     ]);
+  //   });
+
+  //   it('should work for two hybercube3', function() {
+  //     var bdry = hypercubeBoundary([
+  //       [1, 2, 3, 4, 5, 6, 7, 8],
+  //       [5, 6, 7, 8, 9, 10, 11, 12]
+  //     ], 3);
+  //     normalizeEql(bdry, [
+  //       [2, 1, 4, 3],
+
+  //       [2, 3, 7, 6],
+  //       [3, 4, 8, 7],
+  //       [4, 1, 5, 8],
+  //       [2, 6, 5, 1],
+
+  //       [6, 7, 11, 10],
+  //       [7, 8, 12, 11],
+  //       [8, 5, 9, 12],
+  //       [5, 6, 10, 9],
+
+  //       [9, 10, 11, 12]
+  //     ]);
+  //   });
+
+  describe('Topology#skeleton', function() {
+    var t = hypercube([ [0,1,2,3,4,5,6,7] ], 3).normalized();
+
+    it('#skeleton(3+)', function() {
+      expect(t.skeleton(3).equals(t)).to.be(true);
+      expect(t.skeleton(4).equals(t)).to.be(true);
     });
 
-    it('should work for hybercube1', function() {
-      var bdry = hypercubeBoundary([ [1, 2] ], 1);
-      expect(bdry).to.eql([ [1], [2] ]);
-    });
-
-    it('should work for one hybercube2', function() {
-      var bdry = hypercubeBoundary([ [1, 2, 3, 4] ], 2);
-      normalizeEql(bdry, [
-        [1, 2], [2, 3], [3, 4], [1, 4]
-      ]);
-    });
-
-    it('should work for two hybercube2', function() {
-      var bdry = hypercubeBoundary([ [1, 2, 3, 4], [4, 3, 6, 5] ], 2);
-      normalizeEql(bdry, [
-        [1, 2], [2, 3], [1, 4], [3, 6], [5, 6], [5, 4]
-      ]);
-    });
-
-    it('should work for one hybercube3', function() {
-      var bdry = hypercubeBoundary([ [1, 2, 3, 4, 5, 6, 7, 8] ], 3);
-      normalizeEql(bdry, [
-        [2, 1, 4, 3],
-        [5, 6, 7, 8],
+    it('#skeleton()/#skeleton(2)', function() {
+      var expected = hypercube([
+        [0, 3, 2, 1],
+        [1, 2, 6, 5],
         [2, 3, 7, 6],
-        [3, 4, 8, 7],
-        [4, 1, 5, 8],
-        [2, 6, 5, 1]
-      ]);
+        [3, 0, 4, 7],
+        [0, 1, 5, 4],
+        [4, 5, 6, 7]
+      ] ,2).normalized();
+      expect(t.skeleton().equals(expected)).to.be(true);
+      expect(t.skeleton(2).equals(expected)).to.be(true);
     });
 
-    it('should work for two hybercube3', function() {
-      var bdry = hypercubeBoundary([
-        [1, 2, 3, 4, 5, 6, 7, 8],
-        [5, 6, 7, 8, 9, 10, 11, 12]
-      ], 3);
-      normalizeEql(bdry, [
-        [2, 1, 4, 3],
+    it('#skeleton(1)', function() {
+      var expected = hypercube([
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
 
-        [2, 3, 7, 6],
-        [3, 4, 8, 7],
-        [4, 1, 5, 8],
-        [2, 6, 5, 1],
+        [4, 5],
+        [5, 6],
+        [6, 7],
+        [7, 4],
 
-        [6, 7, 11, 10],
-        [7, 8, 12, 11],
-        [8, 5, 9, 12],
-        [5, 6, 10, 9],
-
-        [9, 10, 11, 12]
-      ]);
+        [0, 4],
+        [1, 5],
+        [2, 6],
+        [3, 7]
+      ] ,1).normalized();
+      expect(t.skeleton(1).equals(expected)).to.be(true);
     });
 
-    describe('Topology#skeleton', function() {
-      var t = hypercube([ [0,1,2,3,4,5,6,7] ], 3).normalized();
+    it('#skeleton(0)', function() {
+      var expected = hypercube([
+        [0],
+        [1],
+        [2],
+        [3],
+        [4],
+        [5],
+        [6],
+        [7]
+      ] ,0).normalized();
+      expect(t.skeleton(0).equals(expected)).to.be(true);
+    });
+  });
 
-      it('#skeleton(3+)', function() {
-        expect(t.skeleton(3).equals(t)).to.be(true);
-        expect(t.skeleton(4).equals(t)).to.be(true);
+  describe('Topoloy#boundary', function() {
+    describe('P1L2Q4H8 family', function() {
+      it('should work for hybercube1', function() {
+        var t = hypercube([ [0, 1] ], 1);
+        var bdry = t.boundary().normalized();
+        var expected = hypercube([ [0], [1] ], 0).normalized();
+        expect(bdry.equals(expected)).to.be(true);
       });
 
-      it('#skeleton()/#skeleton(2)', function() {
+      it('should work for one hybercube2', function() {
+        var t = hypercube([ [1, 2, 3, 4] ], 2);
+        var bdry = t.boundary().normalized();
         var expected = hypercube([
-          [0, 3, 2, 1],
-          [1, 2, 6, 5],
+          [1, 2], [2, 3], [3, 4], [1, 4]
+        ], 1).normalized();
+        expect(bdry.equals(expected)).to.be(true);
+      });
+
+      it('should work for two hybercube2', function() {
+        var t = hypercube([ [1, 2, 3, 4], [4, 3, 6, 5] ], 2);
+        var bdry = t.boundary().normalized();
+        var expected = hypercube([
+          [1, 2], [2, 3], [1, 4], [3, 6], [5, 6], [5, 4]
+        ], 1).normalized();
+        expect(bdry.equals(expected)).to.be(true);
+      });
+
+      it('should work for one hybercube3', function() {
+        var t = hypercube([ [1, 2, 3, 4, 5, 6, 7, 8] ], 3);
+        var bdry = t.boundary().normalized();
+        var expected = hypercube([
+          [2, 1, 4, 3],
+          [5, 6, 7, 8],
           [2, 3, 7, 6],
-          [3, 0, 4, 7],
-          [0, 1, 5, 4],
-          [4, 5, 6, 7]
-        ] ,2).normalized();
-        expect(t.skeleton().equals(expected)).to.be(true);
-        expect(t.skeleton(2).equals(expected)).to.be(true);
+          [3, 4, 8, 7],
+          [4, 1, 5, 8],
+          [2, 6, 5, 1]
+        ], 2).normalized();
+        expect(bdry.equals(expected)).to.be(true);
       });
 
-      it('#skeleton(1)', function() {
+      it('should work for two hybercube3', function() {
+        var t = hypercube([
+          [1, 2, 3, 4, 5, 6, 7, 8],
+          [5, 6, 7, 8, 9, 10, 11, 12]
+        ], 3);
+        var bdry = t.boundary().normalized();
         var expected = hypercube([
-          [0, 1],
-          [1, 2],
-          [2, 3],
-          [3, 0],
+          [2, 1, 4, 3],
 
-          [4, 5],
-          [5, 6],
-          [6, 7],
-          [7, 4],
+          [2, 3, 7, 6],
+          [3, 4, 8, 7],
+          [4, 1, 5, 8],
+          [2, 6, 5, 1],
 
-          [0, 4],
-          [1, 5],
-          [2, 6],
-          [3, 7]
-        ] ,1).normalized();
-        expect(t.skeleton(1).equals(expected)).to.be(true);
+          [6, 7, 11, 10],
+          [7, 8, 12, 11],
+          [8, 5, 9, 12],
+          [5, 6, 10, 9],
+
+          [9, 10, 11, 12]
+        ], 2).normalized();
+        expect(bdry.equals(expected)).to.be(true);
       });
 
-      it('#skeleton(0)', function() {
-        var expected = hypercube([
-          [0],
-          [1],
-          [2],
-          [3],
-          [4],
-          [5],
-          [6],
-          [7]
-        ] ,0).normalized();
-        expect(t.skeleton(0).equals(expected)).to.be(true);
-      });
     });
+    // });
 
   });
 });

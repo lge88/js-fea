@@ -203,7 +203,8 @@ exports.GCellSet.prototype.boundaryCellType = function() {
  * @returns {module:types.ConnectivityList}
  */
 exports.GCellSet.prototype.boundaryConn = function() {
-  throw new Error('GCellSet#boundaryConn() is not implemented.');
+  // throw new Error('GCellSet#boundaryConn() is not implemented.');
+  return this._topology.boundaryConn();
 };
 
 /**
@@ -921,13 +922,13 @@ exports.L2.prototype.boundaryGCellSetConstructor = function() {
   return P1;
 };
 
-/**
- * {@link module:gcellset.GCellSet#boundaryConn}
- * @override
- */
-exports.L2.prototype.boundaryConn = function() {
-  return hypercubeBoundary(this.conn(), this.dim());
-};
+// /**
+//  * {@link module:gcellset.GCellSet#boundaryConn}
+//  * @override
+//  */
+// exports.L2.prototype.boundaryConn = function() {
+//   return hypercubeBoundary(this.conn(), this.dim());
+// };
 
 /**
  * {@link module:gcellset.GCellSet#triangles}
@@ -1008,13 +1009,13 @@ exports.Q4.prototype.type = function() { return 'Q4'; };
  */
 exports.Q4.prototype.boundaryGCellSetConstructor = function() { return L2; };
 
-/**
- * {@link module:gcellset.GCellSet#boundaryConn}
- * @override
- */
-exports.Q4.prototype.boundaryConn = function() {
-  return hypercubeBoundary(this.conn(), this.dim());
-};
+// /**
+//  * {@link module:gcellset.GCellSet#boundaryConn}
+//  * @override
+//  */
+// exports.Q4.prototype.boundaryConn = function() {
+//   return hypercubeBoundary(this.conn(), this.dim());
+// };
 
 /**
  * {@link module:gcellset.GCellSet#triangles}
@@ -1105,13 +1106,14 @@ exports.H8.prototype.type = function() { return 'H8'; };
  */
 exports.H8.prototype.boundaryGCellSetConstructor = function() { return Q4; };
 
-/**
- * {@link module:gcellset.GCellSet#boundaryConn}
- * @override
- */
-exports.H8.prototype.boundaryConn = function() {
-  return hypercubeBoundary(this.conn(), this.dim());
-};
+// /**
+//  * {@link module:gcellset.GCellSet#boundaryConn}
+//  * @override
+//  */
+// exports.H8.prototype.boundaryConn = function() {
+//   return this._topology.boundaryConn();
+//   // return hypercubeBoundary(this.conn(), this.dim());
+// };
 
 /**
  * {@link module:gcellset.GCellSet#triangles}
