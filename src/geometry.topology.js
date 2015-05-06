@@ -176,6 +176,16 @@ Topology.prototype.getPointIndices = function() {
 
 // };
 
+Topology.prototype.extrude = function(flags) {
+  var dim = this.getDim();
+  var cells = this.getCellsInDim(dim);
+  var extrude = Topology.FAMILY[this._family].extrude;
+  var create = Topology.FAMILY[this._family].create;
+  var newCells = extrude(cells, dim, flags);
+  var complexes = create(newCells, dim + 1);
+  return new Topology(complexes, this._family);
+};
+
 Topology.prototype.skeleton = function(dim) {
   if (typeof dim === 'undefined') dim = this.getDim() - 1;
   var complexes = this._complexes.slice(0, dim + 1);
@@ -608,9 +618,9 @@ simplex.prototype.constructor = simplex;
 // Topology family protocol:
 // cellSizes: [Int]
 // cellTypes: [String]
-// extrude: [Number] -> Complexes
-// create: Connectivity -> Int -> Complexes
-// boundaryConn: Connectivity -> Int -> Connectivity
+// extrude: Connectivity -> Dim -> FlagList -> Complexes
+// create: Connectivity -> Dim -> Complexes
+// boundaryConn: Connectivity -> Dim -> Connectivity
 Topology.FAMILY = {
   P1L2T3T4: {
     cellSizes: [1, 2, 3, 4],
@@ -623,7 +633,7 @@ Topology.FAMILY = {
   P1L3T6T10: {
     cellSizes: [1, 3, 6, 10],
     cellTypes: ['P1', 'L3', 'T6', 'T10'],
-    extrude: function(hlist) {},
+    extrude: function(conn, dim, hlist) {},
     create: function(conn, dim) {},
     boundaryConn: function(conn, dim) {}
   },

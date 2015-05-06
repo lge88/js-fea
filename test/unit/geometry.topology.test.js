@@ -549,4 +549,54 @@ describe('geometry.topology', function() {
     });
 
   });
+
+  describe('Topoloy#extrude', function() {
+    describe('P1L2Q4H8 family', function() {
+      it('0 -> 1', function() {
+        var t = hypercube([ [0] ], 0);
+        var e0 = t.extrude([1, 1]).normalized();
+        var e1 = t.extrude([1, 0, 1]).normalized();
+
+        var expected0 = hypercube([
+          [0, 1],
+          [1, 2]
+        ], 1).normalized();
+
+        var expected1 = hypercube([
+          [0, 1],
+          [2, 3]
+        ], 1).normalized();
+
+        expect(e0.equals(expected0)).to.be(true);
+        expect(e1.equals(expected1)).to.be(true);
+      });
+
+      it('1 -> 2', function() {
+        var t = hypercube([ [0, 1] ], 1);
+        var e0 = t.extrude([1, 1]).normalized();
+
+        var expected0 = hypercube([
+          [0, 1, 3, 2],
+          [2, 3, 5, 4]
+        ], 2).normalized();
+
+        expect(e0.equals(expected0)).to.be(true);
+      });
+
+      it('2 -> 3', function() {
+        var t = hypercube([ [0, 1, 2, 3] ], 2);
+        var e0 = t.extrude([1, 1]).normalized();
+
+        var expected0 = hypercube([
+          [0, 1, 2, 3, 4, 5, 6, 7],
+          [4, 5, 6, 7, 8, 9, 10, 11]
+        ], 3).normalized();
+
+        expect(e0.equals(expected0)).to.be(true);
+      });
+
+
+    });
+  });
+
 });

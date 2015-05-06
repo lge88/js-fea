@@ -142,8 +142,61 @@ exports.cellSizes = [1, 2, 4, 8];
 
 exports.cellTypes = ['P1', 'L2', 'Q4', 'H8'];
 
-// TODO:
-exports.extrude = function(hlist) {};
+exports.extrudeMap = [
+  // 0 -> 1,
+  [ [ 0, 1 ] ],
+  // 1 -> 2,
+  [ [ 0, 1, 3, 2 ] ],
+  // 2 -> 3,
+  [
+    [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+  ]
+];
+
+function countPoints(cells) {
+  var count = 0, seen = {};
+  cells.forEach(function(cell) {
+    cell.forEach(function(idx) {
+      if (!seen[idx]) { ++count; seen[idx] = true; }
+    });
+  });
+  return count;
+}
+
+exports.extrude = function(cells, dim, flags) {
+  if (dim < 0 || dim >= 3)
+    throw new Error('extrude(): can not handle ' +
+                    'dim = ' + dim);
+
+  var numCells = cells.length;
+  var cellMap = exports.extrudeMap[dim];
+  var cellSize = exports.cellSizes[dim];
+  var numPoints = countPoints(cells);
+  var newCells = [];
+
+  flags.forEach(function(flag, layer) {
+    var base = layer * numPoints;
+    if (flag) {
+      cells.forEach(function(cell) {
+        var i, len = cell.length;
+        var newGlobalConn = [];
+        // bottom
+        for (i = 0; i < len; ++i) newGlobalConn.push(base + cell[i]);
+        // top
+        for (i = 0; i < len; ++i) newGlobalConn.push(base + numPoints + cell[i]);
+
+        // remap
+        cellMap.forEach(function(localConn) {
+          var newCell = localConn.map(function(localIndex) {
+            return newGlobalConn[localIndex];
+          });
+          newCells.push( newCell );
+        });
+      });
+    }
+  });
+  return newCells;
+};
 
 exports.create = function(conn, dim) {
   if (dim === 0) {
