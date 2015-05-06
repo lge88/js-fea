@@ -191,7 +191,8 @@ Topology.prototype.boundary = function() {
   var create = Topology.FAMILY[this._family].create;
   var conn = this.boundaryConn();
   var dim = this.getDim();
-  return create(conn, dim - 1);
+  var complexes = create(conn, dim - 1);
+  return new Topology(complexes, this._family);
 };
 
 // Topology.prototype.boundaryConn = function() {
@@ -593,161 +594,6 @@ Topology.prototype.boundary = function() {
 
 
 // dim = 0 -> point, dim = 1 -> line
-// dim = 2 -> quad, dim = 3 -> hexahedron
-// var HYPERCUBE_DIM_CELLSIZE_BIMAP = new Bimap([
-//   [0, 1],
-//   [1, 2],
-//   [2, 4],
-//   [3, 8]
-// ]);
-
-// line -> two points
-function hypercubeCellBoundary1(cell) {
-  var p1 = [ cell[0] ];
-  var p2 = [ cell[1] ];
-  return [ p1, p2 ];
-};
-
-// quad -> four lines
-function hypercubeCellBoundary2(cell) {
-  var e1 = [ cell[0], cell[1] ];
-  var e2 = [ cell[1], cell[2] ];
-  var e3 = [ cell[2], cell[3] ];
-  var e4 = [ cell[3], cell[0] ];
-  return [ e1, e2, e3, e4 ];
-};
-
-// brick -> six quads
-function hypercubeCellBoundary3(cell) {
-  var v1 = cell[0], v2 = cell[1], v3 = cell[2], v4 = cell[3];
-  var v5 = cell[4], v6 = cell[5], v7 = cell[6], v8 = cell[7];
-  var f1 = [ v1, v4, v3, v2 ];
-  var f2 = [ v1, v2, v6, v5 ];
-  var f3 = [ v2, v3, v7, v6 ];
-  var f4 = [ v3, v4, v8, v7 ];
-  var f5 = [ v1, v5, v8, v4 ];
-  var f6 = [ v5, v6, v7, v8 ];
-  return [ f1, f2, f3, f4, f5, f6 ];
-};
-
-function hypercubeBoundary(conn, dim) {
-  var getCellBoundary;
-  if (dim === 1)
-    getCellBoundary = hypercubeCellBoundary1;
-  else if (dim === 2)
-    getCellBoundary = hypercubeCellBoundary2;
-  else if (dim === 3)
-    getCellBoundary = hypercubeCellBoundary3;
-  else
-    return [];
-
-  function hashCell(cell) {
-    var cellCopy = cell.slice().sort(function(a, b) { return a-b; });
-    return cellCopy.join(',');
-  };
-
-  // TODO: can be done by one pass, using only seen {}
-  var res = [];
-
-  conn.forEach(function(cell) {
-    getCellBoundary(cell).forEach(function(bdryCell) {
-      res.push(bdryCell);
-    });
-  });
-
-  var nonBoundaryIndexMask = {}, seen = {};
-  res.forEach(function(cell, i) {
-    var key = hashCell(cell);
-    if (!isAssigned(seen[key])) {
-      seen[key] = i;
-    } else {
-      nonBoundaryIndexMask[i] = true;
-      nonBoundaryIndexMask[seen[key]] = true;
-    }
-  });
-
-  res = res.filter(function(cell, i) {
-    return !nonBoundaryIndexMask[i];
-  });
-
-  return res;
-};
-
-function hypercubeSkeleton(conn, dim) {
-  var getCellBoundary;
-  if (dim === 1)
-    getCellBoundary = hypercubeCellBoundary1;
-  else if (dim === 2)
-    getCellBoundary = hypercubeCellBoundary2;
-  else if (dim === 3)
-    getCellBoundary = hypercubeCellBoundary3;
-  else
-    throw new Error('hypercubeSkeleton(conn, dim): dim (' +
-                       dim + ') is not valid.');
-
-  function hashCell(cell) {
-    return normalizedCell(cell).join(',');
-  }
-
-  var seen = {}, skeleton = [];
-  conn.forEach(function(cell) {
-    var boundaryCells = getCellBoundary(cell);
-    boundaryCells.forEach(function(bdryCell) {
-      var key = hashCell(bdryCell);
-      if (!isAssigned(seen[key])) {
-        skeleton.push(bdryCell);
-        seen[key] = true;
-      }
-    });
-  });
-  return skeleton;
-}
-
-function hypercube0_(conn) {
-  if (typeof conn[0] === 'number')
-    return [ conn.map(function(idx) { return [idx]; }) ];
-  return [ cloneDeep(conn) ];
-}
-
-function hypercube1_(conn) {
-  var complexes = array1d(2, function() { return null; });
-  complexes[1] = cloneDeep(conn);
-  complexes[0] = hypercubeSkeleton(complexes[1], 1);
-  return complexes;
-}
-
-function hypercube2_(conn) {
-  var complexes = array1d(3, function() { return null; });
-  complexes[2] = cloneDeep(conn);
-  complexes[1] = hypercubeSkeleton(complexes[2], 2);
-  complexes[0] = hypercubeSkeleton(complexes[1], 1);
-  return complexes;
-}
-
-function hypercube3_(conn) {
-  var complexes = array1d(4, function() { return null; });
-  complexes[3] = cloneDeep(conn);
-  complexes[2] = hypercubeSkeleton(complexes[3], 3);
-  complexes[1] = hypercubeSkeleton(complexes[2], 2);
-  complexes[0] = hypercubeSkeleton(complexes[1], 1);
-  return complexes;
-}
-
-function hypercube(conn, dim) {
-  if (dim === 0) {
-    return new Topology(hypercube0_(conn), 'P1L2Q4H8');
-  } else if (dim === 1) {
-    return new Topology(hypercube1_(conn), 'P1L2Q4H8');
-  } else if (dim === 2) {
-    return new Topology(hypercube2_(conn), 'P1L2Q4H8');
-  } else if (dim === 3) {
-    return new Topology(hypercube3_(conn), 'P1L2Q4H8');
-  }
-
-  throw new Error('hypercube(conn, dim): dim must be one of 0,1,2,3.');
-};
-
-// dim = 0 -> point, dim = 1 -> line
 // dim = 2 -> triangle, dim = 3 -> tetrahedron
 function simplex(conn, dim) {
   var complexes = [];
@@ -774,13 +620,7 @@ Topology.FAMILY = {
     boundaryConn: function(conn, dim) {}
   },
 
-  P1L2Q4H8: {
-    cellSizes: [1, 2, 4, 8],
-    cellTypes: ['P1', 'L2', 'Q4', 'H8'],
-    extrude: function(hlist) {},
-    create: hypercube,
-    boundaryConn: hypercubeBoundary
-  },
+  P1L2Q4H8: require('./geometry.topology.P1L2Q4H8'),
 
   P1L3Q8H20: {
     cellSizes: [1, 3, 8, 20],
@@ -792,7 +632,13 @@ Topology.FAMILY = {
 };
 
 exports.Topology = Topology;
-exports.hypercube = hypercube;
+
+exports.hypercube = function(conn, dim) {
+  var create = Topology.FAMILY.P1L2Q4H8.create;
+  var complexes = create(conn, dim);
+  return new Topology(complexes, 'P1L2Q4H8');
+};
+
 exports.simplex = simplex;
 // TODO:
 // exports.hypercubeHO = hypercubeHO;
