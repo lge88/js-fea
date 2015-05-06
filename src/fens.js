@@ -40,6 +40,11 @@ FeNodeSet.prototype.map = function(mapping) {
   return new FeNodeSet({ xyz: xyz });
 };
 
+FeNodeSet.prototype.extrude = function(hList) {
+  var xyz = this._xyz.extrude(hList);
+  return new FeNodeSet({ xyz: xyz });
+};
+
 FeNodeSet.prototype.dim = function() {
   return this._xyz.getRn();
 };
