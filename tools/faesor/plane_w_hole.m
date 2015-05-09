@@ -3,30 +3,34 @@ function plane_w_hole
                                 % Parameters:
   U=physical_units_struct;
   E=210000*U.MEGA*U.PA;
-  nu=0.49999;
+  ## nu=0.49999;
+  nu=0.0;
   G =E/2/(1+nu);
   L= 0.3*U.M; % in-plane dimension
   W = 0.3*U.M; % in-plane dimension
   a= 0.15*U.M; % hole radius
   H = 0.01*U.M; % thickness of the plate
 
-  %nL=15;nH=1;nW=15;na=15;
-  nL=2;nH=1;nW=2;na=2;
+  nL=15;nH=1;nW=15;na=15;
+  ## nL=2;nH=1;nW=2;na=2;
+  ## nL=5;nH=1;nW=5;na=5;
   tol = a*10e-7;
   sigma0=1*U.MEGA*U.PA;
   graphics = false;
 
                                 % Mesh
   [fens,gcells]=Q4_elliphole(a,a,L,W,nL,nW,na,[]);
-  get(fens, 'xyz')
+  % xyz = get(fens, 'xyz')
 
+  %scatter(xyz(:, 1), xyz(:, 2));
+
+  %return;
   [fens,gcells] = Q4_extrude(fens,gcells,nH,@(x,i)([x,0]+[0,0,H*i]));
-  get(fens, 'xyz')
+  ## xyz = get(fens, 'xyz')
 
   [fens,gcells] = H8_to_H20(fens,gcells);
-  get(fens, 'xyz')
+  %get(fens, 'xyz')
 
-  return;
                                 % Material
   prop = property_linel_iso (struct('E',E,'nu',nu));
   mater = mater_defor_ss_linel_triax (struct('property',prop));
@@ -108,6 +112,7 @@ function plane_w_hole
                                 % Solve
   u = scatter_sysvec(u, K\F);
   uv = get(u,'values')
+  return
 
   xyz =get(geom,'values');
   uerrn=0;

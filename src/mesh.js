@@ -103,6 +103,92 @@ exports.Mesh.prototype.extrude = function(hList, flags) {
 };
 
 /**
+ *
+ * Return subdivied mesh.
+ * @returns {module:mesh.Mesh} - subdivided mesh
+ */
+exports.Mesh.prototype.subdivide = function() {
+  if (this._gcells.type() === 'Q4') return this.subdivideQ4();
+  return this;
+};
+
+exports.Mesh.prototype.subdivideQ4 = function() {
+  var fens = this._fens;
+  var N = fens.count();
+  var gcells = this._gcells;
+  var topology = gcells.topology();
+
+  var q4Cells = topology.getCellsInDim(2);
+  var l2Cells = topology.getCellsInDim(1);
+
+  var idx = N;
+  var q4CellCenters = q4Cells.map(function(conn) {
+    var n1 = fens.xyzAt(conn[0]);
+    var n2 = fens.xyzAt(conn[1]);
+    var n3 = fens.xyzAt(conn[2]);
+    var n4 = fens.xyzAt(conn[3]);
+    var x = 0.25 * (n1[0] + n2[0] + n3[0] + n4[0]);
+    var y = 0.25 * (n1[1] + n2[1] + n3[1] + n4[1]);
+    return { index: idx++, xy: [x, y] };
+  });
+
+  var hashEdge = function(n1, n2) {
+    return '' + Math.min(n1, n2) + Math.max(n1, n2);
+  };
+
+  var l2CellCenters = l2Cells.map(function(conn) {
+    var n1 = fens.xyzAt(conn[0]);
+    var n2 = fens.xyzAt(conn[1]);
+    var x = 0.5 * (n1[0] + n2[0]);
+    var y = 0.5 * (n1[1] + n2[1]);
+    return {
+      key: hashEdge(conn[0], conn[1]),
+      index: idx++,
+      xy: [x, y]
+    };
+  });
+
+  var addedFens = new FeNodeSet({
+    xyz: q4CellCenters.map(function(p) {
+      return p.xy;
+    }).concat(l2CellCenters.map(function(p) {
+      return p.xy;
+    }))
+  });
+
+  var newFens = fens.combineWith(addedFens);
+  var newConn = [];
+
+  var l2CellCentersMap = l2CellCenters.reduce(function(sofar, obj) {
+    sofar[obj.key] = obj;
+    return sofar;
+  }, {});
+
+  q4Cells.forEach(function(cell, i) {
+    var n1 = cell[0], n2 = cell[1];
+    var n3 = cell[2], n4 = cell[3];
+    var n12 = l2CellCentersMap[hashEdge(n1, n2)].index;
+    var n23 = l2CellCentersMap[hashEdge(n2, n3)].index;
+    var n34 = l2CellCentersMap[hashEdge(n3, n4)].index;
+    var n41 = l2CellCentersMap[hashEdge(n4, n1)].index;
+    var nCentroid = q4CellCenters[i].index;
+    newConn.push([n1, n12, nCentroid, n41]);
+    newConn.push([n41, nCentroid, n34, n4]);
+    newConn.push([n12, n2, n23, nCentroid]);
+    newConn.push([nCentroid, n23, n3, n34]);
+  });
+
+  var newGCellSet = new Q4({
+    conn: newConn
+  });
+
+  return new Mesh({
+    fens: newFens,
+    gcells: newGCellSet
+  });
+};
+
+/**
  * Creates a L-shaped domain using 3 quads.
  * @returns {module:mesh.Mesh}
  */
