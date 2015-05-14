@@ -143,7 +143,7 @@
 						</li>
 						
 						<li>
-							<a href="module-mesh-Mesh.html">Mesh</a>
+							<a href="module-mesh.Mesh.html">Mesh</a>
 						</li>
 						
 
@@ -285,7 +285,7 @@ exports.GCellSet.prototype.equals = function(other) {
       this.otherDimension() !== other.otherDimension())
     return false;
 
-  if (!this._topology.equals(other._topology))
+  if (!this._topology.normalized().equals(other._topology.normalized()))
     return false;
 
   return true;
@@ -372,7 +372,7 @@ exports.GCellSet.prototype.boundaryCellType = function() {
  * @returns {module:types.ConnectivityList}
  */
 exports.GCellSet.prototype.boundaryConn = function() {
-  throw new Error('GCellSet#boundaryConn() is not implemented.');
+  return this._topology.boundaryConn();
 };
 
 /**
@@ -381,8 +381,56 @@ exports.GCellSet.prototype.boundaryConn = function() {
  */
 exports.GCellSet.prototype.boundary = function() {
   var C = this.boundaryGCellSetConstructor();
-  var boundaryConn = this.boundaryConn();
-  return new C({ conn: boundaryConn });
+  var conn = this.boundaryConn();
+  return new C({ conn: conn });
+};
+
+
+/**
+ * Returns the constructor of extruded gcellset. For example, Q4
+ * should return H8, L2 should return Q4.
+ * @abstract
+ * @returns {Function} the constructor of boundary gcellset.
+ */
+exports.GCellSet.prototype.extrudedGCellSetConstructor = function() {
+  var family = this._topology.getFamilyType();
+  var cellTypes = Topology.FAMILY[family].cellTypes;
+  var type = this.type();
+  var idx = cellTypes.indexOf(type);
+  if (idx &lt; 0)
+    throw new Error('GCellSet::extrudedGCellSetConstructor(): unknow type ' +
+                    type);
+  var idxNext = idx + 1;
+  if (idxNext >= cellTypes.length)
+    throw new Error('GCellSet::extrudedGCellSetConstructor(): unknow extruded type ' +
+                    'for ' + type);
+  var nextType = cellTypes[idxNext];
+  return exports[nextType];
+};
+
+/**
+ * Set the topological family for gcellset.
+ * @param {String} name - name of the family: 'P1L2T3T4', 'P1L3T6T10',
+ * 'P1L2Q4H8', 'P1L3Q8H20'
+ */
+exports.GCellSet.prototype.setFamily_ = function(name) {
+  if (name === 'P1L2T3T4' || name === 'P1L3T6T10' ||
+      name === 'P1L2Q4H8' || name === 'P1L3Q8H20')
+    this._topology._family = name;
+};
+
+/**
+ * Return extruded gcellset.
+ * @param {Array} flags - A list of flags, falsy value means skip this layer.
+ * @returns {module:gcellset.GCellSet} - extruded gcellset
+ */
+exports.GCellSet.prototype.extrude = function(flags) {
+  var C = this.extrudedGCellSetConstructor();
+  return new C({
+    topology: this._topology.extrude(flags),
+    axisSymm: this._axisSymm,
+    otherDimension: this._otherDimension
+  });
 };
 
 /**
@@ -433,15 +481,15 @@ exports.GCellSet.prototype.boxSelect = function(fens, options) {
 };
 
 function allNodesInBox(fens, cell, bounds) {
-  return cell.every(function(id) {
-    var xyz = fens.xyzById(id);
+  return cell.every(function(idx) {
+    var xyz = fens.xyzAt(idx);
     return isXyzInsideBox(xyz, bounds);
   });
 }
 
 function anyNodesInBox(fens, cell, bounds) {
-  return cell.some(function(id) {
-    var xyz = fens.xyzById(id);
+  return cell.some(function(idx) {
+    var xyz = fens.xyzAt(idx);
     return isXyzInsideBox(xyz, bounds);
   });
 }
@@ -872,8 +920,8 @@ exports.GCellSetManifold2.prototype.jacobianSurface = function(conn, N, J, x) {
     if (sdim === ntan) {
       jac = J[0][0]*J[1][1] - J[1][0]*J[0][1];
     } else {
-      jac = skewmat(nthColumn(J, 1));
-      jac = dot(jac, nthColumn(J, 2));
+      jac = skewmat(nthColumn(J, 0));
+      jac = dot(jac, nthColumn(J, 1));
       jac = norm(jac);
     }
   } else {
@@ -1091,14 +1139,6 @@ exports.L2.prototype.boundaryGCellSetConstructor = function() {
 };
 
 /**
- * {@link module:gcellset.GCellSet#boundaryConn}
- * @override
- */
-exports.L2.prototype.boundaryConn = function() {
-  return hypercubeBoundary(this.conn(), this.dim());
-};
-
-/**
  * {@link module:gcellset.GCellSet#triangles}
  * @override
  */
@@ -1176,14 +1216,6 @@ exports.Q4.prototype.type = function() { return 'Q4'; };
  * @override
  */
 exports.Q4.prototype.boundaryGCellSetConstructor = function() { return L2; };
-
-/**
- * {@link module:gcellset.GCellSet#boundaryConn}
- * @override
- */
-exports.Q4.prototype.boundaryConn = function() {
-  return hypercubeBoundary(this.conn(), this.dim());
-};
 
 /**
  * {@link module:gcellset.GCellSet#triangles}
@@ -1273,14 +1305,6 @@ exports.H8.prototype.type = function() { return 'H8'; };
  * @override
  */
 exports.H8.prototype.boundaryGCellSetConstructor = function() { return Q4; };
-
-/**
- * {@link module:gcellset.GCellSet#boundaryConn}
- * @override
- */
-exports.H8.prototype.boundaryConn = function() {
-  return hypercubeBoundary(this.conn(), this.dim());
-};
 
 /**
  * {@link module:gcellset.GCellSet#triangles}
@@ -1420,7 +1444,7 @@ exports.H8.prototype.bfundpar = function(paramCoords) {
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha5</a>
-		on Sun Mar 22 2015 10:47:08 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+		on Thu May 14 2015 14:09:29 GMT-0700 (PDT) using the <a href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
 			</div>
