@@ -4,13 +4,15 @@
   "description": "Finite Element Analysis in Javascript.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node_modules/gulp/bin/gulp.js test"
+    "test": "node_modules/gulp-mocha/node_modules/mocha/bin/mocha test/unit && node_modules/gulp-mocha/node_modules/mocha/bin/mocha test/spec"
   },
   "keywords": [
     "fea",
     "numeric"
   ],
-  "author": "Li Ge",
+  "homepage": "http://lige.me/js-fea",
+  "bugs": "https://github.com/lge88/js-fea/issues",
+  "author": "Li Ge <lge@ucsd.edu> (http://lige.me/)",
   "license": "MIT",
   "dependencies": {
     "lodash": "^2.4.1",
